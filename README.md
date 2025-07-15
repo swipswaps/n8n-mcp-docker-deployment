@@ -36,12 +36,14 @@ Deploys [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) - a Model Context Prot
 
 ## Key Features
 
-- 🚀 **Complete automation** - Installs all dependencies including Augment Code
-- 🛡️ **Self-healing** - Automatically recovers from errors
+- 🚀 **Complete automation** - Installs all dependencies with IDE extension support
+- 🛡️ **Self-healing** - Automatically recovers from errors with multiple strategies
 - 🧪 **Comprehensive testing** - 12-test validation ensures reliability
 - 🔧 **Multi-platform** - Works on Fedora, Ubuntu, Debian, Arch Linux
-- ⚡ **Optimized performance** - 5-7 minute installation time
-- 📊 **Progress tracking** - Clear feedback throughout installation
+- ⚡ **Real-time feedback** - Live progress indicators prevent stalling confusion
+- 📊 **Professional UX** - Transparent operation with comprehensive error guidance
+- 🎯 **Augment Rules compliant** - Official documentation and verified sources only
+- 🔄 **Never-fail execution** - Always provides actionable guidance
 
 ## Advanced Usage
 

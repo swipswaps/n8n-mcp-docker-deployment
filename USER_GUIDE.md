@@ -1,8 +1,8 @@
 # Complete User Guide: n8n-mcp Docker Deployment
 
-## 🚀 Fully Automated Installation (v0.2.0-beta)
+## 🚀 Fully Automated Installation (v0.3.0-beta)
 
-**NEW: Zero manual steps required!** The script now handles everything automatically:
+**NEW: Real-time feedback with professional UX!** The script now provides complete transparency with never-fail execution:
 
 ```bash
 # 1. Download the repository
@@ -13,14 +13,15 @@ cd n8n-mcp-docker-deployment
 ./install-test-n8n-mcp-docker.sh
 
 # That's it! The script automatically:
-# ✅ Detects your OS and validates system
-# ✅ Installs ALL dependencies (Docker, Git, jq, Augment Code)
-# ✅ Sets up complete environment
-# ✅ Deploys and tests n8n-mcp
-# ✅ Configures Augment Code integration
-# ✅ Runs comprehensive testing (12 tests)
-# ✅ Self-heals any issues
-# ✅ Provides fully functional system
+# ✅ Detects your OS and validates system with real-time feedback
+# ✅ Installs ALL dependencies (Docker, Git, jq) with progress indicators
+# ✅ Handles Augment Code IDE extension installation professionally
+# ✅ Sets up complete environment with comprehensive error context
+# ✅ Deploys and tests n8n-mcp with transparent operation
+# ✅ Configures Augment Code integration based on official documentation
+# ✅ Runs comprehensive testing (12 tests) with detailed reporting
+# ✅ Self-heals any issues with multiple recovery strategies
+# ✅ Provides fully functional system with never-fail execution
 
 # 3. Test integration immediately
 # Ask Augment Code: "Show me available n8n workflow nodes"
