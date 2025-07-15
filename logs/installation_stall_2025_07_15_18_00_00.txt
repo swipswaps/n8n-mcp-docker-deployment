@@ -1,0 +1,923 @@
+owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment$ gh repo sync
+✓ Synced the "main" branch from "swipswaps/n8n-mcp-docker-deployment" to local repository
+owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment$ ./install-test-n8n-mcp-docker.sh
+[2025-07-15 17:56:29] [INFO] === N8N-MCP FULLY AUTOMATED DEPLOYMENT ===
+[2025-07-15 17:56:29] [INFO] Version: 0.3.0-beta
+[2025-07-15 17:56:29] [INFO] Started: 2025-07-15 17:56:29
+[2025-07-15 17:56:29] [INFO] PID: 243925
+[2025-07-15 17:56:29] [INFO] User: owner
+[2025-07-15 17:56:29] [INFO] Platform: Linux 6.15.5-200.fc42.x86_64
+[2025-07-15 17:56:29] [INFO] 🔄 Enabling self-healing mechanisms...
+[2025-07-15 17:56:29] [INFO]    ⏳ Health monitoring will start after installation completes
+[2025-07-15 17:56:29] [INFO]    Docker recovery mechanisms enabled
+[2025-07-15 17:56:29] [INFO]    Augment Code recovery mechanisms enabled
+[2025-07-15 17:56:29] [INFO]    MCP configuration recovery mechanisms enabled
+[2025-07-15 17:56:29] [INFO]    Permission recovery mechanisms enabled
+[2025-07-15 17:56:29] [INFO]    Setting up health monitoring...
+[2025-07-15 17:56:29] [SUCCESS]    ✅ Health monitoring configured
+[2025-07-15 17:56:29] [SUCCESS] ✅ Self-healing mechanisms enabled
+╔══════════════════════════════════════════════════════════════╗
+║                n8n-mcp Docker Installation                   ║
+║          Augment Code Workflow Automation Setup             ║
+║                                                              ║
+║  🚀 FULLY AUTOMATED INSTALLATION                            ║
+║                                                              ║
+║  This script will automatically:                            ║
+║  • Install ALL required dependencies (including Augment)    ║
+║  • Setup Docker and n8n-mcp container                       ║
+║  • Configure Augment Code integration                       ║
+║  • Run comprehensive testing (12 tests)                     ║
+║  • Enable self-healing mechanisms                           ║
+║  • Verify complete installation                             ║
+║                                                              ║
+║  ✅ Zero manual steps required                              ║
+║  ✅ Everything works or is self-healed                      ║
+║  ✅ Complete dependency abstraction                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+[2025-07-15 17:56:29] [INFO] ⏳ Waiting for user confirmation...
+🚀 Proceed with fully automated installation? [Y/n]: y
+
+[2025-07-15 17:56:30] [INFO] ✅ User confirmed installation
+
+📋 Installation Configuration:
+   ✅ All dependencies will be installed automatically
+   ✅ Augment Code will be managed automatically
+   ✅ Comprehensive testing will be performed
+   ✅ Self-healing mechanisms enabled
+
+   Enable verbose logging? [y/N]: y
+   Create desktop shortcuts? [Y/n]: y
+
+[2025-07-15 17:56:31] [INFO] Starting performance monitoring...
+[2025-07-15 17:56:31] [INFO] Performance monitoring started
+[2025-07-15 17:56:31] [INFO] Start time: Tue Jul 15 05:56:31 PM EDT 2025
+[2025-07-15 17:56:31] [INFO] Start memory: 3638MB
+[2025-07-15 17:56:31] [INFO] Start CPU: 7.80107%
+[2025-07-15 17:56:31] [INFO] Setting up comprehensive monitoring...
+[2025-07-15 17:56:31] [INFO] Started system monitoring: PID 244019
+[2025-07-15 17:56:31] [INFO] Started kernel monitoring: PID 244021
+[2025-07-15 17:56:31] [INFO] Started X11 monitoring: PID 244023
+[2025-07-15 17:56:31] [INFO] Started hardware monitoring: PID 244027
+[2025-07-15 17:56:31] [SUCCESS] Monitoring setup complete. PIDs: 244019 244021 244023 244025 244027
+[2025-07-15 17:56:31] [INFO] 🚀 Starting fully automated installation (estimated time: 5-7 minutes)
+[2025-07-15 17:56:31] [INFO] 📊 Installation will proceed through 7 phases with automatic recovery
+
+🔍 Current System Status:
+   • Docker: active
+   • Augment Code: not found
+   • Network: connected
+   • Disk Space: 7% used
+   • Memory: 3.6Gi/5.7Gi
+
+
+📊 Installation Progress: 14% Complete
+[███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] Phase 1/7
+
+
+╔════════════════════════════════════════════════════════════════╗
+║                    INSTALLATION STATUS                        ║
+╠════════════════════════════════════════════════════════════════╣
+║ Phase: Phase 1/7: System Verification
+║ Step:  OS Detection & Validation
+║ Status: In Progress
+║ Time:  2025-07-15 17:56:31
+╚════════════════════════════════════════════════════════════════╝
+
+[2025-07-15 17:56:31] [INFO] 🔍 Phase 1/7: System Verification & Auto-Recovery (10% complete)
+[2025-07-15 17:56:31] [INFO]    Executing: System OS validation (attempt 1/3)
+[2025-07-15 17:56:31] [INFO] 🔍 Detecting operating system...
+[2025-07-15 17:56:31] [SUCCESS] ✅ Supported OS detected: Fedora Linux 42 (Workstation Edition)
+[2025-07-15 17:56:32] [INFO]    OS: fedora 42
+[2025-07-15 17:56:32] [INFO]    Package Manager: dnf
+[2025-07-15 17:56:32] [SUCCESS]    ✅ System OS validation completed successfully
+[2025-07-15 17:56:32] [INFO]    Executing: Disk space verification (attempt 1/3)
+[2025-07-15 17:56:32] [INFO] 💾 Checking available disk space...
+[2025-07-15 17:56:32] [SUCCESS] ✅ Disk space verified: 892557MB available
+[2025-07-15 17:56:32] [INFO]    Docker image: ~300MB
+[2025-07-15 17:56:32] [INFO]    Logs and temp: ~50MB
+[2025-07-15 17:56:32] [INFO]    Remaining: 892207MB
+[2025-07-15 17:56:32] [SUCCESS]    ✅ Disk space verification completed successfully
+[2025-07-15 17:56:32] [INFO]    Executing: Internet connectivity (attempt 1/3)
+[2025-07-15 17:56:32] [INFO] 🌐 Testing internet connectivity...
+[2025-07-15 17:56:32] [INFO]    ✅ ghcr.io reachable
+[2025-07-15 17:56:32] [INFO]    ✅ github.com reachable
+[2025-07-15 17:56:32] [INFO]    ✅ google.com reachable
+[2025-07-15 17:56:32] [SUCCESS] ✅ Internet connectivity verified
+[2025-07-15 17:56:32] [SUCCESS]    ✅ Internet connectivity completed successfully
+
+📊 Installation Progress: 28% Complete
+[██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] Phase 2/7
+
+
+╔════════════════════════════════════════════════════════════════╗
+║                    INSTALLATION STATUS                        ║
+╠════════════════════════════════════════════════════════════════╣
+║ Phase: Phase 2/7: Dependencies Management
+║ Step:  Installing System Dependencies
+║ Status: In Progress
+║ Time:  2025-07-15 17:56:32
+╚════════════════════════════════════════════════════════════════╝
+
+[2025-07-15 17:56:32] [INFO] 📦 Phase 2/7: Complete Dependencies Management (25% complete)
+[2025-07-15 17:56:32] [INFO]    Executing: System dependencies (attempt 1/3)
+[2025-07-15 17:56:33] [INFO] 📦 Installing system dependencies...
+[2025-07-15 17:56:33] [SUCCESS] ✅ All dependencies already installed
+[2025-07-15 17:56:33] [INFO]    ✅ git available
+[2025-07-15 17:56:33] [INFO]    ✅ jq available
+[2025-07-15 17:56:33] [INFO]    ✅ curl available
+[2025-07-15 17:56:33] [INFO]    ✅ wget available
+[2025-07-15 17:56:33] [SUCCESS]    ✅ System dependencies completed successfully
+[2025-07-15 17:56:33] [INFO]    Executing: Docker setup (attempt 1/3)
+[2025-07-15 17:56:33] [INFO] 🐳 Setting up Docker environment...
+[2025-07-15 17:56:35] [SUCCESS] ✅ Docker ready: 28.3.2
+[2025-07-15 17:56:35] [SUCCESS]    ✅ Docker setup completed successfully
+[2025-07-15 17:56:35] [INFO]    Executing: Augment Code installation (attempt 1/3)
+[2025-07-15 17:56:35] [INFO] 🤖 Managing Augment Code dependency...
+[2025-07-15 17:56:35] [INFO] 🔍 Checking for Augment Code IDE extensions...
+[2025-07-15 17:56:35] [INFO]    📋 Checking VS Code extensions...
+[2025-07-15 17:56:35] [INFO] 🔄 Executing: VS Code extension check
+[2025-07-15 17:56:35] [INFO] 📋 Command: code --list-extensions 2>/dev/null | grep -i augment || echo 'No Augment extension found'
+[2025-07-15 17:56:35] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: ......
+   📤 augment.vscode-augment
+   🔄 Progress: 
+[2025-07-15 17:56:41] [INFO] 📤 Command output:
+   📤 augment.vscode-augment
+[2025-07-15 17:56:41] [SUCCESS] ✅ VS Code extension check completed successfully
+[2025-07-15 17:56:42] [SUCCESS] ✅ Augment Code VS Code extension detected
+[2025-07-15 17:56:42] [INFO]    💡 Augment Code is available in VS Code
+[2025-07-15 17:56:42] [INFO]    🎯 Skipping installation - extension already present
+[2025-07-15 17:56:42] [SUCCESS]    ✅ Augment Code installation completed successfully
+[2025-07-15 17:56:42] [INFO] ⚙️  Phase 3/7: Environment Setup & Configuration (40% complete)
+[2025-07-15 17:56:42] [INFO]    Executing: Environment setup (attempt 1/3)
+[2025-07-15 17:56:42] [INFO]    Creating installation environment...
+[2025-07-15 17:56:42] [SUCCESS]    ✅ Environment setup completed successfully
+[2025-07-15 17:56:43] [INFO]    Executing: Permission configuration (attempt 1/3)
+[2025-07-15 17:56:43] [INFO]    Configuring system permissions...
+[2025-07-15 17:56:43] [SUCCESS]    ✅ Permission configuration completed successfully
+[2025-07-15 17:56:43] [INFO]    Executing: Service integration (attempt 1/3)
+[2025-07-15 17:56:43] [INFO]    Setting up service integration...
+[sudo] password for owner: 
+[2025-07-15 17:57:02] [SUCCESS]    ✅ Service integration completed successfully
+[2025-07-15 17:57:02] [INFO] 🚀 Phase 4/7: n8n-mcp Deployment & Testing (55% complete)
+[2025-07-15 17:57:02] [INFO]    Executing: n8n-mcp image download (attempt 1/3)
+[2025-07-15 17:57:02] [INFO] 📥 Downloading n8n-mcp Docker image with real-time progress...
+[2025-07-15 17:57:02] [INFO] 📋 Image: ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 17:57:02] [INFO] 📊 Expected size: ~300MB
+[2025-07-15 17:57:02] [INFO] 🔄 Executing: n8n-mcp Docker image download
+[2025-07-15 17:57:02] [INFO] 📋 Command: docker pull "ghcr.io/czlonkowski/n8n-mcp:latest"
+[2025-07-15 17:57:02] [INFO] ⏱️  Timeout: 300s
+   🔄 Progress: ....
+   📤 ghcr.io/czlonkowski/n8n-mcp:latest
+   🔄 Progress: 
+[2025-07-15 17:57:06] [INFO] 📤 Command output:
+   📤 latest: Pulling from czlonkowski/n8n-mcp
+   📤 Digest: sha256:83c5f401498b5d9ba93a79a8abbc380fdba93c6bf96fcc5fa945b5119edf45c6
+   📤 Status: Image is up to date for ghcr.io/czlonkowski/n8n-mcp:latest
+   📤 ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 17:57:06] [SUCCESS] ✅ n8n-mcp Docker image download completed successfully
+[2025-07-15 17:57:06] [SUCCESS] ✅ n8n-mcp image downloaded successfully
+[2025-07-15 17:57:06] [INFO] 📋 Verifying downloaded image...
+[2025-07-15 17:57:06] [INFO] 🔄 Executing: Image verification
+[2025-07-15 17:57:06] [INFO] 📋 Command: docker images "ghcr.io/czlonkowski/n8n-mcp:latest"
+[2025-07-15 17:57:06] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+   📤 ghcr.io/czlonkowski/n8n-mcp   latest    8b11d7ea003b   7 hours ago   300MB
+   🔄 Progress: 
+[2025-07-15 17:57:07] [INFO] 📤 Command output:
+   📤 REPOSITORY                    TAG       IMAGE ID       CREATED       SIZE
+   📤 ghcr.io/czlonkowski/n8n-mcp   latest    8b11d7ea003b   7 hours ago   300MB
+[2025-07-15 17:57:07] [SUCCESS] ✅ Image verification completed successfully
+[2025-07-15 17:57:07] [SUCCESS] ✅ Image verification completed
+[2025-07-15 17:57:08] [SUCCESS]    ✅ n8n-mcp image download completed successfully
+[2025-07-15 17:57:08] [INFO]    Executing: Persistent container deployment (attempt 1/3)
+[2025-07-15 17:57:08] [INFO] 🚀 Deploying persistent n8n-mcp container with automated lifecycle management...
+[2025-07-15 17:57:08] [INFO] 🚀 Creating persistent n8n-mcp container...
+[2025-07-15 17:57:08] [INFO] 🔄 Executing: Persistent container creation
+[2025-07-15 17:57:08] [INFO] 📋 Command: docker run -d --name n8n-mcp -p 5678:5678 --restart unless-stopped ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 17:57:08] [INFO] ⏱️  Timeout: 60s
+   🔄 Progress: ..
+   📤 dad8f45842ded4b6cc9968359477ba31f146949264e00e0c54c61c2b440c78e4
+   🔄 Progress: .
+   📤 dad8f45842ded4b6cc9968359477ba31f146949264e00e0c54c61c2b440c78e4
+   🔄 Progress: .
+   📤 dad8f45842ded4b6cc9968359477ba31f146949264e00e0c54c61c2b440c78e4
+   🔄 Progress: .
+   📤 dad8f45842ded4b6cc9968359477ba31f146949264e00e0c54c61c2b440c78e4
+   🔄 Progress: 
+[2025-07-15 17:57:13] [INFO] 📤 Command output:
+   📤 dad8f45842ded4b6cc9968359477ba31f146949264e00e0c54c61c2b440c78e4
+[2025-07-15 17:57:13] [SUCCESS] ✅ Persistent container creation completed successfully
+[2025-07-15 17:57:13] [SUCCESS]    ✅ Container created with restart policy
+[2025-07-15 17:57:13] [SUCCESS] ✅ Persistent container created and running: n8n-mcp
+[2025-07-15 17:57:13] [INFO] ⏳ Waiting for container to be fully ready...
+[2025-07-15 17:57:18] [SUCCESS] ✅ Persistent container created successfully
+[2025-07-15 17:57:18] [INFO] 🔍 Detecting MCP server path in container: n8n-mcp
+[2025-07-15 17:57:18] [INFO]    📋 Testing path: /app/mcp-server.js
+[2025-07-15 17:57:18] [INFO] 🔄 Executing: MCP server path test: /app/mcp-server.js
+[2025-07-15 17:57:20] [INFO] 📋 Command: docker exec n8n-mcp test -f /app/mcp-server.js
+[2025-07-15 17:57:20] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:21] [ERROR] ❌ MCP server path test: /app/mcp-server.js failed (exit code: 1)
+[2025-07-15 17:57:26] [ERROR] 🔍 Comprehensive error context for: MCP server path test: /app/mcp-server.js
+[2025-07-15 17:57:26] [INFO]    📊 Error details:
+[2025-07-15 17:57:26] [INFO]      • Exit code: 1
+[2025-07-15 17:57:26] [INFO]      • Timestamp: 2025-07-15 17:57:26
+[2025-07-15 17:57:26] [INFO]      • User: owner
+[2025-07-15 17:57:26] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:26] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:26] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:26] [INFO]    🌐 System status:
+[2025-07-15 17:57:26] [INFO]      • Network: connected
+[2025-07-15 17:57:27] [INFO]      • DNS: working
+[2025-07-15 17:57:27] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:27] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:27] [INFO]      • Load average: 1.06, 1.53, 1.68
+[2025-07-15 17:57:27] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:27] [INFO]      • Check system resources
+[2025-07-15 17:57:27] [INFO]      • Verify command availability
+[2025-07-15 17:57:27] [INFO]      • Review error messages above
+[2025-07-15 17:57:27] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:27] [INFO]    📋 Testing path: /usr/src/app/mcp-server.js
+[2025-07-15 17:57:27] [INFO] 🔄 Executing: MCP server path test: /usr/src/app/mcp-server.js
+[2025-07-15 17:57:27] [INFO] 📋 Command: docker exec n8n-mcp test -f /usr/src/app/mcp-server.js
+[2025-07-15 17:57:27] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:28] [ERROR] ❌ MCP server path test: /usr/src/app/mcp-server.js failed (exit code: 1)
+[2025-07-15 17:57:28] [ERROR] 🔍 Comprehensive error context for: MCP server path test: /usr/src/app/mcp-server.js
+[2025-07-15 17:57:28] [INFO]    📊 Error details:
+[2025-07-15 17:57:28] [INFO]      • Exit code: 1
+[2025-07-15 17:57:28] [INFO]      • Timestamp: 2025-07-15 17:57:28
+[2025-07-15 17:57:28] [INFO]      • User: owner
+[2025-07-15 17:57:28] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:28] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:28] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:28] [INFO]    🌐 System status:
+[2025-07-15 17:57:28] [INFO]      • Network: connected
+[2025-07-15 17:57:28] [INFO]      • DNS: working
+[2025-07-15 17:57:28] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:28] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:28] [INFO]      • Load average: 1.06, 1.53, 1.68
+[2025-07-15 17:57:28] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:28] [INFO]      • Check system resources
+[2025-07-15 17:57:28] [INFO]      • Verify command availability
+[2025-07-15 17:57:28] [INFO]      • Review error messages above
+[2025-07-15 17:57:28] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:28] [INFO]    📋 Testing path: /opt/n8n/mcp-server.js
+[2025-07-15 17:57:28] [INFO] 🔄 Executing: MCP server path test: /opt/n8n/mcp-server.js
+[2025-07-15 17:57:29] [INFO] 📋 Command: docker exec n8n-mcp test -f /opt/n8n/mcp-server.js
+[2025-07-15 17:57:29] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:30] [ERROR] ❌ MCP server path test: /opt/n8n/mcp-server.js failed (exit code: 1)
+[2025-07-15 17:57:30] [ERROR] 🔍 Comprehensive error context for: MCP server path test: /opt/n8n/mcp-server.js
+[2025-07-15 17:57:30] [INFO]    📊 Error details:
+[2025-07-15 17:57:30] [INFO]      • Exit code: 1
+[2025-07-15 17:57:30] [INFO]      • Timestamp: 2025-07-15 17:57:30
+[2025-07-15 17:57:30] [INFO]      • User: owner
+[2025-07-15 17:57:30] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:30] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:30] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:30] [INFO]    🌐 System status:
+[2025-07-15 17:57:30] [INFO]      • Network: connected
+[2025-07-15 17:57:30] [INFO]      • DNS: working
+[2025-07-15 17:57:30] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:30] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:30] [INFO]      • Load average: 1.06, 1.53, 1.68
+[2025-07-15 17:57:30] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:30] [INFO]      • Check system resources
+[2025-07-15 17:57:30] [INFO]      • Verify command availability
+[2025-07-15 17:57:30] [INFO]      • Review error messages above
+[2025-07-15 17:57:30] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:30] [INFO]    📋 Testing path: mcp-server.js
+[2025-07-15 17:57:30] [INFO] 🔄 Executing: MCP server path test: mcp-server.js
+[2025-07-15 17:57:30] [INFO] 📋 Command: docker exec n8n-mcp test -f mcp-server.js
+[2025-07-15 17:57:30] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:31] [ERROR] ❌ MCP server path test: mcp-server.js failed (exit code: 1)
+[2025-07-15 17:57:31] [ERROR] 🔍 Comprehensive error context for: MCP server path test: mcp-server.js
+[2025-07-15 17:57:31] [INFO]    📊 Error details:
+[2025-07-15 17:57:31] [INFO]      • Exit code: 1
+[2025-07-15 17:57:31] [INFO]      • Timestamp: 2025-07-15 17:57:31
+[2025-07-15 17:57:31] [INFO]      • User: owner
+[2025-07-15 17:57:31] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:31] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:31] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:31] [INFO]    🌐 System status:
+[2025-07-15 17:57:31] [INFO]      • Network: connected
+[2025-07-15 17:57:32] [INFO]      • DNS: working
+[2025-07-15 17:57:32] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:32] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:32] [INFO]      • Load average: 1.06, 1.53, 1.68
+[2025-07-15 17:57:32] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:32] [INFO]      • Check system resources
+[2025-07-15 17:57:32] [INFO]      • Verify command availability
+[2025-07-15 17:57:32] [INFO]      • Review error messages above
+[2025-07-15 17:57:32] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:32] [INFO]    📋 Testing path: /app/server.js
+[2025-07-15 17:57:32] [INFO] 🔄 Executing: MCP server path test: /app/server.js
+[2025-07-15 17:57:32] [INFO] 📋 Command: docker exec n8n-mcp test -f /app/server.js
+[2025-07-15 17:57:32] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:33] [ERROR] ❌ MCP server path test: /app/server.js failed (exit code: 1)
+[2025-07-15 17:57:33] [ERROR] 🔍 Comprehensive error context for: MCP server path test: /app/server.js
+[2025-07-15 17:57:33] [INFO]    📊 Error details:
+[2025-07-15 17:57:33] [INFO]      • Exit code: 1
+[2025-07-15 17:57:33] [INFO]      • Timestamp: 2025-07-15 17:57:33
+[2025-07-15 17:57:33] [INFO]      • User: owner
+[2025-07-15 17:57:33] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:33] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:33] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:33] [INFO]    🌐 System status:
+[2025-07-15 17:57:33] [INFO]      • Network: connected
+[2025-07-15 17:57:33] [INFO]      • DNS: working
+[2025-07-15 17:57:33] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:33] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:33] [INFO]      • Load average: 1.45, 1.61, 1.70
+[2025-07-15 17:57:33] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:33] [INFO]      • Check system resources
+[2025-07-15 17:57:33] [INFO]      • Verify command availability
+[2025-07-15 17:57:33] [INFO]      • Review error messages above
+[2025-07-15 17:57:33] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:33] [INFO]    📋 Testing path: server.js
+[2025-07-15 17:57:33] [INFO] 🔄 Executing: MCP server path test: server.js
+[2025-07-15 17:57:33] [INFO] 📋 Command: docker exec n8n-mcp test -f server.js
+[2025-07-15 17:57:33] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:34] [ERROR] ❌ MCP server path test: server.js failed (exit code: 1)
+[2025-07-15 17:57:34] [ERROR] 🔍 Comprehensive error context for: MCP server path test: server.js
+[2025-07-15 17:57:35] [INFO]    📊 Error details:
+[2025-07-15 17:57:35] [INFO]      • Exit code: 1
+[2025-07-15 17:57:35] [INFO]      • Timestamp: 2025-07-15 17:57:35
+[2025-07-15 17:57:35] [INFO]      • User: owner
+[2025-07-15 17:57:35] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:35] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:35] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:35] [INFO]    🌐 System status:
+[2025-07-15 17:57:35] [INFO]      • Network: connected
+[2025-07-15 17:57:35] [INFO]      • DNS: working
+[2025-07-15 17:57:35] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:35] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:35] [INFO]      • Load average: 1.45, 1.61, 1.70
+[2025-07-15 17:57:35] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:35] [INFO]      • Check system resources
+[2025-07-15 17:57:35] [INFO]      • Verify command availability
+[2025-07-15 17:57:35] [INFO]      • Review error messages above
+[2025-07-15 17:57:35] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:35] [INFO]    📋 Testing path: /app/index.js
+[2025-07-15 17:57:35] [INFO] 🔄 Executing: MCP server path test: /app/index.js
+[2025-07-15 17:57:35] [INFO] 📋 Command: docker exec n8n-mcp test -f /app/index.js
+[2025-07-15 17:57:35] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:36] [ERROR] ❌ MCP server path test: /app/index.js failed (exit code: 1)
+[2025-07-15 17:57:36] [ERROR] 🔍 Comprehensive error context for: MCP server path test: /app/index.js
+[2025-07-15 17:57:36] [INFO]    📊 Error details:
+[2025-07-15 17:57:36] [INFO]      • Exit code: 1
+[2025-07-15 17:57:36] [INFO]      • Timestamp: 2025-07-15 17:57:36
+[2025-07-15 17:57:36] [INFO]      • User: owner
+[2025-07-15 17:57:36] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:36] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:36] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:36] [INFO]    🌐 System status:
+[2025-07-15 17:57:36] [INFO]      • Network: connected
+[2025-07-15 17:57:36] [INFO]      • DNS: working
+[2025-07-15 17:57:36] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:36] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:36] [INFO]      • Load average: 1.45, 1.61, 1.70
+[2025-07-15 17:57:36] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:36] [INFO]      • Check system resources
+[2025-07-15 17:57:36] [INFO]      • Verify command availability
+[2025-07-15 17:57:36] [INFO]      • Review error messages above
+[2025-07-15 17:57:36] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:36] [INFO]    📋 Testing path: index.js
+[2025-07-15 17:57:36] [INFO] 🔄 Executing: MCP server path test: index.js
+[2025-07-15 17:57:36] [INFO] 📋 Command: docker exec n8n-mcp test -f index.js
+[2025-07-15 17:57:36] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:37] [ERROR] ❌ MCP server path test: index.js failed (exit code: 1)
+[2025-07-15 17:57:37] [ERROR] 🔍 Comprehensive error context for: MCP server path test: index.js
+[2025-07-15 17:57:38] [INFO]    📊 Error details:
+[2025-07-15 17:57:38] [INFO]      • Exit code: 1
+[2025-07-15 17:57:38] [INFO]      • Timestamp: 2025-07-15 17:57:38
+[2025-07-15 17:57:38] [INFO]      • User: owner
+[2025-07-15 17:57:38] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:38] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:38] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:38] [INFO]    🌐 System status:
+[2025-07-15 17:57:38] [INFO]      • Network: connected
+[2025-07-15 17:57:38] [INFO]      • DNS: working
+[2025-07-15 17:57:38] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:38] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:38] [INFO]      • Load average: 1.34, 1.58, 1.69
+[2025-07-15 17:57:38] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:38] [INFO]      • Check system resources
+[2025-07-15 17:57:38] [INFO]      • Verify command availability
+[2025-07-15 17:57:38] [INFO]      • Review error messages above
+[2025-07-15 17:57:38] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:38] [INFO]    📋 Checking container entry point...
+[2025-07-15 17:57:38] [INFO] 🔄 Executing: Node.js availability check
+[2025-07-15 17:57:38] [INFO] 📋 Command: docker exec n8n-mcp node --version
+[2025-07-15 17:57:38] [INFO] ⏱️  Timeout: 10s
+[2025-07-15 17:57:39] [INFO] 📤 Command output:
+[2025-07-15 17:57:39] [SUCCESS] ✅ Node.js availability check completed successfully
+[2025-07-15 17:57:39] [INFO]    💡 Using default Node.js entry point: /app/index.js
+[2025-07-15 17:57:39] [SUCCESS] ✅ MCP server path detected:    🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   📤 v20.19.3
+   🔄 Progress: 
+   📤 v20.19.3
+/app/index.js
+[2025-07-15 17:57:39] [INFO] 📋 Generating working MCP configurations...
+[2025-07-15 17:57:39] [INFO] 🔄 Executing: Augment MCP configuration generation
+[2025-07-15 17:57:39] [INFO] 📋 Command: cat > '/home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/augment-mcp-settings.json' << 'EOF'
+{
+  "augment.advanced": {
+    "mcpServers": [
+      {
+        "name": "n8n-mcp",
+        "command": "docker",
+        "args": ["exec", "-i", "n8n-mcp", "node", "   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   📤 v20.19.3
+   🔄 Progress: 
+   📤 v20.19.3
+/app/index.js"],
+        "env": {
+          "NODE_ENV": "production",
+          "MCP_SERVER_NAME": "n8n-mcp"
+        }
+      }
+    ]
+  }
+}
+EOF
+[2025-07-15 17:57:39] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: .
+[2025-07-15 17:57:40] [SUCCESS] ✅ Augment MCP configuration generation completed successfully
+[2025-07-15 17:57:40] [SUCCESS]    ✅ Augment MCP configuration created: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/augment-mcp-settings.json
+[2025-07-15 17:57:40] [INFO] 🔄 Executing: VS Code MCP directory creation
+[2025-07-15 17:57:40] [INFO] 📋 Command: mkdir -p '/home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/.vscode'
+[2025-07-15 17:57:40] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+[2025-07-15 17:57:41] [SUCCESS] ✅ VS Code MCP directory creation completed successfully
+[2025-07-15 17:57:41] [SUCCESS]    ✅ VS Code MCP directory ready
+[2025-07-15 17:57:42] [INFO] 🔄 Executing: VS Code MCP configuration generation
+[2025-07-15 17:57:42] [INFO] 📋 Command: cat > '/home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/.vscode/mcp.json' << 'EOF'
+{
+  "servers": {
+    "n8n-mcp": {
+      "type": "stdio",
+      "command": "docker",
+      "args": ["exec", "-i", "n8n-mcp", "node", "   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   📤 v20.19.3
+   🔄 Progress: 
+   📤 v20.19.3
+/app/index.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "MCP_SERVER_NAME": "n8n-mcp"
+      }
+    }
+  }
+}
+EOF
+[2025-07-15 17:57:42] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: .
+[2025-07-15 17:57:43] [SUCCESS] ✅ VS Code MCP configuration generation completed successfully
+[2025-07-15 17:57:43] [SUCCESS]    ✅ VS Code MCP configuration created: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/.vscode/mcp.json
+[2025-07-15 17:57:43] [SUCCESS] ✅ MCP configurations generated with working container: n8n-mcp, path:    🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   📤 v20.19.3
+   🔄 Progress: 
+   📤 v20.19.3
+/app/index.js
+[2025-07-15 17:57:43] [SUCCESS] ✅ MCP configurations generated
+[2025-07-15 17:57:43] [INFO] 🧪 Testing MCP integration with container: n8n-mcp
+[2025-07-15 17:57:43] [INFO] 🔄 Executing: Container accessibility test
+[2025-07-15 17:57:43] [INFO] 📋 Command: docker exec n8n-mcp echo 'Container accessible'
+[2025-07-15 17:57:43] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: .
+   📤 Container accessible
+   🔄 Progress: 
+[2025-07-15 17:57:44] [INFO] 📤 Command output:
+   📤 Container accessible
+[2025-07-15 17:57:44] [SUCCESS] ✅ Container accessibility test completed successfully
+[2025-07-15 17:57:44] [SUCCESS]    ✅ Container is accessible
+[2025-07-15 17:57:44] [INFO] 🔄 Executing: Node.js availability test
+[2025-07-15 17:57:44] [INFO] 📋 Command: docker exec n8n-mcp node --version
+[2025-07-15 17:57:44] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: .
+   📤 v20.19.3
+   🔄 Progress: 
+[2025-07-15 17:57:45] [INFO] 📤 Command output:
+   📤 v20.19.3
+[2025-07-15 17:57:45] [SUCCESS] ✅ Node.js availability test completed successfully
+[2025-07-15 17:57:45] [SUCCESS]    ✅ Node.js is available in container
+[2025-07-15 17:57:45] [INFO] 🔄 Executing: MCP server path accessibility test
+[2025-07-15 17:57:46] [INFO] 📋 Command: docker exec n8n-mcp test -f    🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   📤 v20.19.3
+   🔄 Progress: 
+   📤 v20.19.3
+/app/index.js
+[2025-07-15 17:57:46] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: .
+[2025-07-15 17:57:47] [WARN] ⚠️  Command errors:
+   ❌ test: Progress:: unknown operand
+   ❌ bash: line 2: 🔄: command not found
+   ❌ bash: line 3: 🔄: command not found
+   ❌ bash: line 4: 🔄: command not found
+   ❌ bash: line 5: 🔄: command not found
+   ❌ bash: line 6: 🔄: command not found
+   ❌ bash: line 7: 🔄: command not found
+   ❌ bash: line 8: 🔄: command not found
+   ❌ bash: line 9: 🔄: command not found
+   ❌ bash: line 10: 📤: command not found
+   ❌ bash: line 11: 🔄: command not found
+   ❌ bash: line 12: 📤: command not found
+   ❌ bash: line 13: /app/index.js: No such file or directory
+[2025-07-15 17:57:47] [ERROR] ❌ MCP server path accessibility test failed (exit code: 127)
+[2025-07-15 17:57:47] [ERROR] 🔍 Comprehensive error context for: MCP server path accessibility test
+[2025-07-15 17:57:47] [INFO]    📊 Error details:
+[2025-07-15 17:57:47] [INFO]      • Exit code: 127
+[2025-07-15 17:57:47] [INFO]      • Timestamp: 2025-07-15 17:57:47
+[2025-07-15 17:57:47] [INFO]      • User: owner
+[2025-07-15 17:57:47] [INFO]      • Working directory: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment
+[2025-07-15 17:57:47] [INFO]      • Shell: /bin/bash
+[2025-07-15 17:57:47] [INFO]      • PATH: /home/owner/bin:/home/owner/bin:/home/owner/.local/bin:/home/owner/bin:/usr/local/bin:/usr/bin...
+[2025-07-15 17:57:47] [INFO]    🌐 System status:
+[2025-07-15 17:57:47] [INFO]      • Network: connected
+[2025-07-15 17:57:47] [INFO]      • DNS: working
+[2025-07-15 17:57:47] [INFO]      • Memory: 3.6Gi/5.7Gi
+[2025-07-15 17:57:47] [INFO]      • Disk space: 872G available
+[2025-07-15 17:57:47] [INFO]      • Load average: 1.44, 1.60, 1.70
+[2025-07-15 17:57:47] [INFO]    🔧 Troubleshooting suggestions:
+[2025-07-15 17:57:47] [INFO]      • Check system resources
+[2025-07-15 17:57:47] [INFO]      • Verify command availability
+[2025-07-15 17:57:47] [INFO]      • Review error messages above
+[2025-07-15 17:57:47] [INFO]      • Try running with elevated privileges
+[2025-07-15 17:57:47] [WARN]    ⚠️  MCP server path test inconclusive
+[2025-07-15 17:57:47] [INFO] 🔄 Executing: MCP server command test
+[2025-07-15 17:57:47] [INFO] 📋 Command: timeout 10 docker exec n8n-mcp node    🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   🔄 Progress: .
+   📤 v20.19.3
+   🔄 Progress: 
+   📤 v20.19.3
+/app/index.js --help 2>/dev/null || echo 'MCP server command test completed'
+[2025-07-15 17:57:47] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: .
+   📤 MCP server command test completed
+   🔄 Progress: 
+[2025-07-15 17:57:48] [INFO] 📤 Command output:
+   📤 MCP server command test completed
+[2025-07-15 17:57:48] [WARN] ⚠️  Command errors:
+   ❌ node:internal/modules/cjs/loader:1215
+   ❌   throw err;
+   ❌   ^
+   ❌ 
+   ❌ Error: Cannot find module '/app/🔄'
+   ❌     at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+   ❌     at Module._load (node:internal/modules/cjs/loader:1043:27)
+   ❌     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+   ❌     at node:internal/main/run_main_module:28:49 {
+   ❌   code: 'MODULE_NOT_FOUND',
+   ❌   requireStack: []
+   ❌ }
+   ❌ 
+   ❌ Node.js v20.19.3
+   ❌ bash: line 2: 🔄: command not found
+   ❌ bash: line 3: 🔄: command not found
+   ❌ bash: line 4: 🔄: command not found
+   ❌ bash: line 5: 🔄: command not found
+   ❌ bash: line 6: 🔄: command not found
+   ❌ bash: line 7: 🔄: command not found
+   ❌ bash: line 8: 🔄: command not found
+   ❌ bash: line 9: 🔄: command not found
+   ❌ bash: line 10: 📤: command not found
+   ❌ bash: line 11: 🔄: command not found
+   ❌ bash: line 12: 📤: command not found
+[2025-07-15 17:57:48] [SUCCESS] ✅ MCP server command test completed successfully
+[2025-07-15 17:57:48] [SUCCESS]    ✅ MCP server command test completed
+[2025-07-15 17:57:49] [SUCCESS] ✅ MCP integration testing completed
+[2025-07-15 17:57:49] [SUCCESS] ✅ MCP integration verified
+[2025-07-15 17:57:49] [INFO] 🔧 Creating container startup service...
+[2025-07-15 17:57:49] [INFO] 🔄 Executing: Container startup script creation
+[2025-07-15 17:57:49] [INFO] 📋 Command: cat > '/home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh' << 'EOF'
+#!/bin/bash
+# Automatic n8n-mcp container startup script
+# Generated by n8n-mcp-docker-deployment
+
+CONTAINER_NAME="n8n-mcp"
+IMAGE_NAME="ghcr.io/czlonkowski/n8n-mcp:latest"
+
+echo "🚀 n8n-mcp Container Startup Service"
+echo "Container: $CONTAINER_NAME"
+echo "Image: $IMAGE_NAME"
+echo
+
+# Check if container is running
+if docker ps --format "{{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
+    echo "✅ n8n-mcp container is already running"
+    docker ps | grep "$CONTAINER_NAME"
+else
+    echo "🔄 Starting n8n-mcp container..."
+
+    # Remove stopped container if exists
+    if docker ps -a --format "{{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
+        echo "📋 Removing stopped container..."
+        docker rm "$CONTAINER_NAME"
+    fi
+
+    # Start container with restart policy
+    if docker run -d --name "$CONTAINER_NAME" -p 5678:5678 --restart unless-stopped "$IMAGE_NAME"; then
+        echo "✅ n8n-mcp container started successfully"
+        echo "🌐 Container accessible at: http://localhost:5678"
+        echo "🔧 MCP integration ready for Augment Code"
+    else
+        echo "❌ Failed to start n8n-mcp container"
+        exit 1
+    fi
+fi
+
+echo
+echo "📋 Container Status:"
+docker ps | grep "$CONTAINER_NAME" || echo "Container not running"
+echo
+echo "💡 To stop container: docker stop $CONTAINER_NAME"
+echo "💡 To restart container: docker restart $CONTAINER_NAME"
+echo "💡 Container will auto-restart on system reboot"
+EOF
+[2025-07-15 17:57:49] [INFO] ⏱️  Timeout: 20s
+   🔄 Progress: .
+[2025-07-15 17:57:50] [SUCCESS] ✅ Container startup script creation completed successfully
+[2025-07-15 17:57:50] [SUCCESS]    ✅ Startup script created: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh
+[2025-07-15 17:57:50] [INFO] 🔄 Executing: Script permissions setup
+[2025-07-15 17:57:50] [INFO] 📋 Command: chmod +x '/home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh'
+[2025-07-15 17:57:50] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+[2025-07-15 17:57:51] [SUCCESS] ✅ Script permissions setup completed successfully
+[2025-07-15 17:57:51] [SUCCESS]    ✅ Startup script is executable
+[2025-07-15 17:57:51] [INFO] 💡 Container management:
+[2025-07-15 17:57:51] [INFO]    • Start container: .//home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh
+[2025-07-15 17:57:51] [INFO]    • Container will auto-restart on system reboot
+[2025-07-15 17:57:51] [INFO]    • MCP integration ready for Augment Code
+[2025-07-15 17:57:51] [SUCCESS] ✅ Container startup service created successfully
+[2025-07-15 17:57:51] [SUCCESS] ✅ Persistent n8n-mcp container deployed and configured for MCP integration
+[2025-07-15 17:57:51] [SUCCESS]    ✅ Persistent container deployment completed successfully
+[2025-07-15 17:57:51] [INFO]    Executing: Performance optimization (attempt 1/3)
+[2025-07-15 17:57:52] [INFO] 🚀 Optimizing container performance with real-time feedback...
+[2025-07-15 17:57:52] [INFO] 📋 Step 1/5: System resource analysis
+[2025-07-15 17:57:52] [INFO] 🔄 Executing: Container resource analysis
+[2025-07-15 17:57:52] [INFO] 📋 Command: docker stats --no-stream --format 'table {{.Container}}	{{.CPUPerc}}	{{.MemUsage}}' 2>/dev/null || echo 'No running containers to analyze'
+[2025-07-15 17:57:52] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: ..
+   📤 dad8f45842de   0.00%     105MiB / 5.685GiB
+   🔄 Progress: 
+[2025-07-15 17:57:54] [INFO] 📤 Command output:
+   📤 CONTAINER      CPU %     MEM USAGE / LIMIT
+   📤 dad8f45842de   0.00%     105MiB / 5.685GiB
+[2025-07-15 17:57:54] [SUCCESS] ✅ Container resource analysis completed successfully
+[2025-07-15 17:57:54] [SUCCESS]    ✅ Resource analysis completed
+[2025-07-15 17:57:54] [INFO] 📋 Step 2/5: Container cleanup optimization
+[2025-07-15 17:57:54] [INFO] 🔄 Executing: Container cleanup
+[2025-07-15 17:57:54] [INFO] 📋 Command: docker container prune -f
+[2025-07-15 17:57:54] [INFO] ⏱️  Timeout: 30s
+   🔄 Progress: .
+   📤 Total reclaimed space: 0B
+   🔄 Progress: 
+[2025-07-15 17:57:55] [INFO] 📤 Command output:
+   📤 Total reclaimed space: 0B
+[2025-07-15 17:57:55] [SUCCESS] ✅ Container cleanup completed successfully
+[2025-07-15 17:57:55] [SUCCESS]    ✅ Container cleanup completed
+[2025-07-15 17:57:55] [INFO] 📋 Step 3/5: Image optimization
+[2025-07-15 17:57:55] [INFO] 🔄 Executing: Image cleanup
+[2025-07-15 17:57:55] [INFO] 📋 Command: docker image prune -f
+[2025-07-15 17:57:55] [INFO] ⏱️  Timeout: 60s
+   🔄 Progress: .
+   📤 Total reclaimed space: 0B
+   🔄 Progress: 
+[2025-07-15 17:57:56] [INFO] 📤 Command output:
+   📤 Total reclaimed space: 0B
+[2025-07-15 17:57:56] [SUCCESS] ✅ Image cleanup completed successfully
+[2025-07-15 17:57:56] [SUCCESS]    ✅ Image optimization completed
+[2025-07-15 17:57:56] [INFO] 📋 Step 4/5: Network optimization
+[2025-07-15 17:57:56] [INFO] 🔄 Executing: Network cleanup
+[2025-07-15 17:57:56] [INFO] 📋 Command: docker network prune -f
+[2025-07-15 17:57:56] [INFO] ⏱️  Timeout: 30s
+   🔄 Progress: .
+[2025-07-15 17:57:57] [SUCCESS] ✅ Network cleanup completed successfully
+[2025-07-15 17:57:57] [SUCCESS]    ✅ Network optimization completed
+[2025-07-15 17:57:58] [INFO] 📋 Step 5/5: Volume optimization
+[2025-07-15 17:57:58] [INFO] 🔄 Executing: Volume cleanup
+[2025-07-15 17:57:58] [INFO] 📋 Command: docker volume prune -f
+[2025-07-15 17:57:58] [INFO] ⏱️  Timeout: 30s
+   🔄 Progress: .
+   📤 Total reclaimed space: 0B
+   🔄 Progress: 
+[2025-07-15 17:57:59] [INFO] 📤 Command output:
+   📤 Total reclaimed space: 0B
+[2025-07-15 17:57:59] [SUCCESS] ✅ Volume cleanup completed successfully
+[2025-07-15 17:57:59] [SUCCESS]    ✅ Volume optimization completed
+[2025-07-15 17:57:59] [INFO] 📋 Final: System-wide Docker cleanup
+[2025-07-15 17:57:59] [INFO] 🔄 Executing: System-wide Docker cleanup
+[2025-07-15 17:57:59] [INFO] 📋 Command: docker system prune -f
+[2025-07-15 17:57:59] [INFO] ⏱️  Timeout: 60s
+   🔄 Progress: .
+   📤 Total reclaimed space: 0B
+   🔄 Progress: 
+[2025-07-15 17:58:00] [INFO] 📤 Command output:
+   📤 Total reclaimed space: 0B
+[2025-07-15 17:58:00] [SUCCESS] ✅ System-wide Docker cleanup completed successfully
+[2025-07-15 17:58:00] [SUCCESS]    ✅ System cleanup completed
+[2025-07-15 17:58:00] [SUCCESS] ✅ Container performance optimization completed with full transparency
+[2025-07-15 17:58:00] [SUCCESS]    ✅ Performance optimization completed successfully
+[2025-07-15 17:58:00] [INFO] 🤖 Phase 5/7: Augment Code Integration & Configuration (70% complete)
+[2025-07-15 17:58:00] [INFO]    Executing: Augment Code lifecycle (attempt 1/3)
+[2025-07-15 17:58:00] [INFO] 🤖 Managing Augment Code IDE integration with real-time feedback...
+[2025-07-15 17:58:00] [INFO] 📋 Step 1/3: Verifying IDE extension status
+[2025-07-15 17:58:00] [INFO] 🔄 Executing: IDE extension verification
+[2025-07-15 17:58:00] [INFO] 📋 Command: code --list-extensions 2>/dev/null | grep -i augment || echo 'VS Code extension check completed'
+[2025-07-15 17:58:00] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+   📤 augment.vscode-augment
+   🔄 Progress: 
+[2025-07-15 17:58:01] [INFO] 📤 Command output:
+   📤 augment.vscode-augment
+[2025-07-15 17:58:01] [SUCCESS] ✅ IDE extension verification completed successfully
+[2025-07-15 17:58:02] [SUCCESS]    ✅ IDE extension verification completed
+[2025-07-15 17:58:02] [INFO] 📋 Step 2/3: Configuring MCP for IDE integration
+[2025-07-15 17:58:02] [INFO]    💡 Augment Code is an IDE extension, not a CLI tool
+[2025-07-15 17:58:02] [INFO]    📋 Creating MCP configuration for IDE integration...
+[2025-07-15 17:58:02] [INFO] 🔄 Executing: MCP configuration directory setup
+[2025-07-15 17:58:02] [INFO] 📋 Command: mkdir -p ~/.config/augment-code/mcp && echo 'MCP config directory created'
+[2025-07-15 17:58:02] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+   📤 MCP config directory created
+   🔄 Progress: 
+[2025-07-15 17:58:03] [INFO] 📤 Command output:
+   📤 MCP config directory created
+[2025-07-15 17:58:03] [SUCCESS] ✅ MCP configuration directory setup completed successfully
+[2025-07-15 17:58:03] [SUCCESS]    ✅ MCP configuration directory ready
+[2025-07-15 17:58:03] [INFO] 📋 Step 3/3: IDE integration guidance
+[2025-07-15 17:58:03] [INFO]    📋 Augment Code Integration Instructions:
+[2025-07-15 17:58:03] [INFO]      • Augment Code runs as IDE extension (VS Code/JetBrains)
+[2025-07-15 17:58:03] [INFO]      • No CLI commands needed - integration is automatic
+[2025-07-15 17:58:03] [INFO]      • MCP server will be available for IDE to connect
+[2025-07-15 17:58:03] [INFO]      • Open your IDE and use Augment Code normally
+[2025-07-15 17:58:03] [INFO]      • n8n-mcp container is running and accessible
+[2025-07-15 17:58:03] [SUCCESS] ✅ Augment Code IDE integration configured with full transparency
+[2025-07-15 17:58:03] [SUCCESS]    ✅ Augment Code lifecycle completed successfully
+[2025-07-15 17:58:03] [INFO]    Executing: MCP configuration (attempt 1/3)
+[2025-07-15 17:58:03] [INFO]    Creating and validating MCP configuration...
+[2025-07-15 17:58:03] [INFO] 📋 Creating MCP server configuration with real-time feedback...
+[2025-07-15 17:58:03] [INFO] 🔄 Executing: MCP config directory creation
+[2025-07-15 17:58:03] [INFO] 📋 Command: mkdir -p "/home/owner/.config/augment-code"
+[2025-07-15 17:58:03] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+[2025-07-15 17:58:04] [SUCCESS] ✅ MCP config directory creation completed successfully
+[2025-07-15 17:58:04] [SUCCESS]    ✅ MCP config directory ready: /home/owner/.config/augment-code
+[2025-07-15 17:58:04] [INFO] 📋 Writing MCP server configuration...
+[2025-07-15 17:58:04] [SUCCESS] ✅ MCP configuration created successfully: /home/owner/.config/augment-code/mcp-servers.json
+[2025-07-15 17:58:05] [INFO] 🔄 Executing: MCP configuration JSON validation
+[2025-07-15 17:58:05] [INFO] 📋 Command: jq empty "/home/owner/.config/augment-code/mcp-servers.json"
+[2025-07-15 17:58:05] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+[2025-07-15 17:58:06] [SUCCESS] ✅ MCP configuration JSON validation completed successfully
+[2025-07-15 17:58:06] [SUCCESS]    ✅ MCP configuration JSON syntax valid
+[2025-07-15 17:58:06] [SUCCESS]    ✅ MCP configuration created and validated
+[2025-07-15 17:58:06] [SUCCESS]    ✅ MCP configuration completed successfully
+[2025-07-15 17:58:06] [INFO]    Executing: Integration testing (attempt 1/3)
+[2025-07-15 17:58:06] [INFO]    Testing Augment Code integration...
+[2025-07-15 17:58:06] [ERROR]    ❌ Augment Code integration test failed
+[2025-07-15 17:58:06] [WARN]    ⚠️  Integration testing failed (attempt 1/3)
+[2025-07-15 17:58:06] [INFO]    🔄 Attempting automatic recovery...
+[2025-07-15 17:58:06] [WARN] 🔄 Augment Code issue detected - attempting recovery...
+[2025-07-15 17:58:06] [INFO]    ⏳ Waiting for augment to be ready (timeout: 10s)...
+[2025-07-15 17:58:12] [INFO]    ⏳ Still waiting for augment... (5/10s)
+[2025-07-15 17:58:17] [INFO]    ⏳ Still waiting for augment... (10/10s)
+[2025-07-15 17:58:17] [ERROR]    ❌ Timeout waiting for augment after 10s
+./install-test-n8n-mcp-docker.sh: line 1566: augment: command not found
+[2025-07-15 17:58:48] [ERROR]    ❌ Process augment failed to start within 30s
+[2025-07-15 17:58:48] [ERROR] ❌ Augment Code recovery failed
+[2025-07-15 17:58:48] [WARN]    ⚠️  Recovery failed, retrying anyway...
+[2025-07-15 17:58:48] [INFO]    Executing: Integration testing (attempt 2/3)
+[2025-07-15 17:58:48] [INFO]    Testing Augment Code integration...
+[2025-07-15 17:58:48] [ERROR]    ❌ Augment Code integration test failed
+[2025-07-15 17:58:49] [WARN]    ⚠️  Integration testing failed (attempt 2/3)
+[2025-07-15 17:58:49] [INFO]    🔄 Attempting automatic recovery...
+[2025-07-15 17:58:49] [WARN] 🔄 Augment Code issue detected - attempting recovery...
+[2025-07-15 17:58:49] [INFO]    ⏳ Waiting for augment to be ready (timeout: 10s)...
+[2025-07-15 17:58:54] [INFO]    ⏳ Still waiting for augment... (5/10s)
+[2025-07-15 17:58:59] [INFO]    ⏳ Still waiting for augment... (10/10s)
+[2025-07-15 17:58:59] [ERROR]    ❌ Timeout waiting for augment after 10s
+./install-test-n8n-mcp-docker.sh: line 1566: augment: command not found
+[2025-07-15 17:59:30] [ERROR]    ❌ Process augment failed to start within 30s
+[2025-07-15 17:59:31] [ERROR] ❌ Augment Code recovery failed
+[2025-07-15 17:59:31] [WARN]    ⚠️  Recovery failed, retrying anyway...
+[2025-07-15 17:59:31] [INFO]    Executing: Integration testing (attempt 3/3)
+[2025-07-15 17:59:31] [INFO]    Testing Augment Code integration...
+[2025-07-15 17:59:31] [ERROR]    ❌ Augment Code integration test failed
+[2025-07-15 17:59:31] [WARN]    ⚠️  Integration testing failed (attempt 3/3)
+[2025-07-15 17:59:31] [ERROR]    ❌ Integration testing failed after 3 attempts
+[2025-07-15 17:59:31] [INFO]    🔄 Final recovery attempt...
+[2025-07-15 17:59:31] [INFO] 🔄 Attempting comprehensive system recovery...
+[2025-07-15 17:59:31] [SUCCESS]    ✅ Recovery step: cleanup_corrupted_state
+[2025-07-15 17:59:31] [SUCCESS]    ✅ Recovery step: reset_environment_variables
+[2025-07-15 17:59:31] [SUCCESS]    ✅ Recovery step: repair_file_permissions
+[2025-07-15 17:59:49] [SUCCESS]    ✅ Recovery step: restart_system_services
+[2025-07-15 17:59:49] [INFO] 🧹 Cleaning up temporary files with real-time feedback...
+[2025-07-15 17:59:49] [INFO] 🔄 Executing: n8n-mcp temporary file cleanup
+[2025-07-15 17:59:49] [INFO] 📋 Command: find /tmp -name 'n8n-mcp-*' -type f -mtime +0 -delete 2>/dev/null || echo 'No n8n-mcp temp files found'
+[2025-07-15 17:59:49] [INFO] ⏱️  Timeout: 15s
+   🔄 Progress: .
+   📤 No n8n-mcp temp files found
+   🔄 Progress: 
+[2025-07-15 17:59:50] [INFO] 📤 Command output:
+   📤 No n8n-mcp temp files found
+[2025-07-15 17:59:50] [SUCCESS] ✅ n8n-mcp temporary file cleanup completed successfully
+[2025-07-15 17:59:50] [SUCCESS]    ✅ n8n-mcp temporary files cleaned
+[2025-07-15 17:59:50] [INFO] 🔄 Executing: Empty temporary directory cleanup
+[2025-07-15 17:59:50] [INFO] 📋 Command: find /tmp -name 'tmp.*' -type d -empty -delete 2>/dev/null || echo 'No empty temp directories found'
+[2025-07-15 17:59:50] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+   📤 No empty temp directories found
+   🔄 Progress: 
+[2025-07-15 17:59:51] [INFO] 📤 Command output:
+   📤 No empty temp directories found
+[2025-07-15 17:59:51] [SUCCESS] ✅ Empty temporary directory cleanup completed successfully
+[2025-07-15 17:59:51] [SUCCESS]    ✅ Empty temporary directories cleaned
+[2025-07-15 17:59:51] [INFO] 🔄 Executing: Docker temporary file cleanup
+[2025-07-15 17:59:51] [INFO] 📋 Command: find /tmp -name 'docker-*' -type f -mtime +0 -delete 2>/dev/null || echo 'No Docker temp files found'
+[2025-07-15 17:59:51] [INFO] ⏱️  Timeout: 10s
+   🔄 Progress: .
+   📤 No Docker temp files found
+   🔄 Progress: 
+[2025-07-15 17:59:52] [INFO] 📤 Command output:
+   📤 No Docker temp files found
+[2025-07-15 17:59:52] [SUCCESS] ✅ Docker temporary file cleanup completed successfully
+[2025-07-15 17:59:53] [SUCCESS]    ✅ Docker temporary files cleaned
+[2025-07-15 17:59:53] [SUCCESS] ✅ Temporary file cleanup completed
+[2025-07-15 17:59:53] [SUCCESS]    ✅ Recovery step: clear_temporary_files
+   🔄 Progress: .
+   🔄 Progress: .
+[2025-07-15 17:59:55] [SUCCESS]    ✅ Recovery step: rebuild_configuration
+[2025-07-15 17:59:55] [SUCCESS]    ✅ Recovery step: verify_system_integrity
+[2025-07-15 17:59:55] [SUCCESS] ✅ Comprehensive recovery successful (7/7 steps)
+[2025-07-15 17:59:56] [SUCCESS]    ✅ Comprehensive recovery successful
+[2025-07-15 17:59:56] [INFO]    Testing Augment Code integration...
+[2025-07-15 17:59:56] [ERROR]    ❌ Augment Code integration test failed
+[2025-07-15 17:59:56] [ERROR]    ❌ Integration testing failed permanently
+[2025-07-15 17:59:56] [INFO] Starting cleanup process (exit code: 1)...
+[2025-07-15 17:59:56] [INFO] Terminating monitoring process: 244019
+[2025-07-15 17:59:56] [INFO] Terminating monitoring process: 244023
+[2025-07-15 17:59:56] [INFO] Terminating monitoring process: 244025
+[2025-07-15 17:59:56] [INFO] Terminating monitoring process: 244027
+[2025-07-15 17:59:56] [INFO] Securely deleting: /tmp/n8n-mcp-logs-1752616588/performance.log
+[2025-07-15 17:59:56] [INFO] === RESOURCE AUDIT ===
+[2025-07-15 17:59:56] [INFO] CPU usage: 11.1%
+[2025-07-15 17:59:56] [INFO] Memory: Mem:           5.7Gi       3.7Gi       757Mi        92Mi       1.6Gi       2.0Gi
+[2025-07-15 17:59:56] [INFO] Disk usage: 7%
+[2025-07-15 17:59:57] [INFO] Open file descriptors: 15
+[2025-07-15 17:59:57] [INFO] === AUDIT COMPLETED ===
+2025-07-15 17:59:57 [INFO] Removing log directory: /tmp/n8n-mcp-logs-1752616588
+[2025-07-15 17:59:57] [WARN] Background jobs still running:
+[2]  244021 Exit 1                  dmesg -w > "$LOG_DIR/kernel.log" 2>&1
+[6]  248807 Exit 127                augment
+[7]  249140 Exit 127                augment
+2025-07-15 17:59:57 [SUCCESS] Cleanup completed
+owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment$ 
