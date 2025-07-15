@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script: install-test-n8n-mcp-docker.sh
 # Description: Install and test n8n-mcp Docker deployment with Augment Code integration
-# Version: 1.0.0
+# Version: 0.1.0-alpha
 # Author: Generated via Augment Code
 # Date: $(date +%Y-%m-%d)
 # Compliance: Augment Settings - Rules and User Guidelines
@@ -9,7 +9,7 @@
 set -euo pipefail
 
 # Script metadata
-readonly SCRIPT_VERSION="1.0.0"
+readonly SCRIPT_VERSION="0.1.0-alpha"
 SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_NAME
 LOG_DIR="/tmp/n8n-mcp-logs-$(date +%s)"
