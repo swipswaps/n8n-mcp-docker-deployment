@@ -24,6 +24,92 @@ declare -a DOCKER_CONTAINERS=()
 declare -a DOCKER_IMAGES=()
 declare -a BACKGROUND_PIDS=()
 declare -a MONITOR_PIDS=()
+CLEANUP_PERFORMED=false
+
+# ============================================================================
+# SIGNAL HANDLING AND CLEANUP SYSTEM (CTRL-C SUPPORT)
+# ============================================================================
+
+# Signal handler for graceful exit
+handle_interrupt() {
+    if [[ "$CLEANUP_PERFORMED" == "true" ]]; then
+        echo
+        echo "Force exit requested. Terminating immediately."
+        exit 130
+    fi
+
+    echo
+    echo
+    echo "=============================================="
+    echo "🛑 INTERRUPT SIGNAL RECEIVED (Ctrl-C)"
+    echo "=============================================="
+    echo
+    echo "Current operation can be safely interrupted."
+    echo
+    read -p "Do you want to stop the installation and clean up? [y/N]: " -n 1 -r
+    echo
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo
+        log_info "🧹 User requested cleanup. Performing graceful exit..."
+        perform_cleanup
+        echo
+        log_info "✅ Cleanup completed. Exiting gracefully."
+        exit 130
+    else
+        echo
+        log_info "🔄 Continuing installation..."
+        echo "   (Press Ctrl-C again to force exit)"
+        return
+    fi
+}
+
+# Cleanup function
+perform_cleanup() {
+    CLEANUP_PERFORMED=true
+
+    log_info "🧹 Cleaning up background processes..."
+    for pid in "${BACKGROUND_PIDS[@]}"; do
+        if kill -0 "$pid" 2>/dev/null; then
+            log_info "   Terminating process: $pid"
+            kill -TERM "$pid" 2>/dev/null || true
+            sleep 2
+            kill -KILL "$pid" 2>/dev/null || true
+        fi
+    done
+
+    log_info "🧹 Cleaning up temporary files..."
+    for file in "${TEMP_FILES[@]}"; do
+        if [[ -f "$file" ]]; then
+            log_info "   Removing: $file"
+            rm -f "$file" 2>/dev/null || true
+        fi
+    done
+
+    log_info "🧹 Stopping any running test containers..."
+    if command -v docker >/dev/null 2>&1; then
+        docker ps --format "{{.Names}}" | grep -E "^(n8n-mcp-test|temp-)" | while read -r container; do
+            log_info "   Stopping container: $container"
+            docker stop "$container" 2>/dev/null || true
+            docker rm "$container" 2>/dev/null || true
+        done
+    fi
+}
+
+# Track background processes
+track_background_process() {
+    local pid="$1"
+    BACKGROUND_PIDS+=("$pid")
+}
+
+# Track temporary files
+track_temp_file() {
+    local file="$1"
+    TEMP_FILES+=("$file")
+}
+
+# Register signal handler
+trap 'handle_interrupt' SIGINT
 
 # Configuration variables
 readonly N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:latest"
@@ -154,58 +240,97 @@ capture_error_context() {
     } >> "$error_context_file" 2>/dev/null || true
 }
 
-# Execute command with clean feedback and secure output handling (UNICODE INJECTION PREVENTION)
-execute_with_clean_feedback() {
+# Execute command with real-time feedback and Unicode safety (RESTORED UX WITH SECURITY)
+execute_with_real_time_feedback() {
     local command="$1"
     local description="$2"
     local timeout="${3:-60}"
 
-    log_info "[EXEC] $description"
-    log_info "[CMD] $command"
-    log_info "[TIMEOUT] ${timeout}s"
+    log_info "🔄 Executing: $description"
+    log_info "📋 Command: $command"
+    log_info "⏱️  Timeout: ${timeout}s"
 
-    # Create temporary file for clean output capture
-    local output_file="${LOG_DIR:-/tmp}/cmd_clean_$$"
+    # Create temporary files for output capture
+    local stdout_file="${LOG_DIR:-/tmp}/cmd_stdout_$$"
+    local stderr_file="${LOG_DIR:-/tmp}/cmd_stderr_$$"
 
-    # Execute command cleanly without Unicode injection
-    if timeout "$timeout" bash -c "$command" > "$output_file" 2>&1; then
-        local exit_code=0
+    # Track temporary files for cleanup
+    track_temp_file "$stdout_file"
+    track_temp_file "$stderr_file"
 
-        # Display clean output without Unicode contamination
-        if [[ -f "$output_file" && -s "$output_file" ]]; then
-            log_info "[OUTPUT]"
-            while IFS= read -r line; do
-                # Remove any potential Unicode contamination
-                clean_line=$(echo "$line" | tr -cd '[:print:][:space:]')
-                echo "   $clean_line"
-            done < "$output_file"
-        fi
+    # Show real-time progress indicator (ASCII SAFE)
+    echo -n "   [PROGRESS] "
 
-        rm -f "$output_file" 2>/dev/null || true
-        log_success "[SUCCESS] $description completed"
-        return 0
-    else
+    # Execute command with timeout and real-time output
+    if timeout "$timeout" bash -c "$command" > "$stdout_file" 2> "$stderr_file" &
+    then
+        local cmd_pid=$!
+        track_background_process "$cmd_pid"
+        local elapsed=0
+
+        # Monitor progress with real-time feedback (UNICODE SAFE)
+        while kill -0 "$cmd_pid" 2>/dev/null && [[ $elapsed -lt $timeout ]]; do
+            echo -n "."
+            sleep 1
+            ((elapsed++))
+
+            # Show progress every 10 seconds
+            if [[ $((elapsed % 10)) -eq 0 ]]; then
+                echo -n " (${elapsed}s/${timeout}s)"
+            fi
+
+            # Show any new output (UNICODE FILTERED)
+            if [[ -f "$stdout_file" && -s "$stdout_file" ]]; then
+                local new_lines
+                new_lines=$(tail -n 1 "$stdout_file" 2>/dev/null || echo "")
+                if [[ -n "$new_lines" ]]; then
+                    echo
+                    # CRITICAL: Filter Unicode while preserving content
+                    clean_line=$(echo "$new_lines" | tr -cd '[:print:][:space:]')
+                    echo "   [OUTPUT] $clean_line"
+                    echo -n "   [PROGRESS] "
+                fi
+            fi
+        done
+
+        wait "$cmd_pid"
         local exit_code=$?
+        echo
 
-        # Display clean error output
-        if [[ -f "$output_file" && -s "$output_file" ]]; then
-            log_error "[ERROR_OUTPUT]"
+        # Display all output (UNICODE FILTERED)
+        if [[ -f "$stdout_file" && -s "$stdout_file" ]]; then
+            log_info "[COMMAND OUTPUT]"
             while IFS= read -r line; do
                 clean_line=$(echo "$line" | tr -cd '[:print:][:space:]')
-                echo "   ERROR: $clean_line"
-            done < "$output_file"
+                echo "   [OUT] $clean_line"
+            done < "$stdout_file"
         fi
 
-        rm -f "$output_file" 2>/dev/null || true
-        log_error "[FAILED] $description (exit code: $exit_code)"
-        show_error_context "$description" "$exit_code"
-        return $exit_code
-    fi
-}
+        if [[ -f "$stderr_file" && -s "$stderr_file" ]]; then
+            log_warn "[COMMAND ERRORS]"
+            while IFS= read -r line; do
+                clean_line=$(echo "$line" | tr -cd '[:print:][:space:]')
+                echo "   [ERR] $clean_line"
+            done < "$stderr_file"
+        fi
 
-# Legacy wrapper for compatibility (redirects to secure implementation)
-execute_with_real_time_feedback() {
-    execute_with_clean_feedback "$@"
+        # Cleanup temporary files
+        rm -f "$stdout_file" "$stderr_file" 2>/dev/null || true
+
+        if [[ $exit_code -eq 0 ]]; then
+            log_success "✅ $description completed successfully"
+            return 0
+        else
+            log_error "❌ $description failed (exit code: $exit_code)"
+            show_error_context "$description" "$exit_code"
+            return $exit_code
+        fi
+    else
+        echo
+        log_error "❌ Failed to start command: $description"
+        rm -f "$stdout_file" "$stderr_file" 2>/dev/null || true
+        return 1
+    fi
 }
 
 # Enhanced error context display (COMPREHENSIVE DEBUGGING)
@@ -1767,47 +1892,72 @@ test_docker_functionality() {
     fi
 }
 
-# Test n8n-mcp container (QUICK VALIDATION - NO HANGS)
+# Test n8n-mcp container (QUICK VALIDATION WITH REAL-TIME FEEDBACK)
 test_n8n_mcp_container() {
-    log_info "Testing n8n-mcp container (quick validation)..."
+    log_info "🧪 Testing n8n-mcp container with real-time feedback..."
 
     # Test 1: Image exists
-    if ! docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "n8n-mcp"; then
-        log_error "n8n-mcp image not found"
+    echo -n "   [IMAGE] Checking n8n-mcp image... "
+    if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "n8n-mcp"; then
+        echo "✅"
+        log_success "   ✅ n8n-mcp image found"
+    else
+        echo "❌"
+        log_error "   ❌ n8n-mcp image not found"
         return 1
     fi
 
     # Test 2: Persistent container exists and is running
+    echo -n "   [CONTAINER] Checking container status... "
     if docker ps --format "{{.Names}}" | grep -q "^n8n-mcp$"; then
-        log_success "n8n-mcp persistent container is running"
+        echo "✅"
+        log_success "   ✅ n8n-mcp persistent container is running"
 
-        # Test 3: Quick health check with short timeout (NO HANGS)
+        # Test 3: Quick health check with real-time feedback
+        echo -n "   [HEALTH] Quick health check (5s timeout)... "
         if timeout 5s docker exec n8n-mcp echo "health" >/dev/null 2>&1; then
-            log_success "n8n-mcp container is healthy"
+            echo "✅"
+            log_success "   ✅ n8n-mcp container is healthy"
         else
-            log_info "n8n-mcp container health check timed out (container may be busy)"
+            echo "⚠️"
+            log_info "   ⚠️  Health check timed out (container may be busy)"
         fi
+
+        log_success "✅ n8n-mcp container test completed successfully"
         return 0
     else
-        log_error "n8n-mcp persistent container not running"
+        echo "❌"
+        log_error "   ❌ n8n-mcp persistent container not running"
         return 1
     fi
 }
 
-# Test Augment Code installation (IDE EXTENSION - NOT CLI)
+# Test Augment Code installation (IDE EXTENSION WITH REAL-TIME FEEDBACK)
 test_augment_code_installation() {
-    log_info "Testing Augment Code installation (IDE extension)..."
+    log_info "🧪 Testing Augment Code installation (IDE extension) with real-time feedback..."
 
+    # Test 1: VSCode availability
+    echo -n "   [VSCODE] Checking VSCode availability... "
     if command -v code >/dev/null 2>&1; then
+        echo "✅"
+        log_success "   ✅ VSCode is available"
+
+        # Test 2: Augment extension check with real-time feedback
+        echo -n "   [EXTENSION] Checking Augment extension (5s timeout)... "
         if timeout 5s code --list-extensions 2>/dev/null | grep -q "augment.vscode-augment"; then
-            log_success "Augment VSCode extension is installed"
+            echo "✅"
+            log_success "   ✅ Augment VSCode extension is installed"
+            log_success "✅ Augment Code installation test completed successfully"
             return 0
         else
-            log_error "Augment VSCode extension not found"
+            echo "❌"
+            log_error "   ❌ Augment VSCode extension not found"
             return 1
         fi
     else
-        log_warn "VSCode not available - skipping Augment extension test"
+        echo "⚠️"
+        log_warn "   ⚠️  VSCode not available - skipping Augment extension test"
+        log_info "✅ Augment Code test completed (VSCode not available)"
         return 0  # Don't fail if VSCode not available
     fi
 }
