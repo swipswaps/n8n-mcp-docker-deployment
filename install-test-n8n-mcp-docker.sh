@@ -1689,37 +1689,38 @@ interactive_installation() {
     fi
 }
 
-# Confirm installation with user (improved with timeout and better UX)
+# Confirm installation with user (simplified and robust)
 confirm_installation() {
     echo
     log_info "⏳ Waiting for user confirmation..."
 
-    # Use timeout to prevent indefinite hanging
-    if command -v timeout >/dev/null 2>&1; then
-        # Try with timeout (60 seconds)
-        if timeout 60 bash -c 'read -p "🚀 Proceed with fully automated installation? [Y/n]: " -r confirm; echo "$confirm"' 2>/dev/null; then
-            local confirm_response="$?"
-        else
-            log_warn "⚠️  No user input received within 60 seconds"
-            log_info "🚀 Proceeding with installation (default: Yes)"
-            return 0
-        fi
-    else
-        # Fallback without timeout
-        read -p "🚀 Proceed with fully automated installation? [Y/n]: " -r confirm
-    fi
+    # Simple, direct prompt that always works
+    local confirm
+    echo -n "🚀 Proceed with fully automated installation? [Y/n]: "
 
-    case "${confirm:-y}" in
-        [Nn]|[Nn][Oo])
-            log_info "❌ Installation cancelled by user"
-            log_info "💡 You can run with --silent flag to skip all prompts"
-            return 1
-            ;;
-        *)
-            log_info "✅ User confirmed installation"
-            return 0
-            ;;
-    esac
+    # Use read with timeout if available
+    if read -t 60 -r confirm 2>/dev/null; then
+        # User provided input within timeout
+        case "${confirm:-y}" in
+            [Nn]|[Nn][Oo])
+                echo
+                log_info "❌ Installation cancelled by user"
+                log_info "💡 You can run with --silent flag to skip all prompts"
+                return 1
+                ;;
+            *)
+                echo
+                log_info "✅ User confirmed installation"
+                return 0
+                ;;
+        esac
+    else
+        # Timeout or no input - proceed with default
+        echo
+        log_warn "⚠️  No user input received within 60 seconds"
+        log_info "🚀 Proceeding with installation (default: Yes)"
+        return 0
+    fi
 }
 
 # Configure installation options (mandatory features, optional customizations)
