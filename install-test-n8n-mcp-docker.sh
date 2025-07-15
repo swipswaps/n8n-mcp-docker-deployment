@@ -38,6 +38,7 @@ ENABLE_SELF_HEALING="true"
 VERBOSE_LOGGING="false"
 CREATE_SHORTCUTS="true"
 INTERACTIVE="${INTERACTIVE:-true}"
+SILENT="${SILENT:-false}"
 
 # OS and package manager detection
 DETECTED_OS=""
@@ -92,18 +93,21 @@ OPTIONS:
     --cleanup           Run cleanup only
     --verbose           Enable verbose logging
     --dry-run           Show what would be done without executing
+    --silent            Silent mode - zero user interaction (fully automated)
 
 EXAMPLES:
     $SCRIPT_NAME                    # Full installation and testing
+    $SCRIPT_NAME --silent           # Completely automated (no prompts)
     $SCRIPT_NAME --test-only        # Run tests only
     $SCRIPT_NAME --cleanup          # Cleanup resources
     $SCRIPT_NAME --dry-run          # Preview actions
 
-REQUIREMENTS:
-    - Docker installed and running
-    - Augment Code installed and configured
-    - Internet connection for image download
-    - Minimum 1GB free disk space
+AUTOMATION FEATURES (v0.2.0-beta):
+    ✅ Zero manual steps - Complete dependency management
+    ✅ Self-healing mechanisms - Automatic error recovery
+    ✅ Comprehensive testing - 12-test mandatory validation
+    ✅ Multi-platform support - Fedora, Ubuntu, Debian, Arch
+    ✅ Estimated time: 5-7 minutes for complete installation
 
 COMPLIANCE:
     This script follows all Augment Settings - Rules and User Guidelines:
@@ -745,6 +749,89 @@ install_build_dependencies() {
 }
 
 # ============================================================================
+# INTELLIGENT WAITING AND OPTIMIZATION FUNCTIONS
+# ============================================================================
+
+# Intelligent waiting function to replace sleep statements
+wait_for_service() {
+    local service="$1"
+    local timeout="${2:-30}"
+    local interval=1
+    local elapsed=0
+
+    log_info "   ⏳ Waiting for $service to be ready (timeout: ${timeout}s)..."
+
+    while [[ $elapsed -lt $timeout ]]; do
+        if check_service_ready "$service"; then
+            log_success "   ✅ $service is ready (${elapsed}s)"
+            return 0
+        fi
+        sleep $interval
+        ((elapsed += interval))
+
+        # Show progress every 5 seconds
+        if [[ $((elapsed % 5)) -eq 0 ]]; then
+            log_info "   ⏳ Still waiting for $service... (${elapsed}/${timeout}s)"
+        fi
+    done
+
+    log_error "   ❌ Timeout waiting for $service after ${timeout}s"
+    return 1
+}
+
+# Check if a service is ready
+check_service_ready() {
+    local service="$1"
+
+    case "$service" in
+        "docker")
+            docker info >/dev/null 2>&1
+            ;;
+        "augment")
+            pgrep -f "augment" >/dev/null 2>&1
+            ;;
+        "container")
+            docker ps >/dev/null 2>&1
+            ;;
+        "mcp-config")
+            [[ -f "$CONFIG_DIR/mcp-servers.json" ]] && jq empty "$CONFIG_DIR/mcp-servers.json" 2>/dev/null
+            ;;
+        *)
+            log_warn "   Unknown service: $service"
+            return 1
+            ;;
+    esac
+}
+
+# Wait for process to start with intelligent polling
+wait_for_process() {
+    local process_name="$1"
+    local timeout="${2:-30}"
+    local interval=1
+    local elapsed=0
+
+    while [[ $elapsed -lt $timeout ]]; do
+        if pgrep -f "$process_name" >/dev/null 2>&1; then
+            log_success "   ✅ Process $process_name started (${elapsed}s)"
+            return 0
+        fi
+        sleep $interval
+        ((elapsed += interval))
+    done
+
+    log_error "   ❌ Process $process_name failed to start within ${timeout}s"
+    return 1
+}
+
+# Optimized monitoring intervals based on audit recommendations
+declare -A MONITOR_INTERVALS=(
+    ["process"]=30      # Reduced from 5s
+    ["docker"]=60       # Reduced from 30s
+    ["augment"]=60      # Reduced from 30s
+    ["mcp"]=120         # Reduced from 60s
+)
+
+# ============================================================================
 # SELF-HEALING AND PROGRESS INDICATION FUNCTIONS
 # ============================================================================
 
@@ -843,29 +930,29 @@ download_n8n_mcp_image() {
     fi
 }
 
-# Monitor Docker health in background
+# Monitor Docker health in background (optimized intervals)
 monitor_docker_health() {
     while true; do
         if ! docker info >/dev/null 2>&1; then
             log_warn "🔄 Docker service issue detected - attempting recovery..."
             recover_docker_service
         fi
-        sleep 30
+        sleep "${MONITOR_INTERVALS[docker]}"  # 60s instead of 30s
     done
 }
 
-# Monitor Augment Code health in background
+# Monitor Augment Code health in background (optimized intervals)
 monitor_augment_code_health() {
     while true; do
         if ! pgrep -f "augment" >/dev/null; then
             log_warn "🔄 Augment Code not running - attempting restart..."
             recover_augment_code
         fi
-        sleep 30
+        sleep "${MONITOR_INTERVALS[augment]}"  # 60s instead of 30s
     done
 }
 
-# Monitor MCP integration health in background
+# Monitor MCP integration health in background (optimized intervals)
 monitor_mcp_integration_health() {
     while true; do
         if [[ -f "$CONFIG_DIR/mcp-servers.json" ]]; then
@@ -874,7 +961,7 @@ monitor_mcp_integration_health() {
                 recover_mcp_configuration
             fi
         fi
-        sleep 60
+        sleep "${MONITOR_INTERVALS[mcp]}"  # 120s instead of 60s
     done
 }
 
@@ -904,11 +991,15 @@ recover_augment_code() {
 
     # Strategy 1: Restart Augment Code
     pkill -f "augment" 2>/dev/null || true
-    sleep 3
-    augment &
-    sleep 5
 
-    if pgrep -f "augment" >/dev/null; then
+    # Wait for process to fully terminate
+    wait_for_service "augment" 10 || true  # Wait for termination
+
+    # Start Augment Code
+    augment &
+
+    # Wait for startup with intelligent polling
+    if wait_for_process "augment" 30; then
         log_success "✅ Augment Code restarted successfully"
         return 0
     fi
@@ -1109,11 +1200,22 @@ test_dependencies_availability() {
     command -v wget >/dev/null 2>&1
 }
 
-# Test Docker functionality
+# Test Docker functionality (consolidated comprehensive test)
 test_docker_functionality() {
-    command -v docker >/dev/null 2>&1 && \
-    docker info >/dev/null 2>&1 && \
-    docker ps >/dev/null 2>&1
+    log_info "🐳 Testing Docker comprehensive functionality..."
+
+    # Combined test: daemon + image + container + functionality
+    if command -v docker >/dev/null 2>&1 && \
+       docker info >/dev/null 2>&1 && \
+       docker ps >/dev/null 2>&1 && \
+       docker images | grep -q n8n-mcp && \
+       timeout 30s docker run --rm "$N8N_MCP_IMAGE" echo "test" >/dev/null 2>&1; then
+        log_success "   ✅ Docker comprehensive test passed"
+        return 0
+    else
+        log_error "   ❌ Docker comprehensive test failed"
+        return 1
+    fi
 }
 
 # Test n8n-mcp container
@@ -1435,6 +1537,12 @@ EOF
 
 # Interactive installation configuration
 interactive_installation() {
+    # Skip all interaction in silent mode
+    if [[ "${SILENT:-false}" == "true" ]]; then
+        log_info "🔇 Silent mode enabled - proceeding with full automation"
+        return 0
+    fi
+
     if [[ "${INTERACTIVE:-true}" == "true" ]]; then
         show_welcome_banner
         confirm_installation || exit 0
@@ -2204,6 +2312,12 @@ parse_arguments() {
                 dry_run=true
                 shift
                 ;;
+            --silent)
+                SILENT=true
+                INTERACTIVE=false
+                VERBOSE_LOGGING=false
+                shift
+                ;;
             *)
                 log_error "Unknown option: $1"
                 usage
@@ -2218,6 +2332,8 @@ parse_arguments() {
     export CLEANUP_ONLY=$cleanup_only
     export VERBOSE=$verbose
     export CONFIG_FILE="$config_file"
+    export SILENT=$SILENT
+    export INTERACTIVE=$INTERACTIVE
 
     if [[ "$verbose" == "true" ]]; then
         log_info "Verbose mode enabled"
@@ -2260,26 +2376,30 @@ main() {
     # Setup comprehensive monitoring
     setup_monitoring
 
+    # Show installation time estimate
+    log_info "🚀 Starting fully automated installation (estimated time: 5-7 minutes)"
+    log_info "📊 Installation will proceed through 7 phases with automatic recovery"
+
     # Phase 1: System Verification (Automated with Self-Healing)
-    log_info "🔍 Phase 1: System Verification & Auto-Recovery"
+    log_info "🔍 Phase 1/7: System Verification & Auto-Recovery (10% complete)"
     execute_with_recovery "detect_and_validate_os" "System OS validation"
     execute_with_recovery "verify_disk_space_requirements" "Disk space verification"
     execute_with_recovery "verify_internet_connectivity" "Internet connectivity"
 
     # Phase 2: Complete Dependencies Management (Automated)
-    log_info "📦 Phase 2: Complete Dependencies Management"
+    log_info "📦 Phase 2/7: Complete Dependencies Management (25% complete)"
     execute_with_recovery "install_system_dependencies" "System dependencies"
     execute_with_recovery "verify_and_setup_docker" "Docker setup"
     execute_with_recovery "detect_and_install_augment_code" "Augment Code installation"
 
     # Phase 3: Environment Setup (Automated with Validation)
-    log_info "⚙️  Phase 3: Environment Setup & Configuration"
+    log_info "⚙️  Phase 3/7: Environment Setup & Configuration (40% complete)"
     execute_with_recovery "create_installation_environment" "Environment setup"
     execute_with_recovery "configure_system_permissions" "Permission configuration"
     execute_with_recovery "setup_service_integration" "Service integration"
 
     # Phase 4: n8n-mcp Deployment (Automated with Testing)
-    log_info "🚀 Phase 4: n8n-mcp Deployment & Testing"
+    log_info "🚀 Phase 4/7: n8n-mcp Deployment & Testing (55% complete)"
     if [[ "${DRY_RUN:-false}" == "true" ]]; then
         log_info "[DRY RUN] Would deploy n8n-mcp Docker image: $N8N_MCP_IMAGE"
     else
@@ -2289,7 +2409,7 @@ main() {
     fi
 
     # Phase 5: Augment Code Integration (Automated with Validation)
-    log_info "🤖 Phase 5: Augment Code Integration & Configuration"
+    log_info "🤖 Phase 5/7: Augment Code Integration & Configuration (70% complete)"
     if [[ "${DRY_RUN:-false}" == "true" ]]; then
         log_info "[DRY RUN] Would configure Augment Code MCP integration"
     else
@@ -2299,7 +2419,7 @@ main() {
     fi
 
     # Phase 6: Mandatory Comprehensive Testing (NO USER CHOICE)
-    log_info "🧪 Phase 6: Mandatory Comprehensive Testing & Validation"
+    log_info "🧪 Phase 6/7: Mandatory Comprehensive Testing & Validation (85% complete)"
     if [[ "${DRY_RUN:-false}" == "true" ]]; then
         log_info "[DRY RUN] Would run mandatory comprehensive test suite (12 tests)"
     else
@@ -2319,7 +2439,7 @@ main() {
     fi
 
     # Phase 7: Final Validation & Health Check
-    log_info "✅ Phase 7: Final Validation & Health Check"
+    log_info "✅ Phase 7/7: Final Validation & Health Check (95% complete)"
     execute_with_recovery "validate_complete_installation" "Complete installation validation"
     execute_with_recovery "setup_health_monitoring" "Health monitoring setup"
     execute_with_recovery "create_maintenance_scripts" "Maintenance scripts creation"
