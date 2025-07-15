@@ -111,6 +111,53 @@ track_temp_file() {
 # Register signal handler
 trap 'handle_interrupt' SIGINT
 
+# ============================================================================
+# FUNCTION SCOPING FIX - INTERNAL TIMEOUT HANDLING
+# ============================================================================
+
+# Run test with internal timeout handling (fixes function scoping issues)
+run_test_with_internal_timeout() {
+    local test_function="$1"
+    local timeout_seconds="$2"
+    local start_time=$(date +%s)
+
+    log_info "   [TIMEOUT] Running $test_function with ${timeout_seconds}s internal timeout..."
+
+    # Create a background process to run the test
+    (
+        # Execute the test function
+        if "$test_function"; then
+            exit 0
+        else
+            exit 1
+        fi
+    ) &
+
+    local test_pid=$!
+    track_background_process "$test_pid"
+
+    # Monitor the test with internal timeout
+    while [[ $(($(date +%s) - start_time)) -lt $timeout_seconds ]]; do
+        if ! kill -0 "$test_pid" 2>/dev/null; then
+            # Process finished, get exit code
+            wait "$test_pid"
+            local exit_code=$?
+            log_info "   [TIMEOUT] Test completed in $(($(date +%s) - start_time))s"
+            return $exit_code
+        fi
+        sleep 1
+    done
+
+    # Timeout reached, kill the test process
+    log_warn "   [TIMEOUT] Test timed out after ${timeout_seconds}s, terminating..."
+    kill -TERM "$test_pid" 2>/dev/null || true
+    sleep 2
+    kill -KILL "$test_pid" 2>/dev/null || true
+    wait "$test_pid" 2>/dev/null || true
+
+    return 124  # timeout exit code
+}
+
 # Configuration variables
 readonly N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:latest"
 readonly EXPECTED_IMAGE_SIZE="280"
@@ -525,7 +572,7 @@ show_system_status() {
     echo
     echo "🔍 Current System Status:"
     echo "   • Docker: $(systemctl is-active docker 2>/dev/null || echo 'not available')"
-    echo "   • Augment Code: $(command -v augment >/dev/null 2>&1 && echo 'installed' || echo 'not found')"
+    echo "   • Augment Code: $(code --list-extensions 2>/dev/null | grep -q 'augment.vscode-augment' && echo 'VSCode extension installed' || echo 'VSCode extension not found')"
     echo "   • Network: $(ping -c 1 -W 2 google.com >/dev/null 2>&1 && echo 'connected' || echo 'disconnected')"
     echo "   • Disk Space: $(df -h / | tail -1 | awk '{print $5}') used"
     echo "   • Memory: $(free -h | grep '^Mem:' | awk '{print $3"/"$2}' 2>/dev/null || echo 'N/A')"
@@ -1603,12 +1650,17 @@ monitor_docker_health() {
     done
 }
 
-# Monitor Augment Code health in background (optimized intervals)
+# Monitor Augment Code health in background (OFFICIAL DOCUMENTATION COMPLIANT)
 monitor_augment_code_health() {
     while true; do
-        if ! pgrep -f "augment" >/dev/null; then
-            log_warn "🔄 Augment Code not running - attempting restart..."
-            recover_augment_code
+        # Check if VSCode is available and Augment extension is installed
+        if command -v code >/dev/null 2>&1; then
+            if ! code --list-extensions 2>/dev/null | grep -q "augment.vscode-augment"; then
+                log_warn "🔄 Augment VSCode extension not found - attempting recovery..."
+                recover_augment_code
+            fi
+        else
+            log_warn "🔄 VSCode not available - Augment requires VSCode"
         fi
         sleep "${MONITOR_INTERVALS[augment]}"  # 60s instead of 30s
     done
@@ -1647,27 +1699,33 @@ recover_docker_service() {
     return 1
 }
 
-# Augment Code self-healing
+# Augment Code recovery (OFFICIAL DOCUMENTATION COMPLIANT)
 recover_augment_code() {
     log_warn "🔄 Augment Code issue detected - attempting recovery..."
+    log_info "   📋 Note: Augment Code is a VSCode extension, not a standalone process"
 
-    # Strategy 1: Restart Augment Code
-    pkill -f "augment" 2>/dev/null || true
-
-    # Wait for process to fully terminate
-    wait_for_service "augment" 10 || true  # Wait for termination
-
-    # Start Augment Code
-    augment &
-
-    # Wait for startup with intelligent polling
-    if wait_for_process "augment" 30; then
-        log_success "✅ Augment Code restarted successfully"
-        return 0
+    # Strategy 1: Verify VSCode is available
+    if ! command -v code >/dev/null 2>&1; then
+        log_error "   ❌ VSCode not available - Augment requires VSCode"
+        log_info "   💡 Install VSCode first: https://code.visualstudio.com/"
+        return 1
     fi
 
-    log_error "❌ Augment Code recovery failed"
-    return 1
+    # Strategy 2: Check if Augment extension is installed
+    if ! code --list-extensions 2>/dev/null | grep -q "augment.vscode-augment"; then
+        log_error "   ❌ Augment VSCode extension not installed"
+        log_info "   💡 Install from VSCode Marketplace: https://marketplace.visualstudio.com/"
+        log_info "   💡 Or use: code --install-extension augment.vscode-augment"
+        return 1
+    fi
+
+    # Strategy 3: Verify extension is functional (if possible)
+    log_info "   ✅ Augment VSCode extension is installed"
+    log_info "   💡 Extension recovery complete - Augment runs within VSCode"
+    log_info "   💡 Configure MCP integration in VSCode Augment settings"
+
+    log_success "✅ Augment Code recovery completed (extension verified)"
+    return 0
 }
 
 # MCP configuration self-healing
@@ -1726,9 +1784,9 @@ run_mandatory_comprehensive_tests() {
         recover_docker_service || true
     fi
 
-    # Test 4: n8n-mcp container (WITH TIMEOUT PROTECTION)
-    log_info "Running Test 4/12: n8n-mcp container (with timeout protection)..."
-    if timeout 10s test_n8n_mcp_container; then
+    # Test 4: n8n-mcp container (FIXED FUNCTION SCOPING)
+    log_info "Running Test 4/12: n8n-mcp container (with proper timeout handling)..."
+    if run_test_with_internal_timeout "test_n8n_mcp_container" 10; then
         log_success "✅ Test 4/12: n8n-mcp container"
         ((passed_tests++))
     else
@@ -1742,9 +1800,9 @@ run_mandatory_comprehensive_tests() {
         attempt_container_recovery || true
     fi
 
-    # Test 5: Augment Code installation (WITH TIMEOUT PROTECTION)
-    log_info "Running Test 5/12: Augment Code installation (with timeout protection)..."
-    if timeout 10s test_augment_code_installation; then
+    # Test 5: Augment Code installation (FIXED FUNCTION SCOPING)
+    log_info "Running Test 5/12: Augment Code installation (with proper timeout handling)..."
+    if run_test_with_internal_timeout "test_augment_code_installation" 10; then
         log_success "✅ Test 5/12: Augment Code installation"
         ((passed_tests++))
     else
