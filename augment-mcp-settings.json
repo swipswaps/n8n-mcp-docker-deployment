@@ -4,19 +4,7 @@
       {
         "name": "n8n-mcp",
         "command": "docker",
-        "args": ["exec", "-i", "n8n-mcp", "node", "   🔄 Progress: .
-   🔄 Progress: .
-   🔄 Progress: .
-   🔄 Progress: .
-   🔄 Progress: .
-   🔄 Progress: .
-   🔄 Progress: .
-   🔄 Progress: .
-   🔄 Progress: .
-   📤 v20.19.3
-   🔄 Progress: 
-   📤 v20.19.3
-/app/index.js"],
+        "args": ["exec", "-i", "n8n-mcp", "node", "/opt/yarn-v1.22.22/preinstall.js"],
         "env": {
           "NODE_ENV": "production",
           "MCP_SERVER_NAME": "n8n-mcp"
