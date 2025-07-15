@@ -1,0 +1,190 @@
+owner@owner-macbookpro92:~/Documents/n8n-mcp-docker-deployment$ gh repo sync
+✓ Synced the "main" branch from "swipswaps/n8n-mcp-docker-deployment" to local repository
+owner@owner-macbookpro92:~/Documents/n8n-mcp-docker-deployment$ ./install-test-n8n-mcp-docker.sh
+[2025-07-15 15:21:31] [INFO] === N8N-MCP FULLY AUTOMATED DEPLOYMENT ===
+[2025-07-15 15:21:31] [INFO] Version: 0.3.0-beta
+[2025-07-15 15:21:31] [INFO] Started: 2025-07-15 15:21:31
+[2025-07-15 15:21:31] [INFO] PID: 221378
+[2025-07-15 15:21:31] [INFO] User: owner
+[2025-07-15 15:21:31] [INFO] Platform: Linux 6.15.5-200.fc42.x86_64
+[2025-07-15 15:21:31] [INFO] 🔄 Enabling self-healing mechanisms...
+[2025-07-15 15:21:31] [INFO]    ⏳ Health monitoring will start after installation completes
+[2025-07-15 15:21:31] [INFO]    Docker recovery mechanisms enabled
+[2025-07-15 15:21:31] [INFO]    Augment Code recovery mechanisms enabled
+[2025-07-15 15:21:31] [INFO]    MCP configuration recovery mechanisms enabled
+[2025-07-15 15:21:31] [INFO]    Permission recovery mechanisms enabled
+[2025-07-15 15:21:31] [INFO]    Setting up health monitoring...
+[2025-07-15 15:21:31] [SUCCESS]    ✅ Health monitoring configured
+[2025-07-15 15:21:31] [SUCCESS] ✅ Self-healing mechanisms enabled
+╔══════════════════════════════════════════════════════════════╗
+║                n8n-mcp Docker Installation                   ║
+║          Augment Code Workflow Automation Setup             ║
+║                                                              ║
+║  🚀 FULLY AUTOMATED INSTALLATION                            ║
+║                                                              ║
+║  This script will automatically:                            ║
+║  • Install ALL required dependencies (including Augment)    ║
+║  • Setup Docker and n8n-mcp container                       ║
+║  • Configure Augment Code integration                       ║
+║  • Run comprehensive testing (12 tests)                     ║
+║  • Enable self-healing mechanisms                           ║
+║  • Verify complete installation                             ║
+║                                                              ║
+║  ✅ Zero manual steps required                              ║
+║  ✅ Everything works or is self-healed                      ║
+║  ✅ Complete dependency abstraction                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+[2025-07-15 15:21:31] [INFO] ⏳ Waiting for user confirmation...
+🚀 Proceed with fully automated installation? [Y/n]: y
+
+[2025-07-15 15:21:33] [INFO] ✅ User confirmed installation
+
+📋 Installation Configuration:
+   ✅ All dependencies will be installed automatically
+   ✅ Augment Code will be managed automatically
+   ✅ Comprehensive testing will be performed
+   ✅ Self-healing mechanisms enabled
+
+   Enable verbose logging? [y/N]: y
+   Create desktop shortcuts? [Y/n]: y
+
+[2025-07-15 15:21:34] [INFO] Starting performance monitoring...
+[2025-07-15 15:21:34] [INFO] Performance monitoring started
+[2025-07-15 15:21:34] [INFO] Start time: Tue Jul 15 03:21:34 PM EDT 2025
+[2025-07-15 15:21:34] [INFO] Start memory: 4159MB
+[2025-07-15 15:21:34] [INFO] Start CPU: 7.38579%
+[2025-07-15 15:21:34] [INFO] Setting up comprehensive monitoring...
+[2025-07-15 15:21:34] [INFO] Started system monitoring: PID 221474
+[2025-07-15 15:21:34] [INFO] Started kernel monitoring: PID 221476
+[2025-07-15 15:21:34] [INFO] Started X11 monitoring: PID 221478
+[2025-07-15 15:21:34] [INFO] Started hardware monitoring: PID 221482
+[2025-07-15 15:21:34] [SUCCESS] Monitoring setup complete. PIDs: 221474 221476 221478 221480 221482
+[2025-07-15 15:21:35] [INFO] 🚀 Starting fully automated installation (estimated time: 5-7 minutes)
+[2025-07-15 15:21:35] [INFO] 📊 Installation will proceed through 7 phases with automatic recovery
+
+🔍 Current System Status:
+   • Docker: active
+   • Augment Code: not found
+   • Network: connected
+   • Disk Space: 9% used
+   • Memory: 4.1Gi/5.7Gi
+
+
+📊 Installation Progress: 14% Complete
+[███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] Phase 1/7
+
+
+╔════════════════════════════════════════════════════════════════╗
+║                    INSTALLATION STATUS                        ║
+╠════════════════════════════════════════════════════════════════╣
+║ Phase: Phase 1/7: System Verification
+║ Step:  OS Detection & Validation
+║ Status: In Progress
+║ Time:  2025-07-15 15:21:35
+╚════════════════════════════════════════════════════════════════╝
+
+[2025-07-15 15:21:35] [INFO] 🔍 Phase 1/7: System Verification & Auto-Recovery (10% complete)
+[2025-07-15 15:21:35] [INFO]    Executing: System OS validation (attempt 1/3)
+[2025-07-15 15:21:35] [INFO] 🔍 Detecting operating system...
+[2025-07-15 15:21:35] [SUCCESS] ✅ Supported OS detected: Fedora Linux 42 (Workstation Edition)
+[2025-07-15 15:21:35] [INFO]    OS: fedora 42
+[2025-07-15 15:21:35] [INFO]    Package Manager: dnf
+[2025-07-15 15:21:35] [SUCCESS]    ✅ System OS validation completed successfully
+[2025-07-15 15:21:35] [INFO]    Executing: Disk space verification (attempt 1/3)
+[2025-07-15 15:21:35] [INFO] 💾 Checking available disk space...
+[2025-07-15 15:21:35] [SUCCESS] ✅ Disk space verified: 870000MB available
+[2025-07-15 15:21:35] [INFO]    Docker image: ~300MB
+[2025-07-15 15:21:35] [INFO]    Logs and temp: ~50MB
+[2025-07-15 15:21:35] [INFO]    Remaining: 869650MB
+[2025-07-15 15:21:35] [SUCCESS]    ✅ Disk space verification completed successfully
+[2025-07-15 15:21:35] [INFO]    Executing: Internet connectivity (attempt 1/3)
+[2025-07-15 15:21:35] [INFO] 🌐 Testing internet connectivity...
+[2025-07-15 15:21:36] [INFO]    ✅ ghcr.io reachable
+[2025-07-15 15:21:36] [INFO]    ✅ github.com reachable
+[2025-07-15 15:21:36] [INFO]    ✅ google.com reachable
+[2025-07-15 15:21:36] [SUCCESS] ✅ Internet connectivity verified
+[2025-07-15 15:21:36] [SUCCESS]    ✅ Internet connectivity completed successfully
+
+📊 Installation Progress: 28% Complete
+[██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] Phase 2/7
+
+
+╔════════════════════════════════════════════════════════════════╗
+║                    INSTALLATION STATUS                        ║
+╠════════════════════════════════════════════════════════════════╣
+║ Phase: Phase 2/7: Dependencies Management
+║ Step:  Installing System Dependencies
+║ Status: In Progress
+║ Time:  2025-07-15 15:21:36
+╚════════════════════════════════════════════════════════════════╝
+
+[2025-07-15 15:21:36] [INFO] 📦 Phase 2/7: Complete Dependencies Management (25% complete)
+[2025-07-15 15:21:36] [INFO]    Executing: System dependencies (attempt 1/3)
+[2025-07-15 15:21:36] [INFO] 📦 Installing system dependencies...
+[2025-07-15 15:21:36] [SUCCESS] ✅ All dependencies already installed
+[2025-07-15 15:21:36] [INFO]    ✅ git available
+[2025-07-15 15:21:36] [INFO]    ✅ jq available
+[2025-07-15 15:21:36] [INFO]    ✅ curl available
+[2025-07-15 15:21:36] [INFO]    ✅ wget available
+[2025-07-15 15:21:36] [SUCCESS]    ✅ System dependencies completed successfully
+[2025-07-15 15:21:36] [INFO]    Executing: Docker setup (attempt 1/3)
+[2025-07-15 15:21:36] [INFO] 🐳 Setting up Docker environment...
+[2025-07-15 15:21:40] [SUCCESS] ✅ Docker ready: 28.3.2
+[2025-07-15 15:21:40] [SUCCESS]    ✅ Docker setup completed successfully
+[2025-07-15 15:21:40] [INFO]    Executing: Augment Code installation (attempt 1/3)
+[2025-07-15 15:21:40] [INFO] 🤖 Managing Augment Code dependency...
+[2025-07-15 15:21:40] [INFO] 🔍 Checking for Augment Code IDE extensions...
+[2025-07-15 15:21:40] [INFO]    📋 Checking VS Code extensions...
+[2025-07-15 15:21:40] [INFO] 🔄 Executing: VS Code extension check
+[2025-07-15 15:21:40] [INFO] 📋 Command: code --list-extensions | grep -i augment
+[2025-07-15 15:21:40] [INFO] ⏱️  Timeout: 5s
+   🔄 Progress: ...
+   📤 augment.vscode-augment
+   🔄 Progress: 
+[2025-07-15 15:21:43] [INFO] 📤 Command output:
+   📤 augment.vscode-augment
+[2025-07-15 15:21:43] [SUCCESS] ✅ VS Code extension check completed successfully
+[2025-07-15 15:21:43] [SUCCESS] ✅ Augment Code VS Code extension detected
+[2025-07-15 15:21:43] [INFO]    💡 Augment Code is available in VS Code
+[2025-07-15 15:21:43] [SUCCESS]    ✅ Augment Code installation completed successfully
+[2025-07-15 15:21:43] [INFO] ⚙️  Phase 3/7: Environment Setup & Configuration (40% complete)
+[2025-07-15 15:21:43] [INFO]    Executing: Environment setup (attempt 1/3)
+[2025-07-15 15:21:44] [INFO]    Creating installation environment...
+[2025-07-15 15:21:44] [INFO]    Created directory: /home/owner/.config/augment-code
+[2025-07-15 15:21:44] [INFO]    Created directory: /home/owner/.cache/n8n-mcp
+[2025-07-15 15:21:44] [SUCCESS]    ✅ Environment setup completed successfully
+[2025-07-15 15:21:44] [INFO]    Executing: Permission configuration (attempt 1/3)
+[2025-07-15 15:21:44] [INFO]    Configuring system permissions...
+[2025-07-15 15:21:44] [SUCCESS]    ✅ Permission configuration completed successfully
+[2025-07-15 15:21:44] [INFO]    Executing: Service integration (attempt 1/3)
+[2025-07-15 15:21:44] [INFO]    Setting up service integration...
+[sudo] password for owner: 
+[2025-07-15 15:21:55] [SUCCESS]    ✅ Service integration completed successfully
+[2025-07-15 15:21:55] [INFO] 🚀 Phase 4/7: n8n-mcp Deployment & Testing (55% complete)
+[2025-07-15 15:21:55] [INFO]    Executing: n8n-mcp image download (attempt 1/3)
+[2025-07-15 15:21:56] [INFO] 📥 Downloading n8n-mcp Docker image...
+   Downloading n8n-mcp image (~300MB) ⠴latest: Pulling from czlonkowski/n8n-mcp
+fe07684b16b8: Already exists 
+0c54b794b004: Already exists 
+a54eeddfc49c: Already exists 
+b7f182da327e: Already exists 
+0ab09ce03dca: Pull complete 
+4dc5af15b4e9: Pull complete 
+499ad6e3b66b: Pull complete 
+56d267cab4ab: Pull complete 
+5c6cbb156f56: Pull complete 
+3a828b7a66e2: Pull complete 
+5f7458914b8a: Pull complete 
+fe9215c864a8: Pull complete 
+296b225c7410: Pull complete 
+4f4fb700ef54: Pull complete 
+255e7233d178: Pull complete 
+   Downloading n8n-mcp image (~300MB) ⠇Digest: sha256:83c5f401498b5d9ba93a79a8abbc380fdba93c6bf96fcc5fa945b5119edf45c6
+   Downloading n8n-mcp image (~300MB) ⠏Status: Downloaded newer image for ghcr.io/czlonkowski/n8n-mcp:latest
+ghcr.io/czlonkowski/n8n-mcp:latest
+   Downloading n8n-mcp image (~300MB) ✅
+[2025-07-15 15:22:16] [SUCCESS] ✅ n8n-mcp image downloaded successfully
+[2025-07-15 15:22:16] [SUCCESS]    ✅ n8n-mcp image download completed successfully
+[2025-07-15 15:22:16] [INFO]    Executing: Container functionality (attempt 1/3)
+[2025-07-15 15:22:16] [INFO]    Testing container functionality...
