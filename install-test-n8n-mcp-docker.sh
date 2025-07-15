@@ -52,14 +52,20 @@ readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
 readonly NC='\033[0m' # No Color
 
-# Logging functions with timestamps and levels
+# Enhanced logging functions with comprehensive event capture and tee output
 log() {
     local level="$1"
     shift
     local timestamp
     timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
-    echo -e "[$timestamp] [$level] $*" >&2
-    echo "[$timestamp] [$level] $*" >> "$LOG_DIR/script.log" 2>/dev/null || true
+
+    # Output to both terminal and multiple log files using tee
+    echo -e "[$timestamp] [$level] $*" | tee -a "$LOG_DIR/script.log" "$LOG_DIR/events.log" >&2
+
+    # Capture system context for important events
+    if [[ "$level" =~ (ERROR|WARN|SUCCESS) ]] || [[ "$*" =~ (Phase|Starting|Executing|Failed|Complete) ]]; then
+        capture_system_context "$level" "$*"
+    fi
 }
 
 log_info() {
@@ -68,14 +74,121 @@ log_info() {
 
 log_warn() {
     log "WARN" "${YELLOW}$*${NC}"
+    # Additional warning context
+    echo "[$timestamp] [WARN] $*" >> "$LOG_DIR/warnings.log" 2>/dev/null || true
 }
 
 log_error() {
     log "ERROR" "${RED}$*${NC}"
+    # Additional error context
+    echo "[$timestamp] [ERROR] $*" >> "$LOG_DIR/errors.log" 2>/dev/null || true
+    capture_error_context "$*"
 }
 
 log_success() {
     log "SUCCESS" "${GREEN}$*${NC}"
+}
+
+# Capture comprehensive system context for events
+capture_system_context() {
+    local level="$1"
+    shift
+    local message="$*"
+    local context_file="$LOG_DIR/system_context.log"
+
+    {
+        echo "=== SYSTEM CONTEXT [$level] $(date '+%Y-%m-%d %H:%M:%S') ==="
+        echo "Event: $message"
+        echo "PID: $$"
+        echo "User: $USER"
+        echo "PWD: $PWD"
+        echo "Memory: $(free -h 2>/dev/null | grep '^Mem:' | awk '{print $3"/"$2}' || echo 'N/A')"
+        echo "CPU Load: $(uptime | awk -F'load average:' '{print $2}' || echo 'N/A')"
+        echo "Disk Usage: $(df -h / 2>/dev/null | tail -1 | awk '{print $5}' || echo 'N/A')"
+        echo "Docker Status: $(systemctl is-active docker 2>/dev/null || echo 'not available')"
+        echo "Network: $(ping -c 1 -W 2 google.com >/dev/null 2>&1 && echo 'connected' || echo 'disconnected')"
+        echo "=== END CONTEXT ==="
+        echo
+    } >> "$context_file" 2>/dev/null || true
+}
+
+# Capture detailed error context
+capture_error_context() {
+    local error_message="$*"
+    local error_context_file="$LOG_DIR/error_context.log"
+
+    {
+        echo "=== ERROR CONTEXT $(date '+%Y-%m-%d %H:%M:%S') ==="
+        echo "Error: $error_message"
+        echo "Exit Code: $?"
+        echo "Function Stack: ${FUNCNAME[*]}"
+        echo "Line Number: ${BASH_LINENO[*]}"
+        echo "Script: ${BASH_SOURCE[*]}"
+        echo
+        echo "Environment Variables:"
+        env | grep -E "(DOCKER|AUGMENT|N8N|MCP|PATH)" | sort 2>/dev/null || echo "env not available"
+        echo
+        echo "Recent System Messages:"
+        journalctl --since "1 minute ago" --no-pager -n 5 2>/dev/null || echo "journalctl not available"
+        echo
+        echo "Process Tree:"
+        pstree -p $$ 2>/dev/null || ps -ef | grep $$ | head -3 2>/dev/null || echo "process info not available"
+        echo "=== END ERROR CONTEXT ==="
+        echo
+    } >> "$error_context_file" 2>/dev/null || true
+}
+
+# Display real-time installation status
+show_installation_status() {
+    local phase="$1"
+    local step="$2"
+    local status="$3"
+
+    echo
+    echo "╔════════════════════════════════════════════════════════════════╗"
+    echo "║                    INSTALLATION STATUS                        ║"
+    echo "╠════════════════════════════════════════════════════════════════╣"
+    echo "║ Phase: $phase"
+    echo "║ Step:  $step"
+    echo "║ Status: $status"
+    echo "║ Time:  $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "╚════════════════════════════════════════════════════════════════╝"
+    echo
+}
+
+# Enhanced progress tracking with visual indicators
+track_progress() {
+    local current_phase="$1"
+    local total_phases=7
+    local percentage=$(( (current_phase * 100) / total_phases ))
+    local bar_length=50
+    local filled_length=$(( (percentage * bar_length) / 100 ))
+
+    # Create progress bar
+    local bar=""
+    for ((i=0; i<filled_length; i++)); do
+        bar+="█"
+    done
+    for ((i=filled_length; i<bar_length; i++)); do
+        bar+="░"
+    done
+
+    echo
+    echo "📊 Installation Progress: ${percentage}% Complete"
+    echo "[$bar] Phase $current_phase/$total_phases"
+    echo
+}
+
+# Show current system status for debugging
+show_system_status() {
+    echo
+    echo "🔍 Current System Status:"
+    echo "   • Docker: $(systemctl is-active docker 2>/dev/null || echo 'not available')"
+    echo "   • Augment Code: $(command -v augment >/dev/null 2>&1 && echo 'installed' || echo 'not found')"
+    echo "   • Network: $(ping -c 1 -W 2 google.com >/dev/null 2>&1 && echo 'connected' || echo 'disconnected')"
+    echo "   • Disk Space: $(df -h / | tail -1 | awk '{print $5}') used"
+    echo "   • Memory: $(free -h | grep '^Mem:' | awk '{print $3"/"$2}' 2>/dev/null || echo 'N/A')"
+    echo
 }
 
 # Usage function (MANDATORY)
@@ -576,10 +689,11 @@ install_docker_for_platform() {
 # AUGMENT CODE INSTALLATION AUTOMATION
 # ============================================================================
 
-# Detect and install Augment Code automatically (AUTOMATED)
+# Detect and install Augment Code automatically with improved UX (AUTOMATED)
 detect_and_install_augment_code() {
     log_info "🤖 Managing Augment Code dependency..."
 
+    # Check if Augment Code is already installed
     if command -v augment >/dev/null 2>&1; then
         local augment_version
         augment_version=$(augment --version 2>/dev/null || echo "unknown")
@@ -587,24 +701,40 @@ detect_and_install_augment_code() {
         return 0
     fi
 
-    log_warn "⚠️  Augment Code not found - attempting automatic installation..."
+    # Augment Code not found - provide clear user guidance
+    log_warn "⚠️  Augment Code not found on system"
+    log_info "📋 Augment Code is required for n8n-mcp integration"
+    log_info "🔄 Attempting automatic installation with multiple strategies..."
 
-    # Attempt automatic Augment Code installation
-    install_augment_code_automatically || {
-        log_error "❌ Failed to install Augment Code automatically"
-        attempt_augment_code_recovery || return 1
-    }
+    # Show installation progress
+    local install_start_time=$(date +%s)
 
-    # Verify installation
-    if command -v augment >/dev/null 2>&1; then
-        local augment_version
-        augment_version=$(augment --version 2>/dev/null || echo "unknown")
-        log_success "✅ Augment Code installed successfully: $augment_version"
+    # Strategy 1: Official installer
+    log_info "   📥 Strategy 1: Trying official installer..."
+    if install_augment_code_automatically; then
+        local install_time=$(($(date +%s) - install_start_time))
+        log_success "✅ Augment Code installed via official installer (${install_time}s)"
         return 0
-    else
-        log_error "❌ Augment Code installation verification failed"
-        return 1
     fi
+
+    # Strategy 2: Recovery methods
+    log_info "   🔄 Strategy 2: Trying alternative installation methods..."
+    if attempt_augment_code_recovery; then
+        local install_time=$(($(date +%s) - install_start_time))
+        log_success "✅ Augment Code installed via recovery method (${install_time}s)"
+        return 0
+    fi
+
+    # Installation failed - provide helpful guidance
+    log_error "❌ Automatic Augment Code installation failed"
+    log_error "📋 Manual installation required:"
+    log_error "   1. Visit: https://augmentcode.com"
+    log_error "   2. Download and install Augment Code for your platform"
+    log_error "   3. Ensure 'augment' command is in your PATH"
+    log_error "   4. Re-run this script"
+    log_info "💡 You can also try: curl -fsSL https://augmentcode.com/install.sh | bash"
+
+    return 1
 }
 
 # Install Augment Code automatically (AUTOMATED)
@@ -847,17 +977,26 @@ enable_self_healing() {
     log_success "✅ Self-healing mechanisms enabled"
 }
 
-# Set up failure detection monitoring
+# Set up failure detection monitoring (only after installation completes)
 setup_failure_detection() {
-    # Monitor critical processes and services
-    monitor_docker_health &
-    MONITOR_PIDS+=($!)
+    # Only start monitoring after installation is complete
+    if [[ "${INSTALLATION_COMPLETE:-false}" == "true" ]]; then
+        log_info "   🔍 Starting health monitoring processes..."
 
-    monitor_augment_code_health &
-    MONITOR_PIDS+=($!)
+        # Monitor critical processes and services
+        monitor_docker_health &
+        MONITOR_PIDS+=($!)
 
-    monitor_mcp_integration_health &
-    MONITOR_PIDS+=($!)
+        monitor_augment_code_health &
+        MONITOR_PIDS+=($!)
+
+        monitor_mcp_integration_health &
+        MONITOR_PIDS+=($!)
+
+        log_info "   ✅ Health monitoring processes started"
+    else
+        log_info "   ⏳ Health monitoring will start after installation completes"
+    fi
 }
 
 # Set up automatic recovery mechanisms
@@ -1550,16 +1689,34 @@ interactive_installation() {
     fi
 }
 
-# Confirm installation with user
+# Confirm installation with user (improved with timeout and better UX)
 confirm_installation() {
     echo
-    read -p "🚀 Proceed with fully automated installation? [Y/n]: " -r confirm
-    case "$confirm" in
+    log_info "⏳ Waiting for user confirmation..."
+
+    # Use timeout to prevent indefinite hanging
+    if command -v timeout >/dev/null 2>&1; then
+        # Try with timeout (60 seconds)
+        if timeout 60 bash -c 'read -p "🚀 Proceed with fully automated installation? [Y/n]: " -r confirm; echo "$confirm"' 2>/dev/null; then
+            local confirm_response="$?"
+        else
+            log_warn "⚠️  No user input received within 60 seconds"
+            log_info "🚀 Proceeding with installation (default: Yes)"
+            return 0
+        fi
+    else
+        # Fallback without timeout
+        read -p "🚀 Proceed with fully automated installation? [Y/n]: " -r confirm
+    fi
+
+    case "${confirm:-y}" in
         [Nn]|[Nn][Oo])
-            echo "Installation cancelled by user."
+            log_info "❌ Installation cancelled by user"
+            log_info "💡 You can run with --silent flag to skip all prompts"
             return 1
             ;;
         *)
+            log_info "✅ User confirmed installation"
             return 0
             ;;
     esac
@@ -2376,17 +2533,22 @@ main() {
     # Setup comprehensive monitoring
     setup_monitoring
 
-    # Show installation time estimate
+    # Show installation time estimate and system status
     log_info "🚀 Starting fully automated installation (estimated time: 5-7 minutes)"
     log_info "📊 Installation will proceed through 7 phases with automatic recovery"
+    show_system_status
 
     # Phase 1: System Verification (Automated with Self-Healing)
+    track_progress 1
+    show_installation_status "Phase 1/7: System Verification" "OS Detection & Validation" "In Progress"
     log_info "🔍 Phase 1/7: System Verification & Auto-Recovery (10% complete)"
     execute_with_recovery "detect_and_validate_os" "System OS validation"
     execute_with_recovery "verify_disk_space_requirements" "Disk space verification"
     execute_with_recovery "verify_internet_connectivity" "Internet connectivity"
 
     # Phase 2: Complete Dependencies Management (Automated)
+    track_progress 2
+    show_installation_status "Phase 2/7: Dependencies Management" "Installing System Dependencies" "In Progress"
     log_info "📦 Phase 2/7: Complete Dependencies Management (25% complete)"
     execute_with_recovery "install_system_dependencies" "System dependencies"
     execute_with_recovery "verify_and_setup_docker" "Docker setup"
@@ -2462,6 +2624,13 @@ main() {
     else
         log_info "remember() function not available - achievement not persisted to memory"
     fi
+
+    # Mark installation as complete and enable monitoring
+    INSTALLATION_COMPLETE="true"
+    log_info "🎉 Installation completed successfully - enabling health monitoring"
+
+    # Now start health monitoring
+    setup_failure_detection
 
     # Success with comprehensive reporting
     show_comprehensive_success_message

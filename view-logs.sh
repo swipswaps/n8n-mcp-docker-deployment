@@ -1,0 +1,248 @@
+#!/bin/bash
+
+# Log Viewer Script for n8n-mcp Docker Deployment
+# Provides real-time monitoring of installation logs
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Find the most recent log directory
+find_log_dir() {
+    local log_base="/tmp"
+    local log_pattern="n8n-mcp-logs-*"
+    
+    # Find the most recent log directory
+    local log_dir
+    log_dir=$(find "$log_base" -maxdepth 1 -name "$log_pattern" -type d 2>/dev/null | sort -r | head -1)
+    
+    if [[ -n "$log_dir" && -d "$log_dir" ]]; then
+        echo "$log_dir"
+        return 0
+    else
+        echo "No log directory found matching pattern: $log_base/$log_pattern" >&2
+        return 1
+    fi
+}
+
+# Display usage information
+usage() {
+    cat << EOF
+Usage: $0 [OPTIONS]
+
+Monitor n8n-mcp Docker deployment installation logs in real-time.
+
+OPTIONS:
+    -h, --help          Show this help message
+    -f, --follow        Follow logs in real-time (like tail -f)
+    -e, --errors        Show only error logs
+    -w, --warnings      Show only warnings and errors
+    -s, --system        Show system context logs
+    -a, --all           Show all log files
+    -c, --context       Show error context details
+    -l, --list          List available log files
+
+EXAMPLES:
+    $0                  # Show recent installation logs
+    $0 -f               # Follow logs in real-time
+    $0 -e               # Show only errors
+    $0 -s               # Show system context
+    $0 -a               # Show all logs combined
+
+LOG FILES:
+    script.log          Main installation log
+    events.log          All events and actions
+    errors.log          Error messages only
+    warnings.log        Warning messages
+    system_context.log  System state information
+    error_context.log   Detailed error context
+
+EOF
+}
+
+# Show log file information
+show_log_info() {
+    local log_dir="$1"
+    
+    echo -e "${BLUE}📋 Log Directory: $log_dir${NC}"
+    echo -e "${BLUE}📅 Created: $(stat -c %y "$log_dir" 2>/dev/null | cut -d. -f1)${NC}"
+    echo
+    
+    if [[ -d "$log_dir" ]]; then
+        echo -e "${GREEN}📁 Available Log Files:${NC}"
+        for log_file in "$log_dir"/*.log; do
+            if [[ -f "$log_file" ]]; then
+                local filename=$(basename "$log_file")
+                local size=$(du -h "$log_file" 2>/dev/null | cut -f1)
+                local lines=$(wc -l < "$log_file" 2>/dev/null || echo "0")
+                echo -e "   ${YELLOW}$filename${NC} - $size ($lines lines)"
+            fi
+        done
+        echo
+    fi
+}
+
+# Follow logs in real-time
+follow_logs() {
+    local log_dir="$1"
+    local log_file="$log_dir/script.log"
+    
+    if [[ -f "$log_file" ]]; then
+        echo -e "${GREEN}📡 Following installation logs in real-time...${NC}"
+        echo -e "${BLUE}Press Ctrl+C to stop${NC}"
+        echo
+        tail -f "$log_file"
+    else
+        echo -e "${RED}❌ Log file not found: $log_file${NC}"
+        return 1
+    fi
+}
+
+# Show specific log type
+show_log_type() {
+    local log_dir="$1"
+    local log_type="$2"
+    local log_file="$log_dir/${log_type}.log"
+    
+    if [[ -f "$log_file" ]]; then
+        echo -e "${GREEN}📄 Showing $log_type logs:${NC}"
+        echo
+        cat "$log_file"
+    else
+        echo -e "${YELLOW}⚠️  No $log_type log file found${NC}"
+    fi
+}
+
+# Show all logs combined
+show_all_logs() {
+    local log_dir="$1"
+    
+    echo -e "${GREEN}📚 Combined Log Output:${NC}"
+    echo
+    
+    # Combine and sort all logs by timestamp
+    for log_file in "$log_dir"/*.log; do
+        if [[ -f "$log_file" ]]; then
+            cat "$log_file"
+        fi
+    done | sort
+}
+
+# Show recent errors with context
+show_error_summary() {
+    local log_dir="$1"
+    local error_file="$log_dir/errors.log"
+    local context_file="$log_dir/error_context.log"
+    
+    echo -e "${RED}🚨 Error Summary:${NC}"
+    echo
+    
+    if [[ -f "$error_file" ]]; then
+        echo -e "${YELLOW}Recent Errors:${NC}"
+        tail -20 "$error_file"
+        echo
+    fi
+    
+    if [[ -f "$context_file" ]]; then
+        echo -e "${YELLOW}Error Context (last 50 lines):${NC}"
+        tail -50 "$context_file"
+    fi
+}
+
+# Main function
+main() {
+    local follow_mode=false
+    local show_errors=false
+    local show_warnings=false
+    local show_system=false
+    local show_all=false
+    local show_context=false
+    local list_files=false
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            -f|--follow)
+                follow_mode=true
+                shift
+                ;;
+            -e|--errors)
+                show_errors=true
+                shift
+                ;;
+            -w|--warnings)
+                show_warnings=true
+                shift
+                ;;
+            -s|--system)
+                show_system=true
+                shift
+                ;;
+            -a|--all)
+                show_all=true
+                shift
+                ;;
+            -c|--context)
+                show_context=true
+                shift
+                ;;
+            -l|--list)
+                list_files=true
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+    
+    # Find log directory
+    local log_dir
+    if ! log_dir=$(find_log_dir); then
+        echo -e "${RED}❌ No installation logs found${NC}"
+        echo -e "${BLUE}💡 Run the installation script first:${NC}"
+        echo "   ./install-test-n8n-mcp-docker.sh"
+        exit 1
+    fi
+    
+    # Show log information
+    show_log_info "$log_dir"
+    
+    # Handle different modes
+    if [[ "$list_files" == "true" ]]; then
+        exit 0
+    elif [[ "$follow_mode" == "true" ]]; then
+        follow_logs "$log_dir"
+    elif [[ "$show_errors" == "true" ]]; then
+        show_log_type "$log_dir" "errors"
+    elif [[ "$show_warnings" == "true" ]]; then
+        show_log_type "$log_dir" "warnings"
+        echo
+        show_log_type "$log_dir" "errors"
+    elif [[ "$show_system" == "true" ]]; then
+        show_log_type "$log_dir" "system_context"
+    elif [[ "$show_context" == "true" ]]; then
+        show_error_summary "$log_dir"
+    elif [[ "$show_all" == "true" ]]; then
+        show_all_logs "$log_dir"
+    else
+        # Default: show recent main log
+        echo -e "${GREEN}📄 Recent Installation Log (last 50 lines):${NC}"
+        echo
+        tail -50 "$log_dir/script.log" 2>/dev/null || echo "No main log file found"
+    fi
+}
+
+# Run main function
+main "$@"
