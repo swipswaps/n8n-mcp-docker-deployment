@@ -80,44 +80,52 @@ log_info() {
 
 log_warn() {
     log "WARN" "${YELLOW}$*${NC}"
-    # Additional warning context with safe timestamp
-    local timestamp="${timestamp:-$(date '+%Y-%m-%d %H:%M:%S')}"
-    echo "[$timestamp] [WARN] $*" >> "$LOG_DIR/warnings.log" 2>/dev/null || true
+    # Additional warning context with safe timestamp and directory check
+    if [[ -d "$LOG_DIR" ]]; then
+        local timestamp="${timestamp:-$(date '+%Y-%m-%d %H:%M:%S')}"
+        echo "[$timestamp] [WARN] $*" >> "$LOG_DIR/warnings.log" 2>/dev/null || true
+    fi
 }
 
 log_error() {
     log "ERROR" "${RED}$*${NC}"
-    # Additional error context with safe timestamp
-    local timestamp="${timestamp:-$(date '+%Y-%m-%d %H:%M:%S')}"
-    echo "[$timestamp] [ERROR] $*" >> "$LOG_DIR/errors.log" 2>/dev/null || true
-    capture_error_context "$*"
+    # Additional error context with safe timestamp and directory check
+    if [[ -d "$LOG_DIR" ]]; then
+        local timestamp="${timestamp:-$(date '+%Y-%m-%d %H:%M:%S')}"
+        echo "[$timestamp] [ERROR] $*" >> "$LOG_DIR/errors.log" 2>/dev/null || true
+        capture_error_context "$*"
+    fi
 }
 
 log_success() {
     log "SUCCESS" "${GREEN}$*${NC}"
 }
 
-# Capture comprehensive system context for events
+# Capture comprehensive system context for events (with safe directory check)
 capture_system_context() {
     local level="$1"
     shift
     local message="$*"
-    local context_file="$LOG_DIR/system_context.log"
 
-    {
-        echo "=== SYSTEM CONTEXT [$level] $(date '+%Y-%m-%d %H:%M:%S') ==="
-        echo "Event: $message"
-        echo "PID: $$"
-        echo "User: $USER"
-        echo "PWD: $PWD"
-        echo "Memory: $(free -h 2>/dev/null | grep '^Mem:' | awk '{print $3"/"$2}' || echo 'N/A')"
-        echo "CPU Load: $(uptime | awk -F'load average:' '{print $2}' || echo 'N/A')"
-        echo "Disk Usage: $(df -h / 2>/dev/null | tail -1 | awk '{print $5}' || echo 'N/A')"
-        echo "Docker Status: $(systemctl is-active docker 2>/dev/null || echo 'not available')"
-        echo "Network: $(ping -c 1 -W 2 google.com >/dev/null 2>&1 && echo 'connected' || echo 'disconnected')"
-        echo "=== END CONTEXT ==="
-        echo
-    } >> "$context_file" 2>/dev/null || true
+    # Only capture context if log directory exists
+    if [[ -d "$LOG_DIR" ]]; then
+        local context_file="$LOG_DIR/system_context.log"
+
+        {
+            echo "=== SYSTEM CONTEXT [$level] $(date '+%Y-%m-%d %H:%M:%S') ==="
+            echo "Event: $message"
+            echo "PID: $$"
+            echo "User: $USER"
+            echo "PWD: $PWD"
+            echo "Memory: $(free -h 2>/dev/null | grep '^Mem:' | awk '{print $3"/"$2}' || echo 'N/A')"
+            echo "CPU Load: $(uptime | awk -F'load average:' '{print $2}' || echo 'N/A')"
+            echo "Disk Usage: $(df -h / 2>/dev/null | tail -1 | awk '{print $5}' || echo 'N/A')"
+            echo "Docker Status: $(systemctl is-active docker 2>/dev/null || echo 'not available')"
+            echo "Network: $(ping -c 1 -W 2 google.com >/dev/null 2>&1 && echo 'connected' || echo 'disconnected')"
+            echo "=== END CONTEXT ==="
+            echo
+        } >> "$context_file" 2>/dev/null || true
+    fi
 }
 
 # Capture detailed error context
@@ -144,6 +152,108 @@ capture_error_context() {
         echo "=== END ERROR CONTEXT ==="
         echo
     } >> "$error_context_file" 2>/dev/null || true
+}
+
+# Comprehensive error handling with recovery (COMPLIANCE REQUIREMENT)
+execute_with_comprehensive_recovery() {
+    local operation="$1"
+    local description="$2"
+    local max_attempts="${3:-3}"
+    local attempt=1
+
+    log_info "🔄 Executing: $description (max attempts: $max_attempts)"
+
+    while [[ $attempt -le $max_attempts ]]; do
+        log_info "   📋 Attempt $attempt/$max_attempts: $description"
+
+        if $operation; then
+            log_success "   ✅ $description completed successfully"
+            return 0
+        fi
+
+        log_warn "   ⚠️  $description failed (attempt $attempt/$max_attempts)"
+
+        # Attempt recovery strategies
+        if [[ $attempt -lt $max_attempts ]]; then
+            log_info "   🔄 Attempting recovery for: $description"
+
+            # Generic recovery strategies
+            case "$description" in
+                *"Docker"*)
+                    log_info "   🐳 Docker recovery: Restarting Docker service"
+                    sudo systemctl restart docker 2>/dev/null || true
+                    sleep 2
+                    ;;
+                *"Augment"*)
+                    log_info "   🤖 Augment Code recovery: Clearing cache and retrying"
+                    pkill -f augment 2>/dev/null || true
+                    sleep 1
+                    ;;
+                *"network"*|*"connectivity"*)
+                    log_info "   🌐 Network recovery: Waiting for connectivity"
+                    sleep 3
+                    ;;
+                *)
+                    log_info "   ⏳ Generic recovery: Brief pause before retry"
+                    sleep 1
+                    ;;
+            esac
+        fi
+
+        ((attempt++))
+    done
+
+    log_error "❌ $description failed after $max_attempts attempts"
+    log_error "💡 Recovery strategies attempted but unsuccessful"
+    log_error "📋 Manual intervention may be required"
+    return 1
+}
+
+# Validate all critical requirements before proceeding (COMPLIANCE)
+validate_critical_requirements() {
+    local validation_errors=0
+
+    log_info "🔍 Validating critical system requirements..."
+
+    # Check system compatibility
+    if ! command -v bash >/dev/null 2>&1; then
+        log_error "❌ Bash shell not available"
+        ((validation_errors++))
+    fi
+
+    # Check required commands
+    local required_commands=("curl" "wget" "git" "docker")
+    for cmd in "${required_commands[@]}"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            log_warn "⚠️  Required command not found: $cmd"
+            log_info "   📥 Will attempt automatic installation"
+        fi
+    done
+
+    # Check disk space (minimum 1GB)
+    local available_space
+    available_space=$(df / | tail -1 | awk '{print $4}')
+    if [[ $available_space -lt 1048576 ]]; then  # 1GB in KB
+        log_error "❌ Insufficient disk space: $(($available_space / 1024))MB available, 1GB required"
+        ((validation_errors++))
+    fi
+
+    # Check memory (minimum 1GB)
+    local available_memory
+    available_memory=$(free | grep '^Mem:' | awk '{print $7}')
+    if [[ $available_memory -lt 1048576 ]]; then  # 1GB in KB
+        log_warn "⚠️  Low available memory: $(($available_memory / 1024))MB"
+        log_info "   💡 Installation may be slower but should proceed"
+    fi
+
+    if [[ $validation_errors -gt 0 ]]; then
+        log_error "❌ Critical validation failures: $validation_errors"
+        log_error "📋 Please resolve the above issues before proceeding"
+        return 1
+    fi
+
+    log_success "✅ All critical requirements validated"
+    return 0
 }
 
 # Display real-time installation status
