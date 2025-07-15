@@ -1,6 +1,3 @@
-owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b$ cd n8n-mcp-docker-deployment/
-owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment$ gh repo sync
-✓ Synced the "main" branch from "swipswaps/n8n-mcp-docker-deployment" to local repository
 owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment$ ./install-test-n8n-mcp-docker.sh
 [2025-07-15 16:01:06] [INFO] === N8N-MCP FULLY AUTOMATED DEPLOYMENT ===
 [2025-07-15 16:01:06] [INFO] Version: 0.3.0-beta
@@ -307,3 +304,84 @@ owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mc
 [2025-07-15 16:02:11] [SUCCESS]    ✅ Container functionality completed successfully
 [2025-07-15 16:02:11] [INFO]    Executing: Performance optimization (attempt 1/3)
 [2025-07-15 16:02:11] [INFO]    Optimizing container performance...
+[2025-07-15 16:05:40] [SUCCESS]    ✅ Performance optimization completed successfully
+[2025-07-15 16:05:40] [INFO] 🤖 Phase 5/7: Augment Code Integration & Configuration (70% complete)
+[2025-07-15 16:05:40] [INFO]    Executing: Augment Code lifecycle (attempt 1/3)
+[2025-07-15 16:05:40] [INFO]    Managing Augment Code lifecycle...
+[2025-07-15 16:05:40] [INFO]    Starting Augment Code...
+./install-test-n8n-mcp-docker.sh: line 3219: augment: command not found
+[2025-07-15 16:05:46] [ERROR]    Failed to start Augment Code
+[2025-07-15 16:05:46] [WARN]    ⚠️  Augment Code lifecycle failed (attempt 1/3)
+[2025-07-15 16:05:46] [INFO]    🔄 Attempting automatic recovery...
+[2025-07-15 16:05:46] [WARN] 🔄 Augment Code issue detected - attempting recovery...
+[2025-07-15 16:05:46] [INFO]    ⏳ Waiting for augment to be ready (timeout: 10s)...
+[2025-07-15 16:05:51] [INFO]    ⏳ Still waiting for augment... (5/10s)
+[2025-07-15 16:05:56] [INFO]    ⏳ Still waiting for augment... (10/10s)
+[2025-07-15 16:05:56] [ERROR]    ❌ Timeout waiting for augment after 10s
+./install-test-n8n-mcp-docker.sh: line 1558: augment: command not found
+[2025-07-15 16:06:28] [ERROR]    ❌ Process augment failed to start within 30s
+[2025-07-15 16:06:28] [ERROR] ❌ Augment Code recovery failed
+[2025-07-15 16:06:28] [WARN]    ⚠️  Recovery failed, retrying anyway...
+[2025-07-15 16:06:28] [INFO]    Executing: Augment Code lifecycle (attempt 2/3)
+[2025-07-15 16:06:28] [INFO]    Managing Augment Code lifecycle...
+[2025-07-15 16:06:28] [INFO]    Starting Augment Code...
+./install-test-n8n-mcp-docker.sh: line 3219: augment: command not found
+[2025-07-15 16:06:33] [ERROR]    Failed to start Augment Code
+[2025-07-15 16:06:33] [WARN]    ⚠️  Augment Code lifecycle failed (attempt 2/3)
+[2025-07-15 16:06:34] [INFO]    🔄 Attempting automatic recovery...
+[2025-07-15 16:06:34] [WARN] 🔄 Augment Code issue detected - attempting recovery...
+[2025-07-15 16:06:34] [INFO]    ⏳ Waiting for augment to be ready (timeout: 10s)...
+[2025-07-15 16:06:39] [INFO]    ⏳ Still waiting for augment... (5/10s)
+[2025-07-15 16:06:44] [INFO]    ⏳ Still waiting for augment... (10/10s)
+[2025-07-15 16:06:44] [ERROR]    ❌ Timeout waiting for augment after 10s
+./install-test-n8n-mcp-docker.sh: line 1558: augment: command not found
+[2025-07-15 16:07:15] [ERROR]    ❌ Process augment failed to start within 30s
+[2025-07-15 16:07:16] [ERROR] ❌ Augment Code recovery failed
+[2025-07-15 16:07:16] [WARN]    ⚠️  Recovery failed, retrying anyway...
+[2025-07-15 16:07:16] [INFO]    Executing: Augment Code lifecycle (attempt 3/3)
+[2025-07-15 16:07:16] [INFO]    Managing Augment Code lifecycle...
+[2025-07-15 16:07:17] [INFO]    Starting Augment Code...
+./install-test-n8n-mcp-docker.sh: line 3219: augment: command not found
+[2025-07-15 16:07:22] [ERROR]    Failed to start Augment Code
+[2025-07-15 16:07:22] [WARN]    ⚠️  Augment Code lifecycle failed (attempt 3/3)
+[2025-07-15 16:07:22] [ERROR]    ❌ Augment Code lifecycle failed after 3 attempts
+[2025-07-15 16:07:22] [INFO]    🔄 Final recovery attempt...
+[2025-07-15 16:07:22] [INFO] 🔄 Attempting comprehensive system recovery...
+[2025-07-15 16:07:22] [SUCCESS]    ✅ Recovery step: cleanup_corrupted_state
+[2025-07-15 16:07:22] [SUCCESS]    ✅ Recovery step: reset_environment_variables
+[2025-07-15 16:07:22] [SUCCESS]    ✅ Recovery step: repair_file_permissions
+[sudo] password for owner: 
+[2025-07-15 16:08:17] [SUCCESS]    ✅ Recovery step: restart_system_services
+./install-test-n8n-mcp-docker.sh: line 2054: cleanup_temp_files: command not found
+[2025-07-15 16:08:18] [SUCCESS]    ✅ Recovery step: clear_temporary_files
+[2025-07-15 16:08:18] [SUCCESS]    ✅ Recovery step: rebuild_configuration
+[2025-07-15 16:08:18] [SUCCESS]    ✅ Recovery step: verify_system_integrity
+[2025-07-15 16:08:18] [SUCCESS] ✅ Comprehensive recovery successful (7/7 steps)
+[2025-07-15 16:08:18] [SUCCESS]    ✅ Comprehensive recovery successful
+[2025-07-15 16:08:18] [INFO]    Managing Augment Code lifecycle...
+[2025-07-15 16:08:18] [INFO]    Starting Augment Code...
+./install-test-n8n-mcp-docker.sh: line 3219: augment: command not found
+[2025-07-15 16:08:23] [ERROR]    Failed to start Augment Code
+[2025-07-15 16:08:30] [ERROR]    ❌ Augment Code lifecycle failed permanently
+[2025-07-15 16:08:31] [INFO] Starting cleanup process (exit code: 1)...
+[2025-07-15 16:08:31] [INFO] Terminating monitoring process: 227610
+[2025-07-15 16:08:31] [INFO] Terminating monitoring process: 227614
+[2025-07-15 16:08:31] [INFO] Terminating monitoring process: 227616
+[2025-07-15 16:08:31] [INFO] Terminating monitoring process: 227617
+[2025-07-15 16:08:31] [INFO] Securely deleting: /tmp/n8n-mcp-logs-1752609666/performance.log
+[2025-07-15 16:08:31] [INFO] === RESOURCE AUDIT ===
+[2025-07-15 16:08:31] [INFO] CPU usage: 4.5%
+[2025-07-15 16:08:31] [INFO] Memory: Mem:           5.7Gi       3.4Gi       1.1Gi       132Mi       1.6Gi       2.2Gi
+[2025-07-15 16:08:31] [INFO] Disk usage: 7%
+[2025-07-15 16:08:31] [INFO] Open file descriptors: 15
+[2025-07-15 16:08:31] [INFO] === AUDIT COMPLETED ===
+2025-07-15 16:08:31 [INFO] Removing log directory: /tmp/n8n-mcp-logs-1752609666
+[2025-07-15 16:08:31] [WARN] Background jobs still running:
+[2]  227612 Exit 1                  dmesg -w > "$LOG_DIR/kernel.log" 2>&1
+[6]  230407 Exit 127                augment
+[7]  230538 Exit 127                augment
+[8]  230756 Exit 127                augment
+[9]  230910 Exit 127                augment
+[10]  231128 Exit 127                augment
+[11]  231800 Exit 127                augment
+2025-07-15 16:08:31 [SUCCESS] Cleanup completed
