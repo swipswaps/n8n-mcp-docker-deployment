@@ -52,15 +52,21 @@ readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
 readonly NC='\033[0m' # No Color
 
-# Enhanced logging functions with comprehensive event capture and tee output
+# Enhanced logging functions with comprehensive event capture and safe tee output
 log() {
     local level="$1"
     shift
     local timestamp
     timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
 
-    # Output to both terminal and multiple log files using tee
-    echo -e "[$timestamp] [$level] $*" | tee -a "$LOG_DIR/script.log" "$LOG_DIR/events.log" >&2
+    # Always output to terminal
+    echo -e "[$timestamp] [$level] $*" >&2
+
+    # Safe logging to files only if log directory exists
+    if [[ -d "$LOG_DIR" ]]; then
+        echo "[$timestamp] [$level] $*" >> "$LOG_DIR/script.log" 2>/dev/null || true
+        echo "[$timestamp] [$level] $*" >> "$LOG_DIR/events.log" 2>/dev/null || true
+    fi
 
     # Capture system context for important events
     if [[ "$level" =~ (ERROR|WARN|SUCCESS) ]] || [[ "$*" =~ (Phase|Starting|Executing|Failed|Complete) ]]; then
@@ -74,13 +80,15 @@ log_info() {
 
 log_warn() {
     log "WARN" "${YELLOW}$*${NC}"
-    # Additional warning context
+    # Additional warning context with safe timestamp
+    local timestamp="${timestamp:-$(date '+%Y-%m-%d %H:%M:%S')}"
     echo "[$timestamp] [WARN] $*" >> "$LOG_DIR/warnings.log" 2>/dev/null || true
 }
 
 log_error() {
     log "ERROR" "${RED}$*${NC}"
-    # Additional error context
+    # Additional error context with safe timestamp
+    local timestamp="${timestamp:-$(date '+%Y-%m-%d %H:%M:%S')}"
     echo "[$timestamp] [ERROR] $*" >> "$LOG_DIR/errors.log" 2>/dev/null || true
     capture_error_context "$*"
 }
@@ -406,13 +414,22 @@ cleanup() {
         fi
     done
 
-    # Remove temporary directories
+    # Final resource audit before removing log directory
+    audit_resources
+
+    # Remove temporary directories (log directory last)
     for dir in "${TEMP_DIRS[@]}"; do
-        if [[ -d "$dir" ]]; then
+        if [[ -d "$dir" && "$dir" != "$LOG_DIR" ]]; then
             log_info "Removing temporary directory: $dir"
             rm -rf "$dir" 2>/dev/null || true
         fi
     done
+
+    # Remove log directory last to avoid tee errors
+    if [[ -d "$LOG_DIR" ]]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') [INFO] Removing log directory: $LOG_DIR" >&2
+        rm -rf "$LOG_DIR" 2>/dev/null || true
+    fi
 
     # Stop and remove Docker containers
     for container in "${DOCKER_CONTAINERS[@]}"; do
@@ -431,10 +448,7 @@ cleanup() {
         jobs -p | xargs -r kill 2>/dev/null || true
     fi
 
-    # Final resource audit
-    audit_resources
-
-    log_success "Cleanup completed"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') [SUCCESS] Cleanup completed" >&2
     exit $exit_code
 }
 
@@ -1739,12 +1753,35 @@ configure_installation_options() {
     RUN_TESTS="true"
     ENABLE_SELF_HEALING="true"
 
-    # Optional customizations only
-    read -p "   Enable verbose logging? [y/N]: " -r verbose_logging
-    [[ $verbose_logging =~ ^[Yy] ]] && VERBOSE_LOGGING="true" || VERBOSE_LOGGING="false"
+    # Optional customizations - respect INTERACTIVE and SILENT flags
+    if [[ "${INTERACTIVE:-true}" == "true" && "${SILENT:-false}" != "true" ]]; then
+        local verbose_logging create_shortcuts
 
-    read -p "   Create desktop shortcuts? [Y/n]: " -r create_shortcuts
-    [[ $create_shortcuts =~ ^[Nn] ]] && CREATE_SHORTCUTS="false" || CREATE_SHORTCUTS="true"
+        echo -n "   Enable verbose logging? [y/N]: "
+        if read -t 30 -r verbose_logging 2>/dev/null; then
+            [[ $verbose_logging =~ ^[Yy] ]] && VERBOSE_LOGGING="true" || VERBOSE_LOGGING="false"
+        else
+            echo
+            log_info "   ⏳ No response - using default: No"
+            VERBOSE_LOGGING="false"
+        fi
+
+        echo -n "   Create desktop shortcuts? [Y/n]: "
+        if read -t 30 -r create_shortcuts 2>/dev/null; then
+            [[ $create_shortcuts =~ ^[Nn] ]] && CREATE_SHORTCUTS="false" || CREATE_SHORTCUTS="true"
+        else
+            echo
+            log_info "   ⏳ No response - using default: Yes"
+            CREATE_SHORTCUTS="true"
+        fi
+    else
+        # Silent mode - use sensible defaults
+        log_info "   🔇 Silent mode - using default configurations:"
+        VERBOSE_LOGGING="${VERBOSE_LOGGING:-false}"
+        CREATE_SHORTCUTS="${CREATE_SHORTCUTS:-true}"
+        log_info "   • Verbose logging: $VERBOSE_LOGGING"
+        log_info "   • Desktop shortcuts: $CREATE_SHORTCUTS"
+    fi
 
     echo
 }
