@@ -1,0 +1,546 @@
+owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment$ gh repo sync
+✓ Synced the "main" branch from "swipswaps/n8n-mcp-docker-deployment" to local repository
+owner@owner-macbookpro92:~/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment$ ./install-test-n8n-mcp-docker.sh
+[2025-07-15 20:53:44] [INFO] 🔧 Setting up GNU Bash compliant signal handling...
+[2025-07-15 20:53:44] [INFO]    📋 Interactive shell detected - standard signal handling
+[2025-07-15 20:53:44] [SUCCESS] ✅ Signal handling configured per GNU Bash manual
+[2025-07-15 20:53:44] [INFO] === N8N-MCP FULLY AUTOMATED DEPLOYMENT ===
+[2025-07-15 20:53:44] [INFO] Version: 0.3.0-beta
+[2025-07-15 20:53:44] [INFO] Started: 2025-07-15 20:53:44
+[2025-07-15 20:53:44] [INFO] PID: 288624
+[2025-07-15 20:53:44] [INFO] User: owner
+[2025-07-15 20:53:44] [INFO] Platform: Linux 6.15.5-200.fc42.x86_64
+[2025-07-15 20:53:44] [INFO] 🔄 Enabling self-healing mechanisms...
+[2025-07-15 20:53:44] [INFO]    ⏳ Health monitoring will start after installation completes
+[2025-07-15 20:53:44] [INFO]    Docker recovery mechanisms enabled
+[2025-07-15 20:53:44] [INFO]    Augment Code recovery mechanisms enabled
+[2025-07-15 20:53:44] [INFO]    MCP configuration recovery mechanisms enabled
+[2025-07-15 20:53:44] [INFO]    Permission recovery mechanisms enabled
+[2025-07-15 20:53:44] [INFO]    Setting up health monitoring...
+[2025-07-15 20:53:44] [SUCCESS]    ✅ Health monitoring configured
+[2025-07-15 20:53:45] [SUCCESS] ✅ Self-healing mechanisms enabled
+╔══════════════════════════════════════════════════════════════╗
+║                n8n-mcp Docker Installation                   ║
+║          Augment Code Workflow Automation Setup             ║
+║                                                              ║
+║  🚀 FULLY AUTOMATED INSTALLATION                            ║
+║                                                              ║
+║  This script will automatically:                            ║
+║  • Install ALL required dependencies (including Augment)    ║
+║  • Setup Docker and n8n-mcp container                       ║
+║  • Configure Augment Code integration                       ║
+║  • Run comprehensive testing (12 tests)                     ║
+║  • Enable self-healing mechanisms                           ║
+║  • Verify complete installation                             ║
+║                                                              ║
+║  ✅ Zero manual steps required                              ║
+║  ✅ Everything works or is self-healed                      ║
+║  ✅ Complete dependency abstraction                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+[2025-07-15 20:53:45] [INFO] ⏳ Waiting for user confirmation...
+🚀 Proceed with fully automated installation? [Y/n]: y
+
+[2025-07-15 20:53:46] [INFO] ✅ User confirmed installation
+
+📋 Installation Configuration:
+   ✅ All dependencies will be installed automatically
+   ✅ Augment Code will be managed automatically
+   ✅ Comprehensive testing will be performed
+   ✅ Self-healing mechanisms enabled
+
+   Enable verbose logging? [y/N]: y
+   Create desktop shortcuts? [Y/n]: y
+
+[2025-07-15 20:53:47] [INFO] Starting performance monitoring...
+[2025-07-15 20:53:47] [INFO] Performance monitoring started
+[2025-07-15 20:53:47] [INFO] Start time: Tue Jul 15 08:53:47 PM EDT 2025
+[2025-07-15 20:53:47] [INFO] Start memory: 5211MB
+[2025-07-15 20:53:47] [INFO] Start CPU: 8.4973%
+[2025-07-15 20:53:47] [INFO] Setting up comprehensive monitoring...
+[2025-07-15 20:53:47] [INFO] Started system monitoring: PID 288766
+[2025-07-15 20:53:47] [INFO] Started kernel monitoring: PID 288768
+[2025-07-15 20:53:47] [INFO] Started X11 monitoring: PID 288770
+[2025-07-15 20:53:47] [INFO] Started hardware monitoring: PID 288774
+[2025-07-15 20:53:47] [SUCCESS] Monitoring setup complete. PIDs: 288766 288768 288770 288772 288774
+[2025-07-15 20:53:47] [INFO] 🚀 Starting fully automated installation (estimated time: 5-7 minutes)
+[2025-07-15 20:53:48] [INFO] 📊 Installation will proceed through 7 phases with automatic recovery
+
+🔍 Current System Status:
+   • Docker: active
+   • Augment Code: VSCode extension installed
+   • Network: connected
+   • Disk Space: 7% used
+   • Memory: 4.0Gi/5.7Gi
+
+
+📊 Installation Progress: 14% Complete
+[███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] Phase 1/7
+
+
+╔════════════════════════════════════════════════════════════════╗
+║                    INSTALLATION STATUS                        ║
+╠════════════════════════════════════════════════════════════════╣
+║ Phase: Phase 1/7: System Verification
+║ Step:  OS Detection & Validation
+║ Status: In Progress
+║ Time:  2025-07-15 20:54:04
+╚════════════════════════════════════════════════════════════════╝
+
+[2025-07-15 20:54:04] [INFO] 🔍 Phase 1/7: System Verification & Auto-Recovery (10% complete)
+[2025-07-15 20:54:04] [INFO]    Executing: System OS validation (attempt 1/3)
+[2025-07-15 20:54:04] [INFO] 🔍 Detecting operating system...
+[2025-07-15 20:54:04] [SUCCESS] ✅ Supported OS detected: Fedora Linux 42 (Workstation Edition)
+[2025-07-15 20:54:04] [INFO]    OS: fedora 42
+[2025-07-15 20:54:04] [INFO]    Package Manager: dnf
+[2025-07-15 20:54:04] [SUCCESS]    ✅ System OS validation completed successfully
+[2025-07-15 20:54:04] [INFO]    Executing: Disk space verification (attempt 1/3)
+[2025-07-15 20:54:04] [INFO] 💾 Checking available disk space...
+[2025-07-15 20:54:04] [SUCCESS] ✅ Disk space verified: 892421MB available
+[2025-07-15 20:54:04] [INFO]    Docker image: ~300MB
+[2025-07-15 20:54:04] [INFO]    Logs and temp: ~50MB
+[2025-07-15 20:54:04] [INFO]    Remaining: 892071MB
+[2025-07-15 20:54:04] [SUCCESS]    ✅ Disk space verification completed successfully
+[2025-07-15 20:54:04] [INFO]    Executing: Internet connectivity (attempt 1/3)
+[2025-07-15 20:54:04] [INFO] 🌐 Testing internet connectivity...
+[2025-07-15 20:54:04] [INFO]    ✅ ghcr.io reachable
+[2025-07-15 20:54:04] [INFO]    ✅ github.com reachable
+[2025-07-15 20:54:04] [INFO]    ✅ google.com reachable
+[2025-07-15 20:54:04] [SUCCESS] ✅ Internet connectivity verified
+[2025-07-15 20:54:04] [SUCCESS]    ✅ Internet connectivity completed successfully
+
+📊 Installation Progress: 28% Complete
+[██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] Phase 2/7
+
+
+╔════════════════════════════════════════════════════════════════╗
+║                    INSTALLATION STATUS                        ║
+╠════════════════════════════════════════════════════════════════╣
+║ Phase: Phase 2/7: Dependencies Management
+║ Step:  Installing System Dependencies
+║ Status: In Progress
+║ Time:  2025-07-15 20:54:04
+╚════════════════════════════════════════════════════════════════╝
+
+[2025-07-15 20:54:05] [INFO] 📦 Phase 2/7: Complete Dependencies Management (25% complete)
+[2025-07-15 20:54:05] [INFO]    Executing: System dependencies (attempt 1/3)
+[2025-07-15 20:54:05] [INFO] 📦 Installing system dependencies...
+[2025-07-15 20:54:05] [SUCCESS] ✅ All dependencies already installed
+[2025-07-15 20:54:05] [INFO]    ✅ git available
+[2025-07-15 20:54:05] [INFO]    ✅ jq available
+[2025-07-15 20:54:05] [INFO]    ✅ curl available
+[2025-07-15 20:54:05] [INFO]    ✅ wget available
+[2025-07-15 20:54:05] [SUCCESS]    ✅ System dependencies completed successfully
+[2025-07-15 20:54:05] [INFO]    Executing: Docker setup (attempt 1/3)
+[2025-07-15 20:54:05] [INFO] 🐳 Setting up Docker environment...
+[2025-07-15 20:54:07] [SUCCESS] ✅ Docker ready: 28.3.2
+[2025-07-15 20:54:07] [SUCCESS]    ✅ Docker setup completed successfully
+[2025-07-15 20:54:07] [INFO]    Executing: Augment Code installation (attempt 1/3)
+[2025-07-15 20:54:07] [INFO] 🤖 Managing Augment Code dependency...
+[2025-07-15 20:54:07] [INFO] 🔍 Checking for Augment Code IDE extensions...
+[2025-07-15 20:54:07] [INFO]    📋 Checking VS Code extensions...
+[2025-07-15 20:54:07] [INFO] 🔄 Executing: VS Code extension check
+[2025-07-15 20:54:08] [INFO] 📋 Command: code --list-extensions 2>/dev/null | grep -i augment || echo 'No Augment extension found'
+[2025-07-15 20:54:08] [INFO] ⏱️  Timeout: 15s
+   [PROGRESS] .
+   [OUTPUT] augment.vscode-augment
+   [PROGRESS] 
+[2025-07-15 20:54:09] [INFO] [COMMAND OUTPUT]
+   [OUT] augment.vscode-augment
+[2025-07-15 20:54:09] [SUCCESS] ✅ VS Code extension check completed successfully
+[2025-07-15 20:54:09] [SUCCESS] ✅ Augment Code VS Code extension detected
+[2025-07-15 20:54:09] [INFO]    💡 Augment Code is available in VS Code
+[2025-07-15 20:54:09] [INFO]    🎯 Skipping installation - extension already present
+[2025-07-15 20:54:09] [SUCCESS]    ✅ Augment Code installation completed successfully
+[2025-07-15 20:54:09] [INFO] ⚙️  Phase 3/7: Environment Setup & Configuration (40% complete)
+[2025-07-15 20:54:09] [INFO]    Executing: Environment setup (attempt 1/3)
+[2025-07-15 20:54:09] [INFO]    Creating installation environment...
+[2025-07-15 20:54:09] [SUCCESS]    ✅ Environment setup completed successfully
+[2025-07-15 20:54:09] [INFO]    Executing: Permission configuration (attempt 1/3)
+[2025-07-15 20:54:09] [INFO]    Configuring system permissions...
+[2025-07-15 20:54:10] [SUCCESS]    ✅ Permission configuration completed successfully
+[2025-07-15 20:54:10] [INFO]    Executing: Service integration (attempt 1/3)
+[2025-07-15 20:54:10] [INFO]    Setting up service integration...
+[sudo] password for owner: 
+wwwwwwwww[2025-07-15 20:54:34] [SUCCESS]    ✅ Service integration completed successfully
+[2025-07-15 20:54:34] [INFO] 🚀 Phase 4/7: n8n-mcp Deployment & Testing (55% complete)
+[2025-07-15 20:54:34] [INFO]    Executing: n8n-mcp image download (attempt 1/3)
+[2025-07-15 20:54:34] [INFO] 📥 Downloading n8n-mcp Docker image with real-time progress...
+[2025-07-15 20:54:34] [INFO] 📋 Image: ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 20:54:34] [INFO] 📊 Expected size: ~300MB
+[2025-07-15 20:54:34] [INFO] 🔄 Executing: n8n-mcp Docker image download
+[2025-07-15 20:54:34] [INFO] 📋 Command: docker pull "ghcr.io/czlonkowski/n8n-mcp:latest"
+[2025-07-15 20:54:34] [INFO] ⏱️  Timeout: 300s
+   [PROGRESS] ..
+   [OUTPUT] ghcr.io/czlonkowski/n8n-mcp:latest
+   [PROGRESS] 
+[2025-07-15 20:54:36] [INFO] [COMMAND OUTPUT]
+   [OUT] latest: Pulling from czlonkowski/n8n-mcp
+   [OUT] Digest: sha256:9dd679269d585e0d1a4b64290d5b4b4540de5df5c49919365fe9e5d3032dd7bf
+   [OUT] Status: Image is up to date for ghcr.io/czlonkowski/n8n-mcp:latest
+   [OUT] ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 20:54:36] [SUCCESS] ✅ n8n-mcp Docker image download completed successfully
+[2025-07-15 20:54:36] [SUCCESS] ✅ n8n-mcp image downloaded successfully
+[2025-07-15 20:54:36] [INFO] 📋 Verifying downloaded image...
+[2025-07-15 20:54:36] [INFO] 🔄 Executing: Image verification
+[2025-07-15 20:54:36] [INFO] 📋 Command: docker images "ghcr.io/czlonkowski/n8n-mcp:latest"
+[2025-07-15 20:54:36] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+   [OUTPUT] ghcr.io/czlonkowski/n8n-mcp   latest    8d7f3d90a167   2 hours ago   300MB
+   [PROGRESS] 
+[2025-07-15 20:54:37] [INFO] [COMMAND OUTPUT]
+   [OUT] REPOSITORY                    TAG       IMAGE ID       CREATED       SIZE
+   [OUT] ghcr.io/czlonkowski/n8n-mcp   latest    8d7f3d90a167   2 hours ago   300MB
+[2025-07-15 20:54:37] [SUCCESS] ✅ Image verification completed successfully
+[2025-07-15 20:54:37] [SUCCESS] ✅ Image verification completed
+[2025-07-15 20:54:37] [SUCCESS]    ✅ n8n-mcp image download completed successfully
+[2025-07-15 20:54:37] [INFO]    Executing: Persistent container deployment (attempt 1/3)
+[2025-07-15 20:54:38] [INFO] Deploying persistent n8n-mcp container with secure inspection and automated lifecycle management...
+[2025-07-15 20:54:38] [INFO] 🚀 Creating persistent n8n-mcp container...
+[2025-07-15 20:54:38] [INFO] 📋 Removing existing container: n8n-mcp
+[2025-07-15 20:54:38] [INFO] 🔄 Executing: Container cleanup
+[2025-07-15 20:54:38] [INFO] 📋 Command: docker stop n8n-mcp && docker rm n8n-mcp
+[2025-07-15 20:54:38] [INFO] ⏱️  Timeout: 30s
+   [PROGRESS] .......... (10s/30s)......
+   [OUTPUT] n8n-mcp
+   [PROGRESS] 
+[2025-07-15 20:54:54] [INFO] [COMMAND OUTPUT]
+   [OUT] n8n-mcp
+   [OUT] n8n-mcp
+[2025-07-15 20:54:54] [SUCCESS] ✅ Container cleanup completed successfully
+[2025-07-15 20:54:54] [SUCCESS]    ✅ Existing container removed
+[2025-07-15 20:54:54] [INFO] 🔄 Executing: Persistent container creation
+[2025-07-15 20:54:54] [INFO] 📋 Command: docker run -d --name n8n-mcp -p 5678:5678 --restart unless-stopped ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 20:54:54] [INFO] ⏱️  Timeout: 60s
+   [PROGRESS] ..
+   [OUTPUT] da2b3004705b6b64ab8d35ccd0aec3baf0e94c800a823fb9479c0ff1eacd0b24
+   [PROGRESS] .
+   [OUTPUT] da2b3004705b6b64ab8d35ccd0aec3baf0e94c800a823fb9479c0ff1eacd0b24
+   [PROGRESS] 
+[2025-07-15 20:54:57] [INFO] [COMMAND OUTPUT]
+   [OUT] da2b3004705b6b64ab8d35ccd0aec3baf0e94c800a823fb9479c0ff1eacd0b24
+[2025-07-15 20:54:57] [SUCCESS] ✅ Persistent container creation completed successfully
+[2025-07-15 20:54:57] [SUCCESS]    ✅ Container created with restart policy
+[2025-07-15 20:54:57] [SUCCESS] ✅ Persistent container created and running: n8n-mcp
+[2025-07-15 20:54:57] [INFO] ⏳ Waiting for container to be fully ready...
+[2025-07-15 20:55:02] [SUCCESS] Persistent container created successfully
+[2025-07-15 20:55:02] [INFO] Verifying container reality: n8n-mcp
+[2025-07-15 20:55:02] [SUCCESS] Container is accessible
+[2025-07-15 20:55:02] [SUCCESS] Node.js available: v20.19.3
+[2025-07-15 20:55:02] [INFO] Container working directory: /app
+[2025-07-15 20:55:02] [INFO] Container contents:
+[2025-07-15 20:55:02] [INFO]    total 72
+[2025-07-15 20:55:02] [INFO]    drwxr-xr-x    1 nodejs   nodejs           8 Jul 15 22:44 .
+[2025-07-15 20:55:02] [INFO]    drwxr-xr-x    1 root     root             6 Jul 16 00:54 ..
+[2025-07-15 20:55:02] [INFO]    -rw-r--r--    1 nodejs   nodejs        2649 Jul 15 22:43 .env.example
+[2025-07-15 20:55:02] [INFO]    drwxr-xr-x    1 nodejs   nodejs          16 Jul 16 00:55 data
+[2025-07-15 20:55:02] [INFO]    drwxr-xr-x    1 nodejs   nodejs         758 Jul 15 22:44 dist
+[2025-07-15 20:55:02] [INFO]    drwxr-xr-x    1 nodejs   nodejs        2884 Jul 15 22:44 node_modules
+[2025-07-15 20:55:02] [INFO]    -rw-r--r--    1 nodejs   nodejs       59102 Jul 15 22:44 package-lock.json
+[2025-07-15 20:55:02] [INFO]    -rw-r--r--    1 nodejs   nodejs         489 Jul 15 22:43 package.json
+[2025-07-15 20:55:02] [INFO]    drwxr-xr-x    1 nodejs   nodejs          16 Jul 15 22:44 src
+[2025-07-15 20:55:02] [SUCCESS] Container reality verification completed
+[2025-07-15 20:55:02] [SUCCESS] Container reality verified
+[2025-07-15 20:55:02] [INFO] Detecting MCP server path securely in container: n8n-mcp
+[2025-07-15 20:55:02] [INFO] Inspecting container filesystem: n8n-mcp
+[2025-07-15 20:55:03] [INFO] JavaScript files found in container:
+[2025-07-15 20:55:03] [INFO]    Found: /opt/yarn-v1.22.22/preinstall.js
+[2025-07-15 20:55:03] [INFO]    Found: /app/dist/http-server-single-session.js
+[2025-07-15 20:55:03] [INFO]    Found: /app/dist/http-server.js
+[2025-07-15 20:55:03] [INFO]    Found: /app/dist/index.js
+[2025-07-15 20:55:03] [INFO]    Found: /app/dist/mcp-engine.js
+[2025-07-15 20:55:03] [SUCCESS] Detected JavaScript file: /opt/yarn-v1.22.22/preinstall.js
+[2025-07-15 20:55:03] [SUCCESS] MCP server path verified: /opt/yarn-v1.22.22/preinstall.js
+[2025-07-15 20:55:03] [SUCCESS] MCP server path detected securely: /opt/yarn-v1.22.22/preinstall.js
+[2025-07-15 20:55:03] [INFO] Generating working MCP configurations securely...
+[2025-07-15 20:55:03] [SUCCESS] Augment MCP configuration created: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/augment-mcp-settings.json
+[2025-07-15 20:55:03] [SUCCESS] VS Code MCP directory ready
+[2025-07-15 20:55:03] [SUCCESS] VS Code MCP configuration created: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/.vscode/mcp.json
+[2025-07-15 20:55:03] [SUCCESS] MCP configurations generated securely with container: n8n-mcp, path: /opt/yarn-v1.22.22/preinstall.js
+[2025-07-15 20:55:03] [SUCCESS] MCP configurations generated securely
+[2025-07-15 20:55:03] [INFO] Testing MCP integration securely with container: n8n-mcp
+[2025-07-15 20:55:03] [SUCCESS] Container is accessible
+[2025-07-15 20:55:03] [SUCCESS] Node.js is available in container: v20.19.3
+[2025-07-15 20:55:03] [SUCCESS] MCP server path is accessible: /opt/yarn-v1.22.22/preinstall.js
+[2025-07-15 20:55:03] [SUCCESS] Container health check passed
+[2025-07-15 20:55:03] [SUCCESS] MCP integration testing completed securely
+[2025-07-15 20:55:03] [SUCCESS] MCP integration verified securely
+[2025-07-15 20:55:03] [INFO] 🔧 Creating container startup service...
+[2025-07-15 20:55:03] [INFO] 🔄 Executing: Container startup script creation
+[2025-07-15 20:55:04] [INFO] 📋 Command: cat > '/home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh' << 'EOF'
+#!/bin/bash
+# Automatic n8n-mcp container startup script
+# Generated by n8n-mcp-docker-deployment
+
+CONTAINER_NAME="n8n-mcp"
+IMAGE_NAME="ghcr.io/czlonkowski/n8n-mcp:latest"
+
+echo "🚀 n8n-mcp Container Startup Service"
+echo "Container: $CONTAINER_NAME"
+echo "Image: $IMAGE_NAME"
+echo
+
+# Check if container is running
+if docker ps --format "{{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
+    echo "✅ n8n-mcp container is already running"
+    docker ps | grep "$CONTAINER_NAME"
+else
+    echo "🔄 Starting n8n-mcp container..."
+
+    # Remove stopped container if exists
+    if docker ps -a --format "{{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
+        echo "📋 Removing stopped container..."
+        docker rm "$CONTAINER_NAME"
+    fi
+
+    # Start container with restart policy
+    if docker run -d --name "$CONTAINER_NAME" -p 5678:5678 --restart unless-stopped "$IMAGE_NAME"; then
+        echo "✅ n8n-mcp container started successfully"
+        echo "🌐 Container accessible at: http://localhost:5678"
+        echo "🔧 MCP integration ready for Augment Code"
+    else
+        echo "❌ Failed to start n8n-mcp container"
+        exit 1
+    fi
+fi
+
+echo
+echo "📋 Container Status:"
+docker ps | grep "$CONTAINER_NAME" || echo "Container not running"
+echo
+echo "💡 To stop container: docker stop $CONTAINER_NAME"
+echo "💡 To restart container: docker restart $CONTAINER_NAME"
+echo "💡 Container will auto-restart on system reboot"
+EOF
+[2025-07-15 20:55:04] [INFO] ⏱️  Timeout: 20s
+   [PROGRESS] .
+[2025-07-15 20:55:05] [SUCCESS] ✅ Container startup script creation completed successfully
+[2025-07-15 20:55:05] [SUCCESS]    ✅ Startup script created: /home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh
+[2025-07-15 20:55:05] [INFO] 🔄 Executing: Script permissions setup
+[2025-07-15 20:55:05] [INFO] 📋 Command: chmod +x '/home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh'
+[2025-07-15 20:55:05] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+[2025-07-15 20:55:06] [SUCCESS] ✅ Script permissions setup completed successfully
+[2025-07-15 20:55:06] [SUCCESS]    ✅ Startup script is executable
+[2025-07-15 20:55:06] [INFO] 💡 Container management:
+[2025-07-15 20:55:06] [INFO]    • Start container: .//home/owner/Documents/6869bb09-1dcc-8008-99da-27a686609b2b/n8n-mcp-docker-deployment/start-n8n-mcp.sh
+[2025-07-15 20:55:06] [INFO]    • Container will auto-restart on system reboot
+[2025-07-15 20:55:06] [INFO]    • MCP integration ready for Augment Code
+[2025-07-15 20:55:06] [SUCCESS] ✅ Container startup service created successfully
+[2025-07-15 20:55:06] [SUCCESS] Persistent n8n-mcp container deployed securely and configured for MCP integration
+[2025-07-15 20:55:06] [SUCCESS]    ✅ Persistent container deployment completed successfully
+[2025-07-15 20:55:06] [INFO]    Executing: Performance optimization (attempt 1/3)
+[2025-07-15 20:55:06] [INFO] 🚀 Optimizing container performance with real-time feedback...
+[2025-07-15 20:55:06] [INFO] 📋 Step 1/5: System resource analysis
+[2025-07-15 20:55:06] [INFO] 🔄 Executing: Container resource analysis
+[2025-07-15 20:55:06] [INFO] 📋 Command: docker stats --no-stream --format 'table {{.Container}}	{{.CPUPerc}}	{{.MemUsage}}' 2>/dev/null || echo 'No running containers to analyze'
+[2025-07-15 20:55:06] [INFO] ⏱️  Timeout: 15s
+   [PROGRESS] ...
+   [OUTPUT] d1018fd04405   0.00%     6.621MiB / 5.685GiB
+   [PROGRESS] 
+[2025-07-15 20:55:09] [INFO] [COMMAND OUTPUT]
+   [OUT] CONTAINER      CPU %     MEM USAGE / LIMIT
+   [OUT] da2b3004705b   0.00%     82.27MiB / 5.685GiB
+   [OUT] 3fa8f5f87a57   0.00%     2.141MiB / 5.685GiB
+   [OUT] 547f777af4b4   0.00%     2.883MiB / 5.685GiB
+   [OUT] d1018fd04405   0.00%     6.621MiB / 5.685GiB
+[2025-07-15 20:55:09] [SUCCESS] ✅ Container resource analysis completed successfully
+[2025-07-15 20:55:09] [SUCCESS]    ✅ Resource analysis completed
+[2025-07-15 20:55:09] [INFO] 📋 Step 2/5: Container cleanup optimization
+[2025-07-15 20:55:09] [INFO] 🔄 Executing: Container cleanup
+[2025-07-15 20:55:09] [INFO] 📋 Command: docker container prune -f
+[2025-07-15 20:55:09] [INFO] ⏱️  Timeout: 30s
+   [PROGRESS] .
+   [OUTPUT] Total reclaimed space: 0B
+   [PROGRESS] 
+[2025-07-15 20:55:10] [INFO] [COMMAND OUTPUT]
+   [OUT] Total reclaimed space: 0B
+[2025-07-15 20:55:10] [SUCCESS] ✅ Container cleanup completed successfully
+[2025-07-15 20:55:10] [SUCCESS]    ✅ Container cleanup completed
+[2025-07-15 20:55:10] [INFO] 📋 Step 3/5: Image optimization
+[2025-07-15 20:55:10] [INFO] 🔄 Executing: Image cleanup
+[2025-07-15 20:55:10] [INFO] 📋 Command: docker image prune -f
+[2025-07-15 20:55:10] [INFO] ⏱️  Timeout: 60s
+   [PROGRESS] .
+   [OUTPUT] Total reclaimed space: 0B
+   [PROGRESS] 
+[2025-07-15 20:55:11] [INFO] [COMMAND OUTPUT]
+   [OUT] Total reclaimed space: 0B
+[2025-07-15 20:55:11] [SUCCESS] ✅ Image cleanup completed successfully
+[2025-07-15 20:55:11] [SUCCESS]    ✅ Image optimization completed
+[2025-07-15 20:55:11] [INFO] 📋 Step 4/5: Network optimization
+[2025-07-15 20:55:11] [INFO] 🔄 Executing: Network cleanup
+[2025-07-15 20:55:11] [INFO] 📋 Command: docker network prune -f
+[2025-07-15 20:55:11] [INFO] ⏱️  Timeout: 30s
+   [PROGRESS] .
+[2025-07-15 20:55:12] [SUCCESS] ✅ Network cleanup completed successfully
+[2025-07-15 20:55:12] [SUCCESS]    ✅ Network optimization completed
+[2025-07-15 20:55:12] [INFO] 📋 Step 5/5: Volume optimization
+[2025-07-15 20:55:12] [INFO] 🔄 Executing: Volume cleanup
+[2025-07-15 20:55:12] [INFO] 📋 Command: docker volume prune -f
+[2025-07-15 20:55:12] [INFO] ⏱️  Timeout: 30s
+   [PROGRESS] .
+   [OUTPUT] Total reclaimed space: 0B
+   [PROGRESS] 
+[2025-07-15 20:55:13] [INFO] [COMMAND OUTPUT]
+   [OUT] Total reclaimed space: 0B
+[2025-07-15 20:55:13] [SUCCESS] ✅ Volume cleanup completed successfully
+[2025-07-15 20:55:13] [SUCCESS]    ✅ Volume optimization completed
+[2025-07-15 20:55:13] [INFO] 📋 Final: System-wide Docker cleanup
+[2025-07-15 20:55:13] [INFO] 🔄 Executing: System-wide Docker cleanup
+[2025-07-15 20:55:13] [INFO] 📋 Command: docker system prune -f
+[2025-07-15 20:55:13] [INFO] ⏱️  Timeout: 60s
+   [PROGRESS] ..
+   [OUTPUT] Total reclaimed space: 0B
+   [PROGRESS] 
+[2025-07-15 20:55:15] [INFO] [COMMAND OUTPUT]
+   [OUT] Total reclaimed space: 0B
+[2025-07-15 20:55:15] [SUCCESS] ✅ System-wide Docker cleanup completed successfully
+[2025-07-15 20:55:15] [SUCCESS]    ✅ System cleanup completed
+[2025-07-15 20:55:15] [SUCCESS] ✅ Container performance optimization completed with full transparency
+[2025-07-15 20:55:15] [SUCCESS]    ✅ Performance optimization completed successfully
+[2025-07-15 20:55:15] [INFO] 🤖 Phase 5/7: Augment Code Integration & Configuration (70% complete)
+[2025-07-15 20:55:16] [INFO]    Executing: Augment Code lifecycle (attempt 1/3)
+[2025-07-15 20:55:16] [INFO] 🤖 Managing Augment Code IDE integration with real-time feedback...
+[2025-07-15 20:55:16] [INFO] 📋 Step 1/3: Verifying IDE extension status
+[2025-07-15 20:55:16] [INFO] 🔄 Executing: IDE extension verification
+[2025-07-15 20:55:16] [INFO] 📋 Command: code --list-extensions 2>/dev/null | grep -i augment || echo 'VS Code extension check completed'
+[2025-07-15 20:55:16] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+   [OUTPUT] augment.vscode-augment
+   [PROGRESS] 
+[2025-07-15 20:55:17] [INFO] [COMMAND OUTPUT]
+   [OUT] augment.vscode-augment
+[2025-07-15 20:55:17] [SUCCESS] ✅ IDE extension verification completed successfully
+[2025-07-15 20:55:17] [SUCCESS]    ✅ IDE extension verification completed
+[2025-07-15 20:55:17] [INFO] 📋 Step 2/3: Configuring MCP for IDE integration
+[2025-07-15 20:55:17] [INFO]    💡 Augment Code is an IDE extension, not a CLI tool
+[2025-07-15 20:55:17] [INFO]    📋 Creating MCP configuration for IDE integration...
+[2025-07-15 20:55:17] [INFO] 🔄 Executing: MCP configuration directory setup
+[2025-07-15 20:55:17] [INFO] 📋 Command: mkdir -p ~/.config/augment-code/mcp && echo 'MCP config directory created'
+[2025-07-15 20:55:17] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+   [OUTPUT] MCP config directory created
+   [PROGRESS] 
+[2025-07-15 20:55:18] [INFO] [COMMAND OUTPUT]
+   [OUT] MCP config directory created
+[2025-07-15 20:55:18] [SUCCESS] ✅ MCP configuration directory setup completed successfully
+[2025-07-15 20:55:18] [SUCCESS]    ✅ MCP configuration directory ready
+[2025-07-15 20:55:18] [INFO] 📋 Step 3/3: IDE integration guidance
+[2025-07-15 20:55:18] [INFO]    📋 Augment Code Integration Instructions:
+[2025-07-15 20:55:18] [INFO]      • Augment Code runs as IDE extension (VS Code/JetBrains)
+[2025-07-15 20:55:18] [INFO]      • No CLI commands needed - integration is automatic
+[2025-07-15 20:55:18] [INFO]      • MCP server will be available for IDE to connect
+[2025-07-15 20:55:18] [INFO]      • Open your IDE and use Augment Code normally
+[2025-07-15 20:55:18] [INFO]      • n8n-mcp container is running and accessible
+[2025-07-15 20:55:18] [SUCCESS] ✅ Augment Code IDE integration configured with full transparency
+[2025-07-15 20:55:18] [SUCCESS]    ✅ Augment Code lifecycle completed successfully
+[2025-07-15 20:55:18] [INFO]    Executing: MCP configuration (attempt 1/3)
+[2025-07-15 20:55:18] [INFO]    Creating and validating MCP configuration...
+[2025-07-15 20:55:18] [INFO] 📋 Creating MCP server configuration with real-time feedback...
+[2025-07-15 20:55:18] [INFO] 🔄 Executing: MCP config directory creation
+[2025-07-15 20:55:18] [INFO] 📋 Command: mkdir -p "/home/owner/.config/augment-code"
+[2025-07-15 20:55:18] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+[2025-07-15 20:55:19] [SUCCESS] ✅ MCP config directory creation completed successfully
+[2025-07-15 20:55:19] [SUCCESS]    ✅ MCP config directory ready: /home/owner/.config/augment-code
+[2025-07-15 20:55:19] [INFO] 📋 Writing MCP server configuration...
+[2025-07-15 20:55:19] [SUCCESS] ✅ MCP configuration created successfully: /home/owner/.config/augment-code/mcp-servers.json
+[2025-07-15 20:55:19] [INFO] 🔄 Executing: MCP configuration JSON validation
+[2025-07-15 20:55:19] [INFO] 📋 Command: jq empty "/home/owner/.config/augment-code/mcp-servers.json"
+[2025-07-15 20:55:19] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+[2025-07-15 20:55:20] [SUCCESS] ✅ MCP configuration JSON validation completed successfully
+[2025-07-15 20:55:20] [SUCCESS]    ✅ MCP configuration JSON syntax valid
+[2025-07-15 20:55:20] [SUCCESS]    ✅ MCP configuration created and validated
+[2025-07-15 20:55:20] [SUCCESS]    ✅ MCP configuration completed successfully
+[2025-07-15 20:55:20] [INFO]    Executing: Integration testing (attempt 1/3)
+[2025-07-15 20:55:20] [INFO] Testing Augment Code integration (IDE extension verification)...
+[2025-07-15 20:55:21] [SUCCESS] Augment VSCode extension detected
+[2025-07-15 20:55:21] [SUCCESS] MCP configurations created
+[2025-07-15 20:55:21] [SUCCESS] n8n-mcp container is running for MCP integration
+[2025-07-15 20:55:21] [SUCCESS] Augment Code integration verified (IDE extension + MCP ready)
+[2025-07-15 20:55:21] [SUCCESS]    ✅ Integration testing completed successfully
+[2025-07-15 20:55:21] [INFO] 🧪 Phase 6/7: Mandatory Comprehensive Testing & Validation (85% complete)
+[2025-07-15 20:55:21] [INFO] 🧪 Running mandatory comprehensive test suite...
+[2025-07-15 20:55:21] [SUCCESS] ✅ Test 1/12: System prerequisites
+[2025-07-15 20:55:21] [SUCCESS] ✅ Test 2/12: Dependencies availability
+[2025-07-15 20:55:21] [INFO] 🐳 Testing Docker comprehensive functionality...
+[2025-07-15 20:55:26] [SUCCESS]    ✅ Docker comprehensive test passed
+[2025-07-15 20:55:26] [SUCCESS] ✅ Test 3/12: Docker functionality
+[2025-07-15 20:55:26] [INFO] Running Test 4/12: n8n-mcp container (with proper timeout handling)...
+[2025-07-15 20:55:26] [INFO]    [TIMEOUT] Running test_n8n_mcp_container with 10s internal timeout...
+[2025-07-15 20:55:26] [INFO] 🧪 Testing n8n-mcp MCP server per czlonkowski official documentation...
+   [IMAGE] Checking official n8n-mcp MCP server image... ✅
+[2025-07-15 20:55:26] [SUCCESS]    ✅ Official n8n-mcp MCP server image found
+   [MCP] Testing MCP server functionality (stdio mode)... [2025-07-15 20:55:36] [WARN]    [TIMEOUT] Test timed out after 10s, terminating...
+[2025-07-15 20:55:38] [ERROR] ❌ Test 4/12: n8n-mcp container TIMED OUT (10s)
+[2025-07-15 20:55:38] [INFO]    🔄 Attempting container recovery...
+[2025-07-15 20:55:38] [INFO] 📥 Downloading n8n-mcp Docker image with real-time progress...
+[2025-07-15 20:55:38] [INFO] 📋 Image: ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 20:55:38] [INFO] 📊 Expected size: ~300MB
+[2025-07-15 20:55:38] [INFO] 🔄 Executing: n8n-mcp Docker image download
+[2025-07-15 20:55:38] [INFO] 📋 Command: docker pull "ghcr.io/czlonkowski/n8n-mcp:latest"
+[2025-07-15 20:55:38] [INFO] ⏱️  Timeout: 300s
+   [PROGRESS] .
+   [OUTPUT] latest: Pulling from czlonkowski/n8n-mcp
+   [PROGRESS] .
+   [OUTPUT] ghcr.io/czlonkowski/n8n-mcp:latest
+   [PROGRESS] 
+[2025-07-15 20:55:40] [INFO] [COMMAND OUTPUT]
+   [OUT] latest: Pulling from czlonkowski/n8n-mcp
+   [OUT] Digest: sha256:9dd679269d585e0d1a4b64290d5b4b4540de5df5c49919365fe9e5d3032dd7bf
+   [OUT] Status: Image is up to date for ghcr.io/czlonkowski/n8n-mcp:latest
+   [OUT] ghcr.io/czlonkowski/n8n-mcp:latest
+[2025-07-15 20:55:40] [SUCCESS] ✅ n8n-mcp Docker image download completed successfully
+[2025-07-15 20:55:40] [SUCCESS] ✅ n8n-mcp image downloaded successfully
+[2025-07-15 20:55:40] [INFO] 📋 Verifying downloaded image...
+[2025-07-15 20:55:40] [INFO] 🔄 Executing: Image verification
+[2025-07-15 20:55:40] [INFO] 📋 Command: docker images "ghcr.io/czlonkowski/n8n-mcp:latest"
+[2025-07-15 20:55:40] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+   [OUTPUT] ghcr.io/czlonkowski/n8n-mcp   latest    8d7f3d90a167   2 hours ago   300MB
+   [PROGRESS] 
+[2025-07-15 20:55:41] [INFO] [COMMAND OUTPUT]
+   [OUT] REPOSITORY                    TAG       IMAGE ID       CREATED       SIZE
+   [OUT] ghcr.io/czlonkowski/n8n-mcp   latest    8d7f3d90a167   2 hours ago   300MB
+[2025-07-15 20:55:41] [SUCCESS] ✅ Image verification completed successfully
+[2025-07-15 20:55:41] [SUCCESS] ✅ Image verification completed
+[2025-07-15 20:55:41] [INFO] Running Test 5/12: Augment Code installation (with proper timeout handling)...
+[2025-07-15 20:55:41] [INFO]    [TIMEOUT] Running test_augment_code_installation with 10s internal timeout...
+[2025-07-15 20:55:41] [INFO] 🧪 Testing Augment Code installation (IDE extension) with real-time feedback...
+   [VSCODE] Checking VSCode availability... ✅
+[2025-07-15 20:55:41] [SUCCESS]    ✅ VSCode is available
+   [EXTENSION] Checking Augment extension (5s timeout)... ✅
+[2025-07-15 20:55:42] [SUCCESS]    ✅ Augment VSCode extension is installed
+[2025-07-15 20:55:42] [SUCCESS] ✅ Augment Code installation test completed successfully
+[2025-07-15 20:55:42] [INFO]    [TIMEOUT] Test completed in 1s
+[2025-07-15 20:55:42] [SUCCESS] ✅ Test 5/12: Augment Code installation
+[2025-07-15 20:55:42] [SUCCESS] ✅ Test 6/12: MCP configuration
+[2025-07-15 20:55:42] [ERROR] ❌ Test 7/12: Integration functionality FAILED
+[2025-07-15 20:55:42] [INFO]    🔄 Attempting integration recovery...
+[2025-07-15 20:55:42] [WARN] 🔄 Augment Code issue detected - attempting recovery...
+[2025-07-15 20:55:42] [INFO]    📋 Note: Augment Code is a VSCode extension, not a standalone process
+[2025-07-15 20:55:43] [INFO]    ✅ Augment VSCode extension is installed
+[2025-07-15 20:55:43] [INFO]    💡 Extension recovery complete - Augment runs within VSCode
+[2025-07-15 20:55:43] [INFO]    💡 Configure MCP integration in VSCode Augment settings
+[2025-07-15 20:55:43] [SUCCESS] ✅ Augment Code recovery completed (extension verified)
+[2025-07-15 20:55:43] [WARN] 🔄 MCP configuration issue detected - attempting recovery...
+[2025-07-15 20:55:44] [INFO] 📋 Creating MCP server configuration with real-time feedback...
+[2025-07-15 20:55:44] [INFO] 🔄 Executing: MCP config directory creation
+[2025-07-15 20:55:44] [INFO] 📋 Command: mkdir -p "/home/owner/.config/augment-code"
+[2025-07-15 20:55:44] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+[2025-07-15 20:55:45] [SUCCESS] ✅ MCP config directory creation completed successfully
+[2025-07-15 20:55:45] [SUCCESS]    ✅ MCP config directory ready: /home/owner/.config/augment-code
+[2025-07-15 20:55:45] [INFO] 📋 Writing MCP server configuration...
+[2025-07-15 20:55:45] [SUCCESS] ✅ MCP configuration created successfully: /home/owner/.config/augment-code/mcp-servers.json
+[2025-07-15 20:55:45] [INFO] 🔄 Executing: MCP configuration JSON validation
+[2025-07-15 20:55:45] [INFO] 📋 Command: jq empty "/home/owner/.config/augment-code/mcp-servers.json"
+[2025-07-15 20:55:45] [INFO] ⏱️  Timeout: 10s
+   [PROGRESS] .
+[2025-07-15 20:55:46] [SUCCESS] ✅ MCP configuration JSON validation completed successfully
+[2025-07-15 20:55:46] [SUCCESS]    ✅ MCP configuration JSON syntax valid
+[2025-07-15 20:55:46] [SUCCESS] ✅ MCP configuration recreated
+
+//script stalls here ^
