@@ -1,0 +1,259 @@
+#!/bin/bash
+
+# XDOTOOL VS CODE PERFORMANCE INSPECTOR
+# Uses xdotool to navigate VS Code and access performance monitoring tools
+
+set -euo pipefail
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+NC='\033[0m'
+
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_action() { echo -e "${PURPLE}[ACTION]${NC} $1"; }
+
+echo "=============================================================================="
+echo "🤖 XDOTOOL VS CODE PERFORMANCE INSPECTOR"
+echo "=============================================================================="
+echo "Purpose: Use automation tools to check running extensions and performance"
+echo "Tools: xdotool, process analysis, window management"
+echo "=============================================================================="
+echo
+
+# Function to find VS Code window
+find_vscode_window() {
+    local window_id
+    window_id=$(xdotool search --name "Visual Studio Code" 2>/dev/null | head -1 || echo "")
+    
+    if [[ -n "$window_id" ]]; then
+        echo "$window_id"
+        return 0
+    else
+        # Try alternative window names
+        window_id=$(xdotool search --name "code" 2>/dev/null | head -1 || echo "")
+        if [[ -n "$window_id" ]]; then
+            echo "$window_id"
+            return 0
+        fi
+        return 1
+    fi
+}
+
+# Function to activate VS Code and wait
+activate_vscode() {
+    local window_id="$1"
+    log_action "🎯 Activating VS Code window..."
+    
+    xdotool windowactivate "$window_id"
+    sleep 1
+    
+    # Bring to front and focus
+    xdotool windowraise "$window_id"
+    sleep 1
+    
+    log_success "✅ VS Code window activated"
+}
+
+# Function to open Command Palette and execute command
+execute_vscode_command() {
+    local command="$1"
+    local description="$2"
+    
+    log_action "📝 Executing: $description"
+    
+    # Open Command Palette (Ctrl+Shift+P)
+    xdotool key ctrl+shift+p
+    sleep 2
+    
+    # Clear any existing text and type command
+    xdotool key ctrl+a
+    sleep 0.5
+    xdotool type "$command"
+    sleep 1
+    
+    # Press Enter to execute
+    xdotool key Return
+    sleep 2
+    
+    log_success "✅ Command executed: $command"
+}
+
+# Function to check VS Code processes
+analyze_vscode_processes() {
+    log_action "🔍 Analyzing VS Code processes..."
+    
+    echo "📊 Current VS Code Process Status:"
+    echo "=================================="
+    
+    # Get processes sorted by CPU usage
+    ps aux --sort=-%cpu | grep "/usr/share/code/code" | grep -v grep | while read -r line; do
+        local pid cpu mem command
+        pid=$(echo "$line" | awk '{print $2}')
+        cpu=$(echo "$line" | awk '{print $3}')
+        mem=$(echo "$line" | awk '{print $4}')
+        command=$(echo "$line" | awk '{for(i=11;i<=NF;i++) printf "%s ", $i; print ""}')
+        
+        if (( $(echo "$cpu > 20.0" | bc -l) )); then
+            echo -e "🔥 PID $pid: ${RED}$cpu% CPU${NC}, $mem% MEM - ${command:0:60}..."
+        elif (( $(echo "$cpu > 5.0" | bc -l) )); then
+            echo -e "⚠️  PID $pid: ${YELLOW}$cpu% CPU${NC}, $mem% MEM - ${command:0:60}..."
+        else
+            echo -e "✅ PID $pid: ${GREEN}$cpu% CPU${NC}, $mem% MEM - ${command:0:60}..."
+        fi
+    done
+    
+    echo
+}
+
+# Function to open performance monitoring tools
+open_performance_tools() {
+    local window_id="$1"
+    
+    log_action "🛠️  Opening VS Code performance monitoring tools..."
+    
+    # 1. Open Running Extensions
+    execute_vscode_command "Developer: Show Running Extensions" "Show Running Extensions"
+    sleep 3
+    
+    # 2. Open Process Explorer
+    execute_vscode_command "Developer: Open Process Explorer" "Open Process Explorer"
+    sleep 3
+    
+    # 3. Try to open Developer Tools
+    log_action "🔧 Opening Developer Tools..."
+    xdotool key ctrl+shift+i
+    sleep 3
+    
+    # 4. Alternative: Try F12 for Developer Tools
+    log_action "🔧 Trying F12 for Developer Tools..."
+    xdotool key F12
+    sleep 2
+    
+    log_success "✅ Performance tools should now be open"
+}
+
+# Function to take screenshot for verification
+take_screenshot() {
+    local timestamp
+    timestamp=$(date +"%Y%m%d_%H%M%S")
+    local screenshot_path="n8n-mcp-docker-deployment/logs/vscode_performance_screenshot_$timestamp.png"
+    
+    if command -v gnome-screenshot >/dev/null 2>&1; then
+        log_action "📸 Taking screenshot for verification..."
+        gnome-screenshot -f "$screenshot_path" 2>/dev/null || log_warn "Screenshot failed"
+        if [[ -f "$screenshot_path" ]]; then
+            log_success "✅ Screenshot saved: $screenshot_path"
+        fi
+    elif command -v scrot >/dev/null 2>&1; then
+        scrot "$screenshot_path" 2>/dev/null || log_warn "Screenshot failed"
+        if [[ -f "$screenshot_path" ]]; then
+            log_success "✅ Screenshot saved: $screenshot_path"
+        fi
+    else
+        log_warn "⚠️  No screenshot tool available (install gnome-screenshot or scrot)"
+    fi
+}
+
+# Function to provide manual verification steps
+provide_verification_steps() {
+    log_info "📋 MANUAL VERIFICATION STEPS:"
+    echo
+    echo "1. 🔍 Check if 'Running Extensions' tab opened"
+    echo "   - Look for extension list with CPU/Memory usage"
+    echo "   - Identify extensions with high resource usage"
+    echo
+    echo "2. 📊 Check if 'Process Explorer' window opened"
+    echo "   - Shows all VS Code processes and their resource usage"
+    echo "   - Look for processes with high CPU percentage"
+    echo
+    echo "3. 🛠️  Check if Developer Tools opened"
+    echo "   - Should show browser-like developer tools"
+    echo "   - Go to Performance tab for detailed analysis"
+    echo
+    echo "4. 🎯 Actions to take:"
+    echo "   - Disable high-CPU extensions temporarily"
+    echo "   - Note which processes are consuming resources"
+    echo "   - Use 'Reload Window' instead of killing processes"
+    echo
+}
+
+# Function to provide safe recommendations
+provide_safe_recommendations() {
+    log_info "💡 SAFE PERFORMANCE OPTIMIZATION RECOMMENDATIONS:"
+    echo
+    echo "🔧 IMMEDIATE ACTIONS:"
+    echo "  1. Use opened tools to identify problematic extensions"
+    echo "  2. Disable high-resource extensions: Extensions > Disable"
+    echo "  3. Reload window: Ctrl+Shift+P > 'Developer: Reload Window'"
+    echo "  4. Monitor improvement in Process Explorer"
+    echo
+    echo "🧹 EXTENSION MANAGEMENT:"
+    echo "  1. Disable all extensions: code --disable-extensions"
+    echo "  2. Re-enable one by one to isolate problematic extension"
+    echo "  3. Check extension reviews for known performance issues"
+    echo "  4. Update extensions to latest versions"
+    echo
+    echo "🚫 WHAT NOT TO DO:"
+    echo "  1. Don't kill VS Code processes with kill/pkill"
+    echo "  2. Don't delete extension directories"
+    echo "  3. Don't force-quit VS Code"
+    echo "  4. Don't remove system packages"
+    echo
+}
+
+# Main execution function
+main() {
+    # Check for required tools
+    if ! command -v xdotool >/dev/null 2>&1; then
+        log_error "❌ xdotool not found. Install with: sudo dnf install xdotool"
+        exit 1
+    fi
+    
+    if ! command -v bc >/dev/null 2>&1; then
+        log_warn "⚠️  bc not found. Install with: sudo dnf install bc"
+    fi
+    
+    # Step 1: Analyze current processes
+    analyze_vscode_processes
+    
+    # Step 2: Find VS Code window
+    local window_id
+    if window_id=$(find_vscode_window); then
+        log_success "✅ Found VS Code window: $window_id"
+        
+        # Step 3: Activate VS Code
+        activate_vscode "$window_id"
+        
+        # Step 4: Open performance tools
+        open_performance_tools "$window_id"
+        
+        # Step 5: Take screenshot for verification
+        take_screenshot
+        
+        # Step 6: Provide verification steps
+        provide_verification_steps
+        
+        # Step 7: Provide recommendations
+        provide_safe_recommendations
+        
+    else
+        log_error "❌ VS Code window not found"
+        log_info "💡 Make sure VS Code is running and try again"
+        exit 1
+    fi
+    
+    echo "=============================================================================="
+    log_success "🎉 VS CODE PERFORMANCE INSPECTION COMPLETED"
+    log_info "Check the opened VS Code tools for performance analysis"
+    echo "=============================================================================="
+}
+
+# Run the script
+main "$@"
