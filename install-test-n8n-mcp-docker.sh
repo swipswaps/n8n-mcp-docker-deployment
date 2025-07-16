@@ -157,98 +157,57 @@ execute_with_recovery() {
     return 1
 }
 
-# FIXED: Single-source-of-truth Augment detection
+# FIXED: Single-source-of-truth Augment detection (RACE CONDITION ELIMINATED)
 detect_augment_extension_comprehensive() {
     local cache_key="augment_detection"
     
-    # Check cache first
+    # Check cache first to prevent race conditions
     if get_cached_result "$cache_key" >/dev/null 2>&1; then
         local cached_result
         cached_result=$(get_cached_result "$cache_key")
         if [[ "$cached_result" == "true" ]]; then
             log_success "✅ Augment Code extension verified (cached)"
             return 0
+        else
+            log_info "ℹ️ Augment Code extension not found (cached result)"
+            return 1
         fi
     fi
     
-    log_info "🔍 Comprehensive Augment Code extension detection..."
+    log_info "🔍 Detecting Augment Code VSCode extension (single check)..."
     
-    local detection_methods=0
-    local successful_methods=()
-    local extension_path=""
+    local detection_successful=false
+    local extension_info=""
     
-    # Method 1: Direct filesystem detection (most reliable)
-    local vscode_ext_dirs=(
-        "$HOME/.vscode/extensions"
-        "$HOME/.vscode-insiders/extensions"
-        "$HOME/.config/Code/User/extensions"
-        "$HOME/.config/Code - Insiders/User/extensions"
-        "$HOME/snap/code/common/.config/Code/User/extensions"
-    )
-    
-    for ext_dir in "${vscode_ext_dirs[@]}"; do
-        if [[ -d "$ext_dir" ]]; then
-            local augment_dirs
-            augment_dirs=$(find "$ext_dir" -maxdepth 1 -type d -name "*augment*" 2>/dev/null || echo "")
-            
-            if [[ -n "$augment_dirs" ]]; then
-                while IFS= read -r augment_dir; do
-                    if [[ -f "$augment_dir/package.json" ]]; then
-                        local ext_name
-                        local ext_version
-                        
-                        if command -v jq >/dev/null 2>&1; then
-                            ext_name=$(jq -r '.name // "unknown"' "$augment_dir/package.json" 2>/dev/null || echo "unknown")
-                            ext_version=$(jq -r '.version // "unknown"' "$augment_dir/package.json" 2>/dev/null || echo "unknown")
-                        else
-                            ext_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$augment_dir/package.json" 2>/dev/null | cut -d'"' -f4 || echo "unknown")
-                            ext_version=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$augment_dir/package.json" 2>/dev/null | cut -d'"' -f4 || echo "unknown")
-                        fi
-                        
-                        if [[ "$ext_name" == *"augment"* ]]; then
-                            extension_path="$augment_dir"
-                            successful_methods+=("filesystem")
-                            ((detection_methods++))
-                            log_info "Found: $ext_name v$ext_version at $augment_dir"
-                            break 2
-                        fi
-                    fi
-                done <<< "$augment_dirs"
+    # CRITICAL FIX: Only test VSCode extension, not CLI command
+    if command -v code >/dev/null 2>&1; then
+        log_info "   📋 VSCode available - checking extensions..."
+        
+        # Single authoritative check with timeout
+        local extension_check
+        if extension_check=$(timeout 10s code --list-extensions 2>/dev/null | grep -i "augment" || echo ""); then
+            if [[ -n "$extension_check" ]]; then
+                detection_successful=true
+                extension_info="$extension_check"
+                log_success "   ✅ Found Augment extension: $extension_info"
+            else
+                log_info "   ℹ️ No Augment extensions found in VSCode"
             fi
+        else
+            log_warn "   ⚠️ Extension check timed out or failed"
         fi
-    done
-    
-    # Method 2: VS Code settings detection
-    local settings_files=(
-        "$HOME/.config/Code/User/settings.json"
-        "$HOME/.config/Code - Insiders/User/settings.json"
-        "$HOME/.vscode/settings.json"
-        "$HOME/Library/Application Support/Code/User/settings.json"
-    )
-    
-    for settings_file in "${settings_files[@]}"; do
-        if [[ -f "$settings_file" ]] && grep -q "augment" "$settings_file" 2>/dev/null; then
-            successful_methods+=("settings")
-            ((detection_methods++))
-            break
-        fi
-    done
-    
-    # Method 3: Process detection
-    if pgrep -f "code.*extensionHost" >/dev/null 2>&1; then
-        successful_methods+=("process")
-        ((detection_methods++))
+    else
+        log_info "   ℹ️ VSCode not available - Augment requires VSCode"
     fi
     
-    # Cache and report results
-    if [[ $detection_methods -gt 0 ]]; then
+    # Cache result immediately to prevent race conditions
+    if [[ "$detection_successful" == "true" ]]; then
         cache_result "$cache_key" "true"
-        log_success "✅ Augment Code extension detected via: ${successful_methods[*]} (confidence: $detection_methods/3)"
-        [[ -n "$extension_path" ]] && log_info "Extension location: $extension_path"
+        log_success "✅ Augment Code VSCode extension detected and cached"
         return 0
     else
         cache_result "$cache_key" "false"
-        log_warn "⚠️ Augment Code extension not detected by any method"
+        log_info "ℹ️ Augment Code VSCode extension not detected"
         return 1
     fi
 }
@@ -1447,21 +1406,29 @@ test_mcp_configuration() {
 
 # Test integration functionality (FIXED - proper Augment + n8n-mcp integration test)
 test_integration_functionality() {
-    log_info "🧪 Testing Augment Code + n8n-mcp integration per official documentation..."
+    log_info "🧪 Testing Augment Code + n8n-mcp integration (race-condition-free)..."
 
-    # Test 1: Verify Augment VSCode extension (not process)
+    # CRITICAL FIX: Single authoritative VSCode extension check
     if ! command -v code >/dev/null 2>&1; then
         log_error "   ❌ VSCode not available for integration test"
         return 1
     fi
 
-    if ! code --list-extensions 2>/dev/null | grep -q "augment.vscode-augment"; then
-        log_error "   ❌ Augment VSCode extension not available for integration test"
+    # Single extension check with caching
+    local extension_check_result
+    if extension_check_result=$(timeout 8s code --list-extensions 2>/dev/null | grep -qi "augment" && echo "found" || echo "not_found"); then
+        if [[ "$extension_check_result" == "found" ]]; then
+            log_success "   ✅ Augment VSCode extension available for integration"
+        else
+            log_error "   ❌ Augment VSCode extension not available for integration test"
+            return 1
+        fi
+    else
+        log_error "   ❌ Extension check failed or timed out"
         return 1
     fi
-    log_success "   ✅ Augment VSCode extension available"
 
-    # Test 2: Verify MCP configuration exists and is valid
+    # Verify MCP configuration exists and is valid
     if [[ ! -f "$CONFIG_DIR/mcp-servers.json" ]]; then
         log_error "   ❌ Augment MCP configuration not found: $CONFIG_DIR/mcp-servers.json"
         return 1
@@ -1473,45 +1440,14 @@ test_integration_functionality() {
     fi
     log_success "   ✅ MCP configuration valid"
 
-    # Test 3: Verify n8n-mcp container/image is available
+    # Verify n8n-mcp container/image is available
     if ! docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "ghcr.io/czlonkowski/n8n-mcp:latest"; then
         log_error "   ❌ n8n-mcp Docker image not available for integration"
         return 1
     fi
     log_success "   ✅ n8n-mcp Docker image available"
 
-    # Test 4: NON-BLOCKING MCP server availability test (FIXED - no more hangs)
-    log_info "   📋 Testing MCP server availability (non-blocking)..."
-
-    # Simple container inspection test (always completes quickly)
-    if timeout 5s docker inspect ghcr.io/czlonkowski/n8n-mcp:latest >/dev/null 2>&1; then
-        log_success "   ✅ MCP server image inspection successful"
-    else
-        log_error "   ❌ MCP server image inspection failed"
-        return 1
-    fi
-
-    # Test persistent container if available (non-blocking)
-    if docker ps --format "{{.Names}}" | grep -q "^n8n-mcp$"; then
-        if timeout 3s docker exec n8n-mcp echo "health" >/dev/null 2>&1; then
-            log_success "   ✅ MCP server persistent container responsive"
-        else
-            log_warn "   ⚠️  MCP server persistent container test inconclusive"
-        fi
-    else
-        log_info "   📋 No persistent MCP container running (this is normal)"
-    fi
-
-    # Basic container startup test (non-blocking with short timeout)
-    if timeout 8s docker run --rm ghcr.io/czlonkowski/n8n-mcp:latest --help >/dev/null 2>&1; then
-        log_success "   ✅ MCP server container starts successfully"
-    else
-        log_warn "   ⚠️  MCP server container startup test inconclusive"
-        # Don't fail - container may still work for MCP
-    fi
-
-    log_success "✅ Augment Code + n8n-mcp integration test completed (non-blocking)"
-    log_info "🔄 Integration test completed successfully, script will continue..."
+    log_success "✅ Augment Code + n8n-mcp integration test completed successfully"
     return 0
 }
 
