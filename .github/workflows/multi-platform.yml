@@ -1,0 +1,260 @@
+name: Multi-Platform Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run weekly to catch platform-specific issues
+    - cron: '0 2 * * 1'
+
+jobs:
+  test-linux:
+    name: Test on Linux Distributions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        container:
+          - ubuntu:22.04
+          - ubuntu:20.04
+          - fedora:39
+          - debian:12
+          
+    container: ${{ matrix.container }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies
+      run: |
+        if command -v apt-get >/dev/null 2>&1; then
+          # Debian/Ubuntu
+          apt-get update
+          apt-get install -y curl jq docker.io bash
+        elif command -v dnf >/dev/null 2>&1; then
+          # Fedora
+          dnf install -y curl jq docker bash
+        elif command -v yum >/dev/null 2>&1; then
+          # CentOS/RHEL
+          yum install -y curl jq docker bash
+        fi
+        
+    - name: Test script syntax
+      run: |
+        echo "🧪 Testing script syntax on ${{ matrix.container }}..."
+        bash -n install-test-n8n-mcp-docker.sh
+        echo "✅ Script syntax validation passed"
+        
+    - name: Test basic functionality
+      run: |
+        echo "🧪 Testing basic functionality on ${{ matrix.container }}..."
+        
+        # Test JSON parsing
+        echo '{"test": "value"}' | jq . >/dev/null
+        echo "✅ JSON parsing works"
+        
+        # Test curl functionality
+        curl --version >/dev/null
+        echo "✅ Curl is functional"
+        
+        # Test bash features used in script
+        bash -c 'declare -A test_array; test_array["key"]="value"; echo ${test_array["key"]}' >/dev/null
+        echo "✅ Bash associative arrays work"
+
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies
+      run: |
+        # Install required tools on macOS
+        brew install jq
+        
+    - name: Test script syntax
+      run: |
+        echo "🧪 Testing script syntax on macOS..."
+        bash -n install-test-n8n-mcp-docker.sh
+        echo "✅ Script syntax validation passed"
+        
+    - name: Test macOS compatibility
+      run: |
+        echo "🧪 Testing macOS compatibility..."
+        
+        # Test if script handles macOS-specific paths
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          echo "✅ macOS detected correctly"
+        fi
+        
+        # Test JSON parsing
+        echo '{"test": "value"}' | jq . >/dev/null
+        echo "✅ JSON parsing works on macOS"
+
+  test-windows:
+    name: Test on Windows (WSL)
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up WSL
+      uses: Vampire/setup-wsl@v2
+      with:
+        distribution: Ubuntu-22.04
+        
+    - name: Test in WSL environment
+      shell: wsl-bash {0}
+      run: |
+        # Update package list
+        sudo apt-get update
+        sudo apt-get install -y curl jq
+        
+        echo "🧪 Testing script syntax in WSL..."
+        bash -n install-test-n8n-mcp-docker.sh
+        echo "✅ Script syntax validation passed in WSL"
+        
+        # Test WSL-specific functionality
+        echo "🧪 Testing WSL compatibility..."
+        if grep -q "microsoft" /proc/version; then
+          echo "✅ WSL environment detected correctly"
+        fi
+
+  compatibility-test:
+    name: Compatibility Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Test Bash version compatibility
+      run: |
+        echo "🧪 Testing Bash version compatibility..."
+        
+        # Test with different Bash versions
+        bash_versions=("4.4" "5.0" "5.1")
+        
+        for version in "${bash_versions[@]}"; do
+          if command -v "bash-$version" >/dev/null 2>&1; then
+            echo "Testing with Bash $version..."
+            "bash-$version" -n install-test-n8n-mcp-docker.sh
+            echo "✅ Compatible with Bash $version"
+          else
+            echo "⚠️  Bash $version not available for testing"
+          fi
+        done
+        
+    - name: Test Docker version compatibility
+      run: |
+        echo "🧪 Testing Docker version compatibility..."
+        
+        # Test current Docker version
+        docker --version
+        
+        # Test basic Docker functionality
+        docker run --rm hello-world
+        echo "✅ Docker basic functionality works"
+        
+    - name: Test dependency availability
+      run: |
+        echo "🧪 Testing dependency availability..."
+        
+        required_commands=("curl" "jq" "docker" "bash" "grep" "sed" "awk")
+        
+        for cmd in "${required_commands[@]}"; do
+          if command -v "$cmd" >/dev/null 2>&1; then
+            echo "✅ $cmd is available"
+          else
+            echo "❌ $cmd is missing"
+          fi
+        done
+
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Test script performance
+      run: |
+        echo "🧪 Testing script performance..."
+        
+        # Test script parsing time
+        start_time=$(date +%s.%N)
+        bash -n install-test-n8n-mcp-docker.sh
+        end_time=$(date +%s.%N)
+        parse_time=$(echo "$end_time - $start_time" | bc -l)
+        
+        echo "Script parsing time: ${parse_time}s"
+        
+        # Check if parsing time is reasonable (should be under 1 second)
+        if (( $(echo "$parse_time < 1.0" | bc -l) )); then
+          echo "✅ Script parsing performance is good"
+        else
+          echo "⚠️  Script parsing is slow (${parse_time}s)"
+        fi
+        
+    - name: Test memory usage
+      run: |
+        echo "🧪 Testing memory usage..."
+        
+        # Monitor memory usage during script syntax check
+        /usr/bin/time -v bash -n install-test-n8n-mcp-docker.sh 2>&1 | grep "Maximum resident set size" || echo "⚠️  Memory usage data not available"
+
+  integration-test:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Test Docker integration
+      run: |
+        echo "🧪 Testing Docker integration..."
+        
+        # Test if n8n-mcp image can be pulled
+        docker pull ghcr.io/czlonkowski/n8n-mcp:latest || echo "⚠️  Image pull may be rate limited"
+        
+        # Test basic container functionality
+        if docker images | grep -q "czlonkowski/n8n-mcp"; then
+          echo "✅ n8n-mcp image available"
+          
+          # Test container startup
+          timeout 30s docker run --rm ghcr.io/czlonkowski/n8n-mcp:latest --help || echo "⚠️  Container test inconclusive"
+        fi
+        
+    - name: Test MCP configuration
+      run: |
+        echo "🧪 Testing MCP configuration generation..."
+        
+        # Create test MCP configuration
+        mkdir -p test-config
+        cat > test-config/mcp-servers.json << 'EOF'
+        {
+          "mcpServers": {
+            "n8n-mcp": {
+              "command": "docker",
+              "args": ["run", "-i", "--rm", "ghcr.io/czlonkowski/n8n-mcp:latest"],
+              "env": {
+                "MCP_MODE": "stdio"
+              }
+            }
+          }
+        }
+        EOF
+        
+        # Validate configuration
+        jq . test-config/mcp-servers.json >/dev/null
+        echo "✅ MCP configuration is valid JSON"

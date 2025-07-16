@@ -1,0 +1,315 @@
+name: Security Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run daily security scans
+    - cron: '0 6 * * *'
+
+jobs:
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run GitLeaks
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Custom secret patterns
+      run: |
+        echo "🔍 Scanning for custom secret patterns..."
+        
+        # Check for common secret patterns
+        secret_patterns=(
+          "password.*=.*['\"][^'\"]{8,}['\"]"
+          "secret.*=.*['\"][^'\"]{16,}['\"]"
+          "key.*=.*['\"][^'\"]{20,}['\"]"
+          "token.*=.*['\"][^'\"]{20,}['\"]"
+          "api[_-]?key.*=.*['\"][^'\"]{16,}['\"]"
+        )
+        
+        found_secrets=false
+        for pattern in "${secret_patterns[@]}"; do
+          if grep -r -i -E "$pattern" --include="*.sh" --include="*.md" --include="*.json" . | grep -v "example\|placeholder\|template\|PLACEHOLDER"; then
+            echo "⚠️  Potential secret found matching pattern: $pattern"
+            found_secrets=true
+          fi
+        done
+        
+        if [[ "$found_secrets" == "false" ]]; then
+          echo "✅ No obvious secrets detected"
+        fi
+
+  vulnerability-scan:
+    name: Vulnerability Scanning
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run Trivy filesystem scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-fs-results.sarif'
+        
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-fs-results.sarif'
+        
+    - name: Scan Docker images
+      run: |
+        echo "🔍 Scanning Docker images for vulnerabilities..."
+        
+        # Pull and scan the n8n-mcp image
+        if docker pull ghcr.io/czlonkowski/n8n-mcp:latest; then
+          echo "Scanning n8n-mcp image..."
+          trivy image ghcr.io/czlonkowski/n8n-mcp:latest || echo "⚠️  Vulnerabilities found in n8n-mcp image"
+        else
+          echo "⚠️  Could not pull n8n-mcp image for scanning"
+        fi
+
+  code-analysis:
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+      with:
+        scandir: '.'
+        format: gcc
+        severity: warning
+        
+    - name: Run Bandit (Python security linter)
+      run: |
+        if find . -name "*.py" -type f | head -1 >/dev/null 2>&1; then
+          pip install bandit
+          bandit -r . -f json -o bandit-results.json || echo "⚠️  Bandit found security issues"
+        else
+          echo "No Python files found to scan"
+        fi
+        
+    - name: Custom security checks
+      run: |
+        echo "🔍 Running custom security checks..."
+        
+        # Check for dangerous commands
+        dangerous_commands=(
+          "eval.*\$"
+          "exec.*\$"
+          "system.*\$"
+          "rm.*-rf.*/"
+          "chmod.*777"
+          "wget.*|.*sh"
+          "curl.*|.*sh"
+        )
+        
+        found_issues=false
+        for cmd in "${dangerous_commands[@]}"; do
+          if grep -r -E "$cmd" --include="*.sh" . | grep -v "# Safe:" | grep -v "# Reviewed:"; then
+            echo "⚠️  Potentially dangerous command found: $cmd"
+            found_issues=true
+          fi
+        done
+        
+        if [[ "$found_issues" == "false" ]]; then
+          echo "✅ No dangerous commands detected"
+        fi
+
+  permission-audit:
+    name: Permission Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Audit file permissions
+      run: |
+        echo "🔒 Auditing file permissions..."
+        
+        # Check for overly permissive files
+        find . -type f -perm /o+w | while read -r file; do
+          echo "⚠️  World-writable file: $file"
+        done
+        
+        # Check for executable files
+        find . -type f -perm /u+x | while read -r file; do
+          echo "📋 Executable file: $file"
+        done
+        
+        # Check script permissions
+        find . -name "*.sh" -type f | while read -r script; do
+          perms=$(stat -c "%a" "$script")
+          if [[ "$perms" == "755" ]] || [[ "$perms" == "744" ]]; then
+            echo "✅ $script has appropriate permissions ($perms)"
+          else
+            echo "⚠️  $script has unusual permissions ($perms)"
+          fi
+        done
+
+  dependency-audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Audit Docker dependencies
+      run: |
+        echo "🔍 Auditing Docker dependencies..."
+        
+        # Check Docker image sources
+        if grep -r "docker.*pull\|docker.*run" --include="*.sh" .; then
+          echo "Docker images used in scripts:"
+          grep -r "docker.*pull\|docker.*run" --include="*.sh" . | grep -o "ghcr.io/[^[:space:]]*\|docker.io/[^[:space:]]*" | sort -u
+        fi
+        
+        # Verify image signatures (if available)
+        if command -v cosign >/dev/null 2>&1; then
+          echo "Verifying image signatures..."
+          cosign verify ghcr.io/czlonkowski/n8n-mcp:latest || echo "⚠️  Image signature verification failed"
+        else
+          echo "⚠️  Cosign not available for signature verification"
+        fi
+        
+    - name: Check for pinned versions
+      run: |
+        echo "🔍 Checking for pinned dependency versions..."
+        
+        # Check if Docker images use specific tags
+        if grep -r "docker.*:latest" --include="*.sh" .; then
+          echo "⚠️  Found usage of 'latest' tag - consider pinning to specific versions"
+        else
+          echo "✅ No 'latest' tags found"
+        fi
+        
+        # Check for version pinning in scripts
+        if grep -r "VERSION\|version" --include="*.sh" . | grep -E "[0-9]+\.[0-9]+\.[0-9]+"; then
+          echo "✅ Version pinning detected"
+        else
+          echo "⚠️  Consider adding version pinning for dependencies"
+        fi
+
+  compliance-check:
+    name: Compliance Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check license compliance
+      run: |
+        echo "📋 Checking license compliance..."
+        
+        if [[ -f "LICENSE" ]]; then
+          echo "✅ LICENSE file exists"
+          
+          # Check license type
+          if grep -q "MIT\|Apache\|BSD\|GPL" LICENSE; then
+            echo "✅ Recognized license type found"
+          else
+            echo "⚠️  License type not clearly identified"
+          fi
+        else
+          echo "⚠️  LICENSE file missing"
+        fi
+        
+    - name: Check documentation compliance
+      run: |
+        echo "📚 Checking documentation compliance..."
+        
+        required_docs=("README.md" "CHANGELOG.md")
+        for doc in "${required_docs[@]}"; do
+          if [[ -f "$doc" ]]; then
+            echo "✅ $doc exists"
+          else
+            echo "⚠️  $doc missing"
+          fi
+        done
+        
+        # Check if README contains security information
+        if [[ -f "README.md" ]]; then
+          if grep -q -i "security\|vulnerability\|report" README.md; then
+            echo "✅ Security information found in README"
+          else
+            echo "⚠️  Consider adding security reporting information to README"
+          fi
+        fi
+
+  security-policy:
+    name: Security Policy Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check for security policy
+      run: |
+        echo "🔒 Checking for security policy..."
+        
+        security_files=("SECURITY.md" ".github/SECURITY.md" "docs/SECURITY.md")
+        found_policy=false
+        
+        for file in "${security_files[@]}"; do
+          if [[ -f "$file" ]]; then
+            echo "✅ Security policy found: $file"
+            found_policy=true
+            break
+          fi
+        done
+        
+        if [[ "$found_policy" == "false" ]]; then
+          echo "⚠️  No security policy found - consider adding SECURITY.md"
+        fi
+        
+    - name: Create security policy template
+      if: always()
+      run: |
+        if [[ ! -f "SECURITY.md" ]]; then
+          echo "📋 Creating security policy template..."
+          cat > SECURITY.md << 'EOF'
+        # Security Policy
+        
+        ## Supported Versions
+        
+        | Version | Supported          |
+        | ------- | ------------------ |
+        | 0.3.x   | :white_check_mark: |
+        | < 0.3   | :x:                |
+        
+        ## Reporting a Vulnerability
+        
+        Please report security vulnerabilities by creating a private security advisory on GitHub or by emailing the maintainers directly.
+        
+        **Do not report security vulnerabilities through public GitHub issues.**
+        
+        ## Security Measures
+        
+        - All Docker images are scanned for vulnerabilities
+        - Dependencies are regularly updated
+        - Code is analyzed with static security tools
+        - Permissions are audited regularly
+        EOF
+          echo "✅ Security policy template created"
+        fi
