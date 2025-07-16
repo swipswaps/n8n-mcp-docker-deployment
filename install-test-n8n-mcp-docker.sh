@@ -191,8 +191,7 @@ handle_interrupt() {
     fi
 }
 
-# Initialize signal handling
-setup_signal_handling
+# Signal handling will be initialized after logging functions are defined
 
 # ============================================================================
 # FUNCTION SCOPING FIX - INTERNAL TIMEOUT HANDLING
@@ -316,6 +315,13 @@ log_error() {
 log_success() {
     log "SUCCESS" "${GREEN}$*${NC}"
 }
+
+# ============================================================================
+# INITIALIZE SIGNAL HANDLING (After logging functions are defined)
+# ============================================================================
+
+# Initialize signal handling now that logging functions are available
+setup_signal_handling
 
 # Capture comprehensive system context for events (with safe directory check)
 capture_system_context() {
