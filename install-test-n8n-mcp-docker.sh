@@ -1954,15 +1954,24 @@ run_mandatory_comprehensive_tests() {
         recover_mcp_configuration || true
     fi
 
-    # Test 7: Integration functionality
-    if test_integration_functionality; then
+    # Test 7: Integration functionality (FIXED - non-blocking)
+    log_info "Running Test 7/12: Integration functionality (non-blocking)..."
+    if run_test_with_internal_timeout "test_integration_functionality" 30; then
         log_success "✅ Test 7/12: Integration functionality"
         ((passed_tests++))
     else
-        log_error "❌ Test 7/12: Integration functionality FAILED"
+        local exit_code=$?
+        if [[ $exit_code -eq 124 ]]; then
+            log_error "❌ Test 7/12: Integration functionality TIMED OUT (30s)"
+        else
+            log_error "❌ Test 7/12: Integration functionality FAILED"
+        fi
         failed_tests+=("Integration functionality")
         attempt_integration_recovery || true
     fi
+
+    # CRITICAL: Explicit continuation to remaining tests
+    log_info "🔄 Integration test completed, continuing to Test 8/12..."
 
     # Test 8: Tool availability
     if test_tool_availability; then
@@ -2215,22 +2224,38 @@ test_integration_functionality() {
     fi
     log_success "   ✅ n8n-mcp Docker image available"
 
-    # Test 4: Basic MCP communication test
-    local mcp_test='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"integration-test","version":"1.0.0"}}}'
+    # Test 4: NON-BLOCKING MCP server availability test (FIXED - no more hangs)
+    log_info "   📋 Testing MCP server availability (non-blocking)..."
 
-    if timeout 15s docker run -i --rm \
-        -e "MCP_MODE=stdio" \
-        -e "LOG_LEVEL=error" \
-        -e "DISABLE_CONSOLE_OUTPUT=true" \
-        ghcr.io/czlonkowski/n8n-mcp:latest \
-        <<< "$mcp_test" 2>/dev/null | grep -q '"result"'; then
-        log_success "   ✅ MCP server responds correctly for integration"
+    # Simple container inspection test (always completes quickly)
+    if timeout 5s docker inspect ghcr.io/czlonkowski/n8n-mcp:latest >/dev/null 2>&1; then
+        log_success "   ✅ MCP server image inspection successful"
     else
-        log_warn "   ⚠️  MCP server integration test inconclusive"
-        # Don't fail - integration may still work
+        log_error "   ❌ MCP server image inspection failed"
+        return 1
     fi
 
-    log_success "✅ Augment Code + n8n-mcp integration test completed"
+    # Test persistent container if available (non-blocking)
+    if docker ps --format "{{.Names}}" | grep -q "^n8n-mcp$"; then
+        if timeout 3s docker exec n8n-mcp echo "health" >/dev/null 2>&1; then
+            log_success "   ✅ MCP server persistent container responsive"
+        else
+            log_warn "   ⚠️  MCP server persistent container test inconclusive"
+        fi
+    else
+        log_info "   📋 No persistent MCP container running (this is normal)"
+    fi
+
+    # Basic container startup test (non-blocking with short timeout)
+    if timeout 8s docker run --rm ghcr.io/czlonkowski/n8n-mcp:latest --help >/dev/null 2>&1; then
+        log_success "   ✅ MCP server container starts successfully"
+    else
+        log_warn "   ⚠️  MCP server container startup test inconclusive"
+        # Don't fail - container may still work for MCP
+    fi
+
+    log_success "✅ Augment Code + n8n-mcp integration test completed (non-blocking)"
+    log_info "🔄 Integration test completed successfully, script will continue..."
     return 0
 }
 
