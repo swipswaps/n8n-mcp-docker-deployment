@@ -267,6 +267,65 @@ readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
 readonly NC='\033[0m' # No Color
 
+# ============================================================================
+# SYSTEM CONTEXT CAPTURE FUNCTIONS (Must be defined before logging functions)
+# ============================================================================
+
+# Capture comprehensive system context for events (with safe directory check)
+capture_system_context() {
+    local level="$1"
+    shift
+    local message="$*"
+
+    # Only capture context if log directory exists
+    if [[ ! -d "$LOG_DIR" ]]; then
+        return 0
+    fi
+
+    # Create context file with safe error handling
+    local context_file="$LOG_DIR/system_context_$(date +%s).log"
+
+    {
+        echo "=== System Context for $level: $message ==="
+        echo "Timestamp: $(date)"
+        echo "PID: $$"
+        echo "User: $(whoami 2>/dev/null || echo 'unknown')"
+        echo "PWD: $(pwd 2>/dev/null || echo 'unknown')"
+        echo "Memory: $(free -h 2>/dev/null | head -2 | tail -1 || echo 'unknown')"
+        echo "Disk: $(df -h . 2>/dev/null | tail -1 || echo 'unknown')"
+        echo "Load: $(uptime 2>/dev/null || echo 'unknown')"
+        echo "=== End Context ==="
+    } >> "$context_file" 2>/dev/null || true
+}
+
+# Capture error context for debugging
+capture_error_context() {
+    local error_message="$*"
+
+    # Only capture if log directory exists
+    if [[ ! -d "$LOG_DIR" ]]; then
+        return 0
+    fi
+
+    local error_file="$LOG_DIR/error_context_$(date +%s).log"
+
+    {
+        echo "=== Error Context ==="
+        echo "Error: $error_message"
+        echo "Timestamp: $(date)"
+        echo "Script: $0"
+        echo "Line: ${BASH_LINENO[1]:-unknown}"
+        echo "Function: ${FUNCNAME[2]:-main}"
+        echo "Last 10 commands:"
+        history | tail -10 2>/dev/null || echo "History not available"
+        echo "=== End Error Context ==="
+    } >> "$error_file" 2>/dev/null || true
+}
+
+# ============================================================================
+# ENHANCED LOGGING FUNCTIONS
+# ============================================================================
+
 # Enhanced logging functions with comprehensive event capture and safe tee output
 log() {
     local level="$1"
@@ -323,58 +382,7 @@ log_success() {
 # Initialize signal handling now that logging functions are available
 setup_signal_handling
 
-# Capture comprehensive system context for events (with safe directory check)
-capture_system_context() {
-    local level="$1"
-    shift
-    local message="$*"
-
-    # Only capture context if log directory exists
-    if [[ -d "$LOG_DIR" ]]; then
-        local context_file="$LOG_DIR/system_context.log"
-
-        {
-            echo "=== SYSTEM CONTEXT [$level] $(date '+%Y-%m-%d %H:%M:%S') ==="
-            echo "Event: $message"
-            echo "PID: $$"
-            echo "User: $USER"
-            echo "PWD: $PWD"
-            echo "Memory: $(free -h 2>/dev/null | grep '^Mem:' | awk '{print $3"/"$2}' || echo 'N/A')"
-            echo "CPU Load: $(uptime | awk -F'load average:' '{print $2}' || echo 'N/A')"
-            echo "Disk Usage: $(df -h / 2>/dev/null | tail -1 | awk '{print $5}' || echo 'N/A')"
-            echo "Docker Status: $(systemctl is-active docker 2>/dev/null || echo 'not available')"
-            echo "Network: $(ping -c 1 -W 2 google.com >/dev/null 2>&1 && echo 'connected' || echo 'disconnected')"
-            echo "=== END CONTEXT ==="
-            echo
-        } >> "$context_file" 2>/dev/null || true
-    fi
-}
-
-# Capture detailed error context
-capture_error_context() {
-    local error_message="$*"
-    local error_context_file="$LOG_DIR/error_context.log"
-
-    {
-        echo "=== ERROR CONTEXT $(date '+%Y-%m-%d %H:%M:%S') ==="
-        echo "Error: $error_message"
-        echo "Exit Code: $?"
-        echo "Function Stack: ${FUNCNAME[*]}"
-        echo "Line Number: ${BASH_LINENO[*]}"
-        echo "Script: ${BASH_SOURCE[*]}"
-        echo
-        echo "Environment Variables:"
-        env | grep -E "(DOCKER|AUGMENT|N8N|MCP|PATH)" | sort 2>/dev/null || echo "env not available"
-        echo
-        echo "Recent System Messages:"
-        journalctl --since "1 minute ago" --no-pager -n 5 2>/dev/null || echo "journalctl not available"
-        echo
-        echo "Process Tree:"
-        pstree -p $$ 2>/dev/null || ps -ef | grep $$ | head -3 2>/dev/null || echo "process info not available"
-        echo "=== END ERROR CONTEXT ==="
-        echo
-    } >> "$error_context_file" 2>/dev/null || true
-}
+# Duplicate function definitions removed - now defined earlier in the script
 
 # Execute command with real-time feedback and GNU Bash compliant signal handling
 execute_with_real_time_feedback() {
