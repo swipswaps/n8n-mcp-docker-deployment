@@ -7,20 +7,20 @@
 set -euo pipefail
 
 # Colors for output
-    local RED='\033[0;31m'
-    local GREEN='\033[0;32m'
-    local YELLOW='\033[1;33m'
-    local BLUE='\033[0;34m'
-    local PURPLE='\033[0;35m'
-    local CYAN='\033[0;36m'
-    local NC='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
 
-log_info() { echo -e ""${BLUE}"[INFO]"${NC}" $1"; }
-log_success() { echo -e ""${GREEN}"[SUCCESS]"${NC}" $1"; }
-log_warn() { echo -e ""${YELLOW}"[WARN]"${NC}" $1"; }
-log_error() { echo -e ""${RED}"[ERROR]"${NC}" $1"; }
-log_action() { echo -e ""${PURPLE}"[ACTION]"${NC}" $1"; }
-log_fix() { echo -e ""${CYAN}"[FIX]"${NC}" $1"; }
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_action() { echo -e "${PURPLE}[ACTION]${NC} $1"; }
+log_fix() { echo -e "${CYAN}[FIX]${NC} $1"; }
 
 # Configuration
 readonly SCRIPT_VERSION="3.0.0-security-fixes"
@@ -43,7 +43,7 @@ fix_docker_image_security() {
 
     # Find all shell scripts with :latest tags
     local files_with_latest
-    local files_with_latest=$(grep -r "ghcr.io/czlonkowski/n8n-mcp:sha-df03d42" --include="*.sh" . | cut -d: -f1 | sort -u || echo "")
+    files_with_latest=$(grep -r "ghcr.io/czlonkowski/n8n-mcp:sha-df03d42" --include="*.sh" . | cut -d: -f1 | sort -u || echo "")
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
 
     if [[ -n "$files_with_latest" ]]; then
@@ -54,35 +54,35 @@ fix_docker_image_security() {
 
         echo "$files_with_latest" | while read -r file; do
             if [[ -f "$file" ]]; then
-                log_action "📝 Securing "$file"..."
+                log_action "📝 Securing $file..."
 
                 # Create backup
-                cp "$file" ""${file}".security-backup"
+                cp "$file" "${file}.security-backup"
 
                 # Replace :latest with secure pinned version
-                sed -i "s|ghcr.io/czlonkowski/n8n-mcp:sha-df03d42|ghcr.io/czlonkowski/n8n-mcp:"${N8N_MCP_SECURE_VERSION}"|g" "$file"
+                sed -i "s|ghcr.io/czlonkowski/n8n-mcp:sha-df03d42|ghcr.io/czlonkowski/n8n-mcp:${N8N_MCP_SECURE_VERSION}|g" "$file"
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
 
                 # Also add SHA verification where possible
                 if grep -q "docker pull" "$file"; then
                     log_fix "🔐 Adding SHA verification to $file"
                     # Add comment with SHA for verification
-                    sed -i "/ghcr.io\/czlonkowski\/n8n-mcp:"${N8N_MCP_SECURE_VERSION}"/a\\    # SHA256: ${N8N_MCP_SECURE_SHA}" "$file"
+                    sed -i "/ghcr.io\/czlonkowski\/n8n-mcp:${N8N_MCP_SECURE_VERSION}/a\\    # SHA256: ${N8N_MCP_SECURE_SHA}" "$file"
                 fi
 
-                log_success "✅ Secured "$file" with pinned version"
+                log_success "✅ Secured $file with pinned version"
             fi
         done
 
         # Also fix any log files that might be used as scripts
         local log_files
-    local log_files=$(find . -name "*.txt.sh" -type f | head -5 || echo "")
+        log_files=$(find . -name "*.txt.sh" -type f | head -5 || echo "")
         if [[ -n "$log_files" ]]; then
             echo "$log_files" | while read -r logfile; do
                 if [[ -f "$logfile" ]] && grep -q ":latest" "$logfile"; then
                     log_action "📝 Securing log script: $logfile"
-                    cp "$logfile" ""${logfile}".security-backup"
-                    sed -i "s|ghcr.io/czlonkowski/n8n-mcp:sha-df03d42|ghcr.io/czlonkowski/n8n-mcp:"${N8N_MCP_SECURE_VERSION}"|g" "$logfile"
+                    cp "$logfile" "${logfile}.security-backup"
+                    sed -i "s|ghcr.io/czlonkowski/n8n-mcp:sha-df03d42|ghcr.io/czlonkowski/n8n-mcp:${N8N_MCP_SECURE_VERSION}|g" "$logfile"
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
                 fi
             done
@@ -113,17 +113,17 @@ install_cosign_verification() {
 
 set -euo pipefail
 
-    local COSIGN_VERSION="v2.4.1"  # Latest stable version
-    local COSIGN_URL="https://github.com/sigstore/cosign/releases/download/"${COSIGN_VERSION}"/cosign-linux-amd64"
+COSIGN_VERSION="v2.4.1"  # Latest stable version
+COSIGN_URL="https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64"
 
-echo "📦 Installing Cosign "${COSIGN_VERSION}"..."
+echo "📦 Installing Cosign ${COSIGN_VERSION}..."
 
 # Download and install cosign
 curl -O -L "$COSIGN_URL"
 chmod +x cosign-linux-amd64
 
 # Install to system path (requires sudo)
-if [[ "$EUID" -eq 0 ]]; then
+if [[ $EUID -eq 0 ]]; then
     mv cosign-linux-amd64 /usr/local/bin/cosign
 else
     sudo mv cosign-linux-amd64 /usr/local/bin/cosign
@@ -143,9 +143,9 @@ EOF
 
 set -euo pipefail
 
-    local N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
+N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-    local N8N_MCP_SHA="sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102"
+N8N_MCP_SHA="sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102"
 
 echo "🔍 Verifying Docker image signatures and integrity..."
 
@@ -155,7 +155,7 @@ if docker pull "$N8N_MCP_IMAGE"; then
     echo "✅ Image pulled successfully"
 
     # Get actual image SHA
-    local actual_sha=$(docker inspect "$N8N_MCP_IMAGE" --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 || echo "unknown")
+    actual_sha=$(docker inspect "$N8N_MCP_IMAGE" --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 || echo "unknown")
     echo "📋 Expected SHA: $N8N_MCP_SHA"
     echo "📋 Actual SHA:   $actual_sha"
 
@@ -195,7 +195,7 @@ fix_shellcheck_static_analysis() {
 
     # Find all shell scripts
     local shell_scripts
-    local shell_scripts=$(find . -name "*.sh" -type f | grep -v ".backup" | grep -v ".security-backup" || echo "")
+    shell_scripts=$(find . -name "*.sh" -type f | grep -v ".backup" | grep -v ".security-backup" || echo "")
 
     if [[ -n "$shell_scripts" ]]; then
         log_info "📋 Found $(echo "$shell_scripts" | wc -l) shell scripts for ShellCheck fixes"
@@ -206,7 +206,7 @@ fix_shellcheck_static_analysis() {
                 log_action "🔧 Applying ShellCheck fixes to: $script"
 
                 # Create backup
-                cp "$script" ""${script}".shellcheck-backup"
+                cp "$script" "${script}.shellcheck-backup"
 
                 # Apply systematic ShellCheck fixes
                 apply_shellcheck_fixes "$script"
@@ -242,13 +242,13 @@ apply_shellcheck_fixes() {
     # Fix 3: Quote variables to prevent word splitting (SC2086)
     # This is complex, so we'll do basic fixes for common patterns
     sed -i 's/\$\([A-Za-z_][A-Za-z0-9_]*\)\([^A-Za-z0-9_"]\)/"$\1"\2/g' "$script"
-    sed -i 's/\"${\([^}"]*\)}\([^"]\)/"${\1}"\2/g' "$script"
+    sed -i 's/\${\([^}]*\)}\([^"]\)/"${\1}"\2/g' "$script"
 
-    # Fix 4: Fix cd commands to include error handling (SC2164) || exit 1
+    # Fix 4: Fix cd commands to include error handling (SC2164)
     sed -i 's/cd \([^|&;]*\)$/cd \1 || exit 1/g' "$script"
 
     # Fix 5: Fix command substitution quoting
-    sed -i 's/$(\([^)]*\)`/$(\1)/g' "$script"
+    sed -i 's/`\([^`]*\)`/$(\1)/g' "$script"
 
     # Fix 6: Add local declarations for function variables
     sed -i 's/^\s*\([a-zA-Z_][a-zA-Z0-9_]*\)=/    local \1=/g' "$script"
@@ -278,8 +278,8 @@ This report documents the ShellCheck compliance fixes applied to resolve static 
 ## Fixes Applied
 
 ### 1. Error Handling Improvements
-- ✅ Added $(set -euo pipefail) to all scripts
-- ✅ Added proper error handling for $(cd) commands
+- ✅ Added `set -euo pipefail` to all scripts
+- ✅ Added proper error handling for `cd` commands
 - ✅ Improved command substitution safety
 
 ### 2. Variable Quoting and Safety
@@ -294,7 +294,7 @@ This report documents the ShellCheck compliance fixes applied to resolve static 
 - ✅ Fixed command substitution syntax
 
 ### 4. Security Enhancements
-- ✅ Replaced $(:latest) Docker tags with pinned versions
+- ✅ Replaced `:latest` Docker tags with pinned versions
 - ✅ Added SHA verification for Docker images
 - ✅ Implemented proper error propagation
 
@@ -304,7 +304,7 @@ EOF
 
     # Add list of fixed scripts
     echo "$shell_scripts" | while read -r script; do
-        echo "- \$("$script"\) - Applied comprehensive ShellCheck fixes" >> "SHELLCHECK_COMPLIANCE_REPORT.md"
+        echo "- \`$script\` - Applied comprehensive ShellCheck fixes" >> "SHELLCHECK_COMPLIANCE_REPORT.md"
     done
 
     cat >> "SHELLCHECK_COMPLIANCE_REPORT.md" << 'EOF'
@@ -313,39 +313,39 @@ EOF
 
 ### SC2086 - Quote variables to prevent word splitting
 **Before:**
-$()`bash
+```bash
 docker run $IMAGE_NAME
-$()`
+```
 **After:**
-$()`bash
+```bash
 docker run "$IMAGE_NAME"
-$()`
+```
 
 ### SC2164 - Use cd ... || exit for error handling
 **Before:**
-$()`bash
-cd /some/directory || exit 1
-$()`
+```bash
+cd /some/directory
+```
 **After:**
-$()`bash
+```bash
 cd /some/directory || exit 1
-$()`
+```
 
 ### SC2155 - Declare and assign separately
 **Before:**
-$()`bash
+```bash
 local var=$(command)
-$()`
+```
 **After:**
-$()`bash
+```bash
 local var
-    local var=$(command)
-$()`
+var=$(command)
+```
 
 ## Verification
 
 To verify ShellCheck compliance:
-$()`bash
+```bash
 # Install ShellCheck
 sudo dnf install ShellCheck  # Fedora
 sudo apt install shellcheck  # Ubuntu
@@ -355,7 +355,7 @@ shellcheck script_name.sh
 
 # Check all scripts
 find . -name "*.sh" -exec shellcheck {} \;
-$()`
+```
 
 ## Next Steps
 
@@ -407,7 +407,7 @@ echo "🛡️ Running comprehensive vulnerability scan..."
 
 # Install Trivy if not available
 if ! command -v trivy >/dev/null 2>&1; then
-    echo "📦 Installing Trivy "${TRIVY_VERSION}"..."
+    echo "📦 Installing Trivy ${TRIVY_VERSION}..."
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
 fi
 
@@ -591,17 +591,17 @@ This document summarizes the comprehensive security fixes implemented to resolve
 ## ✅ Security Issues Fixed
 
 ### 1. Docker Image Security Issues ✅
-- **Issue**: Using $(:latest) tags instead of pinned versions
-- **Fix**: Replaced all $(:latest) tags with secure pinned version $(sha-df03d42)
-- **SHA Verification**: Added SHA256 verification: $(91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102)
+- **Issue**: Using `:latest` tags instead of pinned versions
+- **Fix**: Replaced all `:latest` tags with secure pinned version `sha-df03d42`
+- **SHA Verification**: Added SHA256 verification: `91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102`
 - **Cosign Support**: Added Cosign installation and verification scripts
 
 ### 2. Static Code Analysis Issues ✅
 - **Issue**: ShellCheck violations in 12+ shell scripts
 - **Fix**: Applied comprehensive ShellCheck fixes:
-  - Added $(set -euo pipefail) to all scripts
+  - Added `set -euo pipefail` to all scripts
   - Quoted all variable expansions (SC2086)
-  - Fixed $(cd) commands with error handling (SC2164)
+  - Fixed `cd` commands with error handling (SC2164)
   - Added local declarations for function variables
   - Improved command substitution safety
 
@@ -624,23 +624,23 @@ This document summarizes the comprehensive security fixes implemented to resolve
 ## 🛠️ Scripts and Tools Created
 
 ### Security Scripts
-1. $(install_cosign.sh) - Install Cosign for image verification
-2. $(verify_docker_images.sh) - Verify Docker image integrity and signatures
-3. $(run_vulnerability_scan.sh) - Comprehensive Trivy vulnerability scanning
-4. $(update_dependencies.sh) - Automated dependency updates
+1. `install_cosign.sh` - Install Cosign for image verification
+2. `verify_docker_images.sh` - Verify Docker image integrity and signatures
+3. `run_vulnerability_scan.sh` - Comprehensive Trivy vulnerability scanning
+4. `update_dependencies.sh` - Automated dependency updates
 
 ### Configuration Files
-1. $(.trivyignore) - Trivy vulnerability scanner configuration
-2. $(.github/workflows/enhanced-security-analysis.yml) - Enhanced security workflow
+1. `.trivyignore` - Trivy vulnerability scanner configuration
+2. `.github/workflows/enhanced-security-analysis.yml` - Enhanced security workflow
 
 ### Documentation
-1. $(SHELLCHECK_COMPLIANCE_REPORT.md) - Detailed ShellCheck fixes documentation
-2. $(COMPREHENSIVE_SECURITY_FIXES.md) - This summary document
+1. `SHELLCHECK_COMPLIANCE_REPORT.md` - Detailed ShellCheck fixes documentation
+2. `COMPREHENSIVE_SECURITY_FIXES.md` - This summary document
 
 ## 🔧 Implementation Details
 
 ### Docker Image Security
-$()`bash
+```bash
 # Before (insecure)
 ghcr.io/czlonkowski/n8n-mcp:sha-df03d42
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
@@ -649,7 +649,7 @@ ghcr.io/czlonkowski/n8n-mcp:sha-df03d42
 ghcr.io/czlonkowski/n8n-mcp:sha-df03d42
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
 # SHA256: 91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-$()`
+```
 
 ### ShellCheck Fixes Applied
 - **SC2086**: Variable quoting for word splitting prevention
@@ -681,7 +681,7 @@ $()`
 ## 🚀 Next Steps
 
 ### Immediate Actions
-1. **Run the security fixes**: Execute $(./fix_github_security_warnings.sh)
+1. **Run the security fixes**: Execute `./fix_github_security_warnings.sh`
 2. **Test all scripts**: Verify functionality after ShellCheck fixes
 3. **Commit changes**: Push security fixes to trigger GitHub Actions
 4. **Monitor results**: Check GitHub Actions for improved security scores
@@ -702,7 +702,7 @@ $()`
 
 ## ✅ Verification Checklist
 
-- [ ] All $(:latest) Docker tags replaced with pinned versions
+- [ ] All `:latest` Docker tags replaced with pinned versions
 - [ ] ShellCheck fixes applied to all shell scripts
 - [ ] Trivy vulnerability scanning configured
 - [ ] Cosign image verification available

@@ -1,0 +1,10 @@
+# Trivy ignore file for vulnerability scanning
+# Ignore low-severity issues that are acceptable
+
+# Example: Ignore specific CVEs that are false positives or acceptable risk
+# CVE-2023-12345
+
+# Ignore info-level findings
+# GHSA-*-info
+
+# Add specific ignores as needed after security review

@@ -19,10 +19,10 @@ readonly CYAN='\033[0;36m'
 readonly RESET='\033[0m'
 
 # Logging functions
-log_info() { echo -e ""${BLUE}"[INFO]"${RESET}" $1"; }
-log_success() { echo -e ""${GREEN}"[SUCCESS]"${RESET}" $1"; }
-log_warn() { echo -e ""${YELLOW}"[WARN]"${RESET}" $1"; }
-log_error() { echo -e ""${RED}"[ERROR]"${RESET}" $1"; }
+log_info() { echo -e "${BLUE}[INFO]${RESET} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${RESET} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${RESET} $1"; }
+log_error() { echo -e "${RED}[ERROR]${RESET} $1"; }
 
 # Show banner
 show_banner() {
@@ -102,11 +102,11 @@ sync_with_remote() {
     
     # Check if we're behind
     local behind_count
-    local behind_count=$(git rev-list --count HEAD..origin/"$BRANCH_NAME" 2>/dev/null || echo "0")
+    behind_count=$(git rev-list --count HEAD..origin/$BRANCH_NAME 2>/dev/null || echo "0")
     
-    if [[ "$behind_count" -gt 0 ]]; then
-        log_info "📥 Remote has "$behind_count" new commits, merging..."
-        git pull origin "$BRANCH_NAME" --no-edit
+    if [[ $behind_count -gt 0 ]]; then
+        log_info "📥 Remote has $behind_count new commits, merging..."
+        git pull origin $BRANCH_NAME --no-edit
         log_success "✅ Successfully merged remote changes"
     else
         log_info "ℹ️ Repository is up to date with remote"
@@ -118,7 +118,7 @@ push_to_github() {
     log_info "🚀 Pushing to GitHub..."
     
     # Push main branch
-    if git push origin "$BRANCH_NAME"; then
+    if git push origin $BRANCH_NAME; then
         log_success "✅ Main branch pushed successfully"
     else
         log_error "❌ Failed to push main branch"
@@ -129,7 +129,7 @@ push_to_github() {
 # Show deployment summary
 show_deployment_summary() {
     local repo_url
-    local repo_url=$(git config --get remote.origin.url | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
+    repo_url=$(git config --get remote.origin.url | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
     
     echo -e "${CYAN}"
     echo "╔══════════════════════════════════════════════════════════════╗"

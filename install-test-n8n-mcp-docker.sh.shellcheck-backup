@@ -8,31 +8,31 @@ set -euo pipefail
 
 # Global variables
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE=""${SCRIPT_DIR}"/installation.log"
+readonly LOG_FILE="${SCRIPT_DIR}/installation.log"
 readonly N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-readonly CONFIG_DIR=""$HOME"/.config/augment"
-readonly BACKUP_DIR=""${SCRIPT_DIR}"/backups"
+readonly CONFIG_DIR="$HOME/.config/augment"
+readonly BACKUP_DIR="${SCRIPT_DIR}/backups"
 
 # Logging functions
 log_info() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [INFO] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [INFO] $1" | tee -a "$LOG_FILE"
 }
 
 log_success() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [SUCCESS] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [SUCCESS] $1" | tee -a "$LOG_FILE"
 }
 
 log_warn() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [WARN] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [WARN] $1" | tee -a "$LOG_FILE"
 }
 
 log_error() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [ERROR] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [ERROR] $1" | tee -a "$LOG_FILE"
 }
 
 # PROVEN APPROACH: Three-tier MCP container testing
@@ -46,7 +46,7 @@ test_container_functionality_with_timeout() {
     if timeout 8s docker run --rm ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 echo "success" >/dev/null 2>&1; then
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
         log_success "   ✅ Basic execution works"
-    local tier1_result=0
+        tier1_result=0
     else
         log_warn "   ⚠️ Basic execution failed"
     fi
@@ -57,7 +57,7 @@ test_container_functionality_with_timeout() {
         ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 /bin/sh -c 'echo "mcp_success"' >/dev/null 2>&1; then
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
         log_success "   ✅ MCP environment works"
-    local tier2_result=0
+        tier2_result=0
     else
         log_warn "   ⚠️ MCP environment inconclusive"
     fi
@@ -67,13 +67,13 @@ test_container_functionality_with_timeout() {
     local mcp_init='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}'
     
     local result
-    local result=$(echo "$mcp_init" | timeout 12s docker run -i --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
+    result=$(echo "$mcp_init" | timeout 12s docker run -i --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
         ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 2>/dev/null || echo "timeout")
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
     
     if [[ "$result" != "timeout" ]] && echo "$result" | grep -q "jsonrpc\|result\|error"; then
         log_success "   ✅ Interactive stdio works"
-    local tier3_result=0
+        tier3_result=0
     else
         log_warn "   ⚠️ Interactive stdio inconclusive"
     fi
@@ -81,11 +81,11 @@ test_container_functionality_with_timeout() {
     # Evaluate results (non-blocking approach)
     local passed_tiers=$((3 - tier1_result - tier2_result - tier3_result))
     
-    if [[ "$tier1_result" -eq 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (basic execution confirmed)"
+    if [[ $tier1_result -eq 0 ]]; then
+        log_success "✅ Container testing: $passed_tiers/3 tiers passed (basic execution confirmed)"
         return 0
-    elif [[ "$passed_tiers" -gt 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (acceptable for production)"
+    elif [[ $passed_tiers -gt 0 ]]; then
+        log_success "✅ Container testing: $passed_tiers/3 tiers passed (acceptable for production)"
         return 0
     else
         log_warn "⚠️ Container testing inconclusive (may still work in production)"
@@ -101,11 +101,11 @@ execute_with_recovery() {
     
     # Special non-blocking handling for container testing
     if [[ "$description" == *"Container"* ]] || [[ "$operation" == *"container"* ]]; then
-        log_info "🔄 Executing: "$description" (non-blocking)"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
+        log_info "🔄 Executing: $description (non-blocking)"
+        if $operation; then
+            log_success "✅ $description completed successfully"
         else
-            log_warn "⚠️ "$description" completed with warnings (continuing installation)"
+            log_warn "⚠️ $description completed with warnings (continuing installation)"
         fi
         return 0  # Always succeed for container testing
     fi
@@ -113,16 +113,16 @@ execute_with_recovery() {
     # Original recovery logic for other operations
     for ((attempt = 1; attempt <= max_attempts; attempt++)); do
         log_info "🔄 Executing: $description"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
+        if $operation; then
+            log_success "✅ $description completed successfully"
             return 0
         else
-            if [[ "$attempt" -lt "$max_attempts" ]]; then
-                log_warn "⚠️ "$description" failed (attempt "$attempt"/"$max_attempts")"
+            if [[ $attempt -lt $max_attempts ]]; then
+                log_warn "⚠️ $description failed (attempt $attempt/$max_attempts)"
                 log_info "🔄 Attempting recovery..."
                 sleep $((attempt * 2))
             else
-                log_error "❌ "$description" failed after "$max_attempts" attempts"
+                log_error "❌ $description failed after $max_attempts attempts"
                 return 1
             fi
         fi
@@ -167,7 +167,7 @@ create_mcp_config() {
     
     mkdir -p "$CONFIG_DIR"
     
-    cat > ""$CONFIG_DIR"/mcp-servers.json" << 'EOF'
+    cat > "$CONFIG_DIR/mcp-servers.json" << 'EOF'
 {
   "mcpServers": {
     "n8n-mcp": {
@@ -210,7 +210,7 @@ main() {
     execute_with_recovery "create_mcp_config" "MCP Configuration" || exit 1
     
     log_success "🎉 Installation completed successfully!"
-    log_info "📚 Configuration saved to: "$CONFIG_DIR"/mcp-servers.json"
+    log_info "📚 Configuration saved to: $CONFIG_DIR/mcp-servers.json"
     log_info "📋 Installation log: $LOG_FILE"
     
     return 0
@@ -248,7 +248,7 @@ main "$@"
 attempt_comprehensive_recovery() {
     log_info "🔄 Attempting comprehensive system recovery..."
 
-    local local recovery_steps=(
+    local recovery_steps=(
         "cleanup_corrupted_state"
         "reset_environment_variables"
         "repair_file_permissions"
@@ -261,7 +261,7 @@ attempt_comprehensive_recovery() {
     local successful_recoveries=0
 
     for step in "${recovery_steps[@]}"; do
-        if "$step"; then
+        if $step; then
             log_success "   ✅ Recovery step: $step"
             ((successful_recoveries++))
         else
@@ -269,11 +269,11 @@ attempt_comprehensive_recovery() {
         fi
     done
 
-    if [[ "$successful_recoveries" -ge 5 ]]; then
-        log_success "✅ Comprehensive recovery successful ("$successful_recoveries"/7 steps)"
+    if [[ $successful_recoveries -ge 5 ]]; then
+        log_success "✅ Comprehensive recovery successful ($successful_recoveries/7 steps)"
         return 0
     else
-        log_error "❌ Comprehensive recovery failed ("$successful_recoveries"/7 steps)"
+        log_error "❌ Comprehensive recovery failed ($successful_recoveries/7 steps)"
         return 1
     fi
 }
@@ -287,7 +287,7 @@ cleanup_corrupted_state() {
 
 reset_environment_variables() {
     # Reset critical environment variables
-    export PATH="/usr/local/bin:/usr/bin:/bin:"$HOME"/.local/bin"
+    export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.local/bin"
     return 0
 }
 
@@ -446,10 +446,10 @@ configure_installation_options() {
     echo
 
     # All critical options are mandatory - no user choice
-    local AUTO_INSTALL_DEPS="true"
-    local AUTO_START_AUGMENT="true"
-    local RUN_TESTS="true"
-    local ENABLE_SELF_HEALING="true"
+    AUTO_INSTALL_DEPS="true"
+    AUTO_START_AUGMENT="true"
+    RUN_TESTS="true"
+    ENABLE_SELF_HEALING="true"
 
     # Optional customizations - respect INTERACTIVE and SILENT flags
     if [[ "${INTERACTIVE:-true}" == "true" && "${SILENT:-false}" != "true" ]]; then
@@ -457,26 +457,26 @@ configure_installation_options() {
 
         echo -n "   Enable verbose logging? [y/N]: "
         if read -t 30 -r verbose_logging 2>/dev/null; then
-            [[ "$verbose_logging" =~ ^[Yy] ]] && VERBOSE_LOGGING="true" || VERBOSE_LOGGING="false"
+            [[ $verbose_logging =~ ^[Yy] ]] && VERBOSE_LOGGING="true" || VERBOSE_LOGGING="false"
         else
             echo
             log_info "   ⏳ No response - using default: No"
-    local VERBOSE_LOGGING="false"
+            VERBOSE_LOGGING="false"
         fi
 
         echo -n "   Create desktop shortcuts? [Y/n]: "
         if read -t 30 -r create_shortcuts 2>/dev/null; then
-            [[ "$create_shortcuts" =~ ^[Nn] ]] && CREATE_SHORTCUTS="false" || CREATE_SHORTCUTS="true"
+            [[ $create_shortcuts =~ ^[Nn] ]] && CREATE_SHORTCUTS="false" || CREATE_SHORTCUTS="true"
         else
             echo
             log_info "   ⏳ No response - using default: Yes"
-    local CREATE_SHORTCUTS="true"
+            CREATE_SHORTCUTS="true"
         fi
     else
         # Silent mode - use sensible defaults
         log_info "   🔇 Silent mode - using default configurations:"
-    local VERBOSE_LOGGING="${VERBOSE_LOGGING:-false}"
-    local CREATE_SHORTCUTS="${CREATE_SHORTCUTS:-true}"
+        VERBOSE_LOGGING="${VERBOSE_LOGGING:-false}"
+        CREATE_SHORTCUTS="${CREATE_SHORTCUTS:-true}"
         log_info "   • Verbose logging: $VERBOSE_LOGGING"
         log_info "   • Desktop shortcuts: $CREATE_SHORTCUTS"
     fi
@@ -501,31 +501,31 @@ set -euo pipefail
 
 # Global variables
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE=""${SCRIPT_DIR}"/installation.log"
+readonly LOG_FILE="${SCRIPT_DIR}/installation.log"
 readonly N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-readonly CONFIG_DIR=""$HOME"/.config/augment"
-readonly BACKUP_DIR=""${SCRIPT_DIR}"/backups"
+readonly CONFIG_DIR="$HOME/.config/augment"
+readonly BACKUP_DIR="${SCRIPT_DIR}/backups"
 
 # Logging functions
 log_info() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [INFO] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [INFO] $1" | tee -a "$LOG_FILE"
 }
 
 log_success() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [SUCCESS] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [SUCCESS] $1" | tee -a "$LOG_FILE"
 }
 
 log_warn() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [WARN] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [WARN] $1" | tee -a "$LOG_FILE"
 }
 
 log_error() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [ERROR] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [ERROR] $1" | tee -a "$LOG_FILE"
 }
 
 # PROVEN APPROACH: Three-tier MCP container testing
@@ -540,7 +540,7 @@ test_container_functionality_with_timeout() {
     log_info "   🔧 Tier 1: Basic container execution..."
     if timeout 8s docker run --rm "$N8N_MCP_IMAGE" echo "success" >/dev/null 2>&1; then
         log_success "   ✅ Basic execution works"
-    local tier1_result=0
+        tier1_result=0
     else
         log_warn "   ⚠️ Basic execution failed"
     fi
@@ -550,7 +550,7 @@ test_container_functionality_with_timeout() {
     if timeout 10s docker run --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
         "$N8N_MCP_IMAGE" /bin/sh -c 'echo "mcp_success"' >/dev/null 2>&1; then
         log_success "   ✅ MCP environment works"
-    local tier2_result=0
+        tier2_result=0
     else
         log_warn "   ⚠️ MCP environment inconclusive"
     fi
@@ -560,12 +560,12 @@ test_container_functionality_with_timeout() {
     local mcp_init='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}'
     
     local result
-    local result=$(echo "$mcp_init" | timeout 12s docker run -i --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
+    result=$(echo "$mcp_init" | timeout 12s docker run -i --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
         "$N8N_MCP_IMAGE" 2>/dev/null || echo "timeout")
     
     if [[ "$result" != "timeout" ]] && echo "$result" | grep -q "jsonrpc\|result\|error"; then
         log_success "   ✅ Interactive stdio works"
-    local tier3_result=0
+        tier3_result=0
     else
         log_warn "   ⚠️ Interactive stdio inconclusive"
     fi
@@ -573,11 +573,11 @@ test_container_functionality_with_timeout() {
     # Evaluate results (non-blocking approach)
     local passed_tiers=$((3 - tier1_result - tier2_result - tier3_result))
     
-    if [[ "$tier1_result" -eq 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (basic execution confirmed)"
+    if [[ $tier1_result -eq 0 ]]; then
+        log_success "✅ Container testing: $passed_tiers/3 tiers passed (basic execution confirmed)"
         return 0
-    elif [[ "$passed_tiers" -gt 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (acceptable for production)"
+    elif [[ $passed_tiers -gt 0 ]]; then
+        log_success "✅ Container testing: $passed_tiers/3 tiers passed (acceptable for production)"
         return 0
     else
         log_warn "⚠️ Container testing inconclusive (may still work in production)"
@@ -593,11 +593,11 @@ execute_with_recovery() {
     
     # Special non-blocking handling for container testing
     if [[ "$description" == *"Container"* ]] || [[ "$operation" == *"container"* ]]; then
-        log_info "🔄 Executing: "$description" (non-blocking)"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
+        log_info "🔄 Executing: $description (non-blocking)"
+        if $operation; then
+            log_success "✅ $description completed successfully"
         else
-            log_warn "⚠️ "$description" completed with warnings (continuing installation)"
+            log_warn "⚠️ $description completed with warnings (continuing installation)"
         fi
         return 0  # Always succeed for container testing
     fi
@@ -605,16 +605,16 @@ execute_with_recovery() {
     # Original recovery logic for other operations
     for ((attempt = 1; attempt <= max_attempts; attempt++)); do
         log_info "🔄 Executing: $description"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
+        if $operation; then
+            log_success "✅ $description completed successfully"
             return 0
         else
-            if [[ "$attempt" -lt "$max_attempts" ]]; then
-                log_warn "⚠️ "$description" failed (attempt "$attempt"/"$max_attempts")"
+            if [[ $attempt -lt $max_attempts ]]; then
+                log_warn "⚠️ $description failed (attempt $attempt/$max_attempts)"
                 log_info "🔄 Attempting recovery..."
                 sleep $((attempt * 2))
             else
-                log_error "❌ "$description" failed after "$max_attempts" attempts"
+                log_error "❌ $description failed after $max_attempts attempts"
                 return 1
             fi
         fi
@@ -659,7 +659,7 @@ create_mcp_config() {
     
     mkdir -p "$CONFIG_DIR"
     
-    cat > ""$CONFIG_DIR"/mcp-servers.json" << 'EOF'
+    cat > "$CONFIG_DIR/mcp-servers.json" << 'EOF'
 {
   "mcpServers": {
     "n8n-mcp": {
@@ -684,7 +684,7 @@ EOF
 # Main installation function
 main() {
     local timestamp
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     log_info "🚀 Starting n8n-mcp Docker installation (v2.0.0-production) at $timestamp"
     
     # Create backup directory
@@ -703,7 +703,7 @@ main() {
     execute_with_recovery "create_mcp_config" "MCP Configuration" || exit 1
     
     log_success "🎉 Installation completed successfully!"
-    log_info "📚 Configuration saved to: "$CONFIG_DIR"/mcp-servers.json"
+    log_info "📚 Configuration saved to: $CONFIG_DIR/mcp-servers.json"
     log_info "📋 Installation log: $LOG_FILE"
     
     return 0

@@ -7,27 +7,27 @@
 set -euo pipefail
 
 # Colors for output
-    local RED='\033[0;31m'
-    local GREEN='\033[0;32m'
-    local YELLOW='\033[1;33m'
-    local BLUE='\033[0;34m'
-    local NC='\033[0m' # No Color
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
 # Logging functions
 log_info() {
-    echo -e ""${BLUE}"[INFO]"${NC}" $1"
+    echo -e "${BLUE}[INFO]${NC} $1"
 }
 
 log_success() {
-    echo -e ""${GREEN}"[SUCCESS]"${NC}" $1"
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
 log_warn() {
-    echo -e ""${YELLOW}"[WARN]"${NC}" $1"
+    echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
 log_error() {
-    echo -e ""${RED}"[ERROR]"${NC}" $1"
+    echo -e "${RED}[ERROR]${NC} $1"
 }
 
 # Banner
@@ -82,7 +82,7 @@ verify_image_exists() {
         
         # Show image details
         local image_info
-    local image_info=$(docker images ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format "table {{.Size}}\t{{.CreatedAt}}")
+        image_info=$(docker images ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format "table {{.Size}}\t{{.CreatedAt}}")
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
         log_info "Image details: $image_info"
         return 0
@@ -104,7 +104,7 @@ test_container_basic() {
 
         # Show useful info
         local created_date
-    local created_date=$(docker inspect ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format '{{.Created}}' | cut -d'T' -f1)
+        created_date=$(docker inspect ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format '{{.Created}}' | cut -d'T' -f1)
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
         log_info "Container created: $created_date"
     else
@@ -145,14 +145,14 @@ test_mcp_protocol() {
     local exit_code=0
 
     # Use printf instead of heredoc for better reliability
-    local mcp_output=$(printf '%s\n' "$mcp_init" | timeout 20s docker run -i --rm \
+    mcp_output=$(printf '%s\n' "$mcp_init" | timeout 20s docker run -i --rm \
         -e "MCP_MODE=stdio" \
         -e "LOG_LEVEL=error" \
         -e "DISABLE_CONSOLE_OUTPUT=true" \
         ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 2>&1) || exit_code=$?
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
 
-    if [[ "$exit_code" -eq 0 ]]; then
+    if [[ $exit_code -eq 0 ]]; then
         # Check for valid MCP response patterns
         if echo "$mcp_output" | grep -q '"result"' || echo "$mcp_output" | grep -q '"capabilities"' || echo "$mcp_output" | grep -q '"protocolVersion"'; then
             echo "✅"
@@ -170,12 +170,12 @@ test_mcp_protocol() {
             log_info "Full response: $mcp_output"
             return 0  # Don't fail - server may still work
         fi
-    elif [[ "$exit_code" -eq 124 ]]; then
+    elif [[ $exit_code -eq 124 ]]; then
         echo "⏰"
         log_warn "MCP protocol test timed out after 20s"
         log_info "This can happen with slow Docker or network conditions"
         log_info "Container may still work - try manual test:"
-        log_info "echo '"$mcp_init"' | docker run -i --rm -e MCP_MODE=stdio ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
+        log_info "echo '$mcp_init' | docker run -i --rm -e MCP_MODE=stdio ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
         return 0  # Don't fail - timeout doesn't mean broken
     else
@@ -200,12 +200,12 @@ test_container_metadata() {
         
         # Show useful metadata
         local created_date
-    local created_date=$(docker inspect ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format '{{.Created}}' | cut -d'T' -f1)
+        created_date=$(docker inspect ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format '{{.Created}}' | cut -d'T' -f1)
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
         log_info "Container created: $created_date"
         
         local arch
-    local arch=$(docker inspect ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format '{{.Architecture}}')
+        arch=$(docker inspect ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 --format '{{.Architecture}}')
     # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
         log_info "Architecture: $arch"
         
@@ -273,7 +273,7 @@ main() {
     
     # Final results
     echo "=============================================================================="
-    if [[ "$failed_tests" -eq 0 ]]; then
+    if [[ $failed_tests -eq 0 ]]; then
         log_success "🎉 ALL TESTS PASSED - n8n-mcp container is ready for use!"
         echo
         log_info "✅ Container can be used with Claude Desktop"
@@ -285,7 +285,7 @@ main() {
         log_info "2. Restart Claude Desktop"
         log_info "3. Test with: 'Show me available n8n workflow nodes'"
     else
-        log_warn "⚠️  "$failed_tests" test(s) had issues, but container may still work"
+        log_warn "⚠️  $failed_tests test(s) had issues, but container may still work"
         echo
         log_info "Common solutions:"
         log_info "1. Ensure Docker is running and accessible"

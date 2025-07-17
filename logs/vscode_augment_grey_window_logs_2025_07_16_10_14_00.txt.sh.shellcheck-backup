@@ -1,6 +1,3 @@
-#!/bin/bash
-
-set -euo pipefail
 ps aux | grep -i "code" | head -20
 bash-5.2$ ps aux | grep -i "code" | head -20
 owner      41016  0.0  0.1 1461583616 7452 ?     Dsl  Jul12   0:43 /usr/share/code-insiders/code-insiders .

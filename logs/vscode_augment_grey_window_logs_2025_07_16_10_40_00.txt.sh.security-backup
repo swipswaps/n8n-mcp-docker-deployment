@@ -1,6 +1,3 @@
-#!/bin/bash
-
-set -euo pipefail
 chmod +x n8n-mcp-docker-deployment/system_performance_resolver.sh
 bash-5.2$ chmod +x n8n-mcp-docker-deployment/system_performance_resolver.sh
 bash-5.2$ 
@@ -41,7 +38,7 @@ Tools: xdotool, dogtail, process management, system optimization
 [INFO] 🗑️  Cleaning cache: /home/owner/.config/Code/logs
 [INFO] 🗑️  Cleaning cache: /home/owner/.config/Code - Insiders
 [INFO] 🔧 Fixing MCP server configuration...
-[INFO] 📝 MCP server should use: docker run -i --rm -e MCP_MODE=stdio ghcr.io/czlonkowski/n8n-mcp:sha-df03d42
+[INFO] 📝 MCP server should use: docker run -i --rm -e MCP_MODE=stdio ghcr.io/czlonkowski/n8n-mcp:latest
 [INFO] ❌ NOT: docker exec -i n8n-mcp node /app/mcp-server.js
 [SUCCESS] ✅ VS Code configuration fixes applied
 [ACTION] 📊 Monitoring system recovery...

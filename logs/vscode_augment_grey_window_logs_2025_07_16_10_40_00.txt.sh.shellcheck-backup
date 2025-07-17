@@ -1,6 +1,3 @@
-#!/bin/bash
-
-set -euo pipefail
 chmod +x n8n-mcp-docker-deployment/system_performance_resolver.sh
 bash-5.2$ chmod +x n8n-mcp-docker-deployment/system_performance_resolver.sh
 bash-5.2$ 
