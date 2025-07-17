@@ -1,0 +1,58 @@
+name: Security Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly security scan
+
+# Minimal required permissions per GitHub Security Hardening docs
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  security-analysis:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run ShellCheck analysis
+      uses: ludeeus/action-shellcheck@master
+      env:
+        SHELLCHECK_OPTS: -e SC2034 -e SC1090
+      with:
+        severity: error
+        format: gcc
+        ignore_paths: >-
+          logs
+          .backup
+          .security-backup
+          .shellcheck-backup
+        
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'HIGH,CRITICAL'
+        ignore-unfixed: true
+        cache-dir: '${{ github.workspace }}/.cache/trivy'
+        
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+        
+    - name: Security summary
+      run: |
+        echo "✅ Security analysis completed"
+        echo "📊 Check Security tab for detailed vulnerability reports"
