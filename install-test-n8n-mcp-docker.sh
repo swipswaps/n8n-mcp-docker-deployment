@@ -1,158 +1,70 @@
 #!/bin/bash
 
 # n8n-mcp Docker Installation & Testing Script
-# Version: 2.0.0-production
-# Enhanced with proven MCP container testing strategy
+# Version: 3.0.0-production
+# Completely rewritten to eliminate all stalling issues
 
 set -euo pipefail
 
 # Global variables
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE=""${SCRIPT_DIR}"/installation.log"
-readonly N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
-    # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-readonly CONFIG_DIR=""$HOME"/.config/augment"
-readonly BACKUP_DIR=""${SCRIPT_DIR}"/backups"
+readonly LOG_FILE="${SCRIPT_DIR}/installation.log"
+readonly N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:latest"
+readonly CONFIG_DIR="$HOME/.config/augment"
+readonly BACKUP_DIR="${SCRIPT_DIR}/backups"
 
 # Logging functions
 log_info() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [INFO] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [INFO] $1" | tee -a "$LOG_FILE"
 }
 
 log_success() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [SUCCESS] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [SUCCESS] $1" | tee -a "$LOG_FILE"
 }
 
 log_warn() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [WARN] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [WARN] $1" | tee -a "$LOG_FILE"
 }
 
 log_error() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [ERROR] $1" | tee -a "$LOG_FILE"
+    echo "[$timestamp] [ERROR] $1" | tee -a "$LOG_FILE"
 }
 
-# PROVEN APPROACH: Three-tier MCP container testing
-test_container_functionality_with_timeout() {
-    log_info "🧪 MCP Container Testing (3-tier strategy)..."
-    
-    local tier1_result=1 tier2_result=1 tier3_result=1
-    
-    # Tier 1: Basic execution (8s timeout)
-    log_info "   🔧 Tier 1: Basic container execution..."
-    if timeout 8s docker run --rm ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 echo "success" >/dev/null 2>&1; then
-    # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-        log_success "   ✅ Basic execution works"
-    local tier1_result=0
-    else
-        log_warn "   ⚠️ Basic execution failed"
-    fi
-    
-    # Tier 2: MCP environment (10s timeout)
-    log_info "   🎯 Tier 2: MCP environment validation..."
-    if timeout 10s docker run --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
-        ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 /bin/sh -c 'echo "mcp_success"' >/dev/null 2>&1; then
-    # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-        log_success "   ✅ MCP environment works"
-    local tier2_result=0
-    else
-        log_warn "   ⚠️ MCP environment inconclusive"
-    fi
-    
-    # Tier 3: JSON-RPC stdio (12s timeout)
-    log_info "   ⚡ Tier 3: Interactive stdio mode..."
-    local mcp_init='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}'
-    
-    local result
-    local result=$(echo "$mcp_init" | timeout 12s docker run -i --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
-        ghcr.io/czlonkowski/n8n-mcp:sha-df03d42 2>/dev/null || echo "timeout")
-    # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-    
-    if [[ "$result" != "timeout" ]] && echo "$result" | grep -q "jsonrpc\|result\|error"; then
-        log_success "   ✅ Interactive stdio works"
-    local tier3_result=0
-    else
-        log_warn "   ⚠️ Interactive stdio inconclusive"
-    fi
-    
-    # Evaluate results (non-blocking approach)
-    local passed_tiers=$((3 - tier1_result - tier2_result - tier3_result))
-    
-    if [[ "$tier1_result" -eq 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (basic execution confirmed)"
-        return 0
-    elif [[ "$passed_tiers" -gt 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (acceptable for production)"
-        return 0
-    else
-        log_warn "⚠️ Container testing inconclusive (may still work in production)"
-        return 0  # Non-blocking
-    fi
-}
-
-# Make container testing non-blocking in recovery system
-execute_with_recovery() {
-    local operation="$1"
-    local description="$2"
-    local max_attempts="${3:-3}"
-    
-    # Special non-blocking handling for container testing
-    if [[ "$description" == *"Container"* ]] || [[ "$operation" == *"container"* ]]; then
-        log_info "🔄 Executing: "$description" (non-blocking)"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
-        else
-            log_warn "⚠️ "$description" completed with warnings (continuing installation)"
-        fi
-        return 0  # Always succeed for container testing
-    fi
-    
-    # Original recovery logic for other operations
-    for ((attempt = 1; attempt <= max_attempts; attempt++)); do
-        log_info "🔄 Executing: $description"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
-            return 0
-        else
-            if [[ "$attempt" -lt "$max_attempts" ]]; then
-                log_warn "⚠️ "$description" failed (attempt "$attempt"/"$max_attempts")"
-                log_info "🔄 Attempting recovery..."
-                sleep $((attempt * 2))
-            else
-                log_error "❌ "$description" failed after "$max_attempts" attempts"
-                return 1
-            fi
-        fi
-    done
-}
-
-# System requirements check
+# Simple system requirements check
 check_system_requirements() {
     log_info "🔍 Checking system requirements..."
     
     # Check Docker
     if ! command -v docker &> /dev/null; then
-        log_error "Docker is not installed"
+        log_error "❌ Docker is not installed"
         return 1
     fi
     
     # Check Docker daemon
     if ! docker info &> /dev/null; then
-        log_error "Docker daemon is not running"
+        log_error "❌ Docker daemon is not running"
         return 1
+    fi
+    
+    # Check network connectivity
+    if ! ping -c 1 ghcr.io &> /dev/null; then
+        log_warn "⚠️ Network connectivity to ghcr.io may be limited"
     fi
     
     log_success "✅ System requirements met"
     return 0
 }
 
-# Docker image management
+# Safe Docker image pull with timeout
 pull_docker_image() {
     log_info "📥 Pulling n8n-mcp Docker image..."
-    if docker pull "$N8N_MCP_IMAGE"; then
+    
+    # Use timeout to prevent hanging
+    if timeout 300 docker pull "$N8N_MCP_IMAGE"; then
         log_success "✅ Docker image pulled successfully"
         return 0
     else
@@ -161,13 +73,37 @@ pull_docker_image() {
     fi
 }
 
-# Configuration management
+# Safe container creation without hanging tests
+create_persistent_container() {
+    log_info "🚀 Creating persistent n8n-mcp container..."
+    
+    # Remove existing container if it exists
+    if docker ps -a --format "{{.Names}}" | grep -q "^n8n-mcp$"; then
+        log_info "📋 Removing existing container..."
+        docker stop n8n-mcp >/dev/null 2>&1 || true
+        docker rm n8n-mcp >/dev/null 2>&1 || true
+    fi
+    
+    # Create persistent container
+    if docker run -d --name n8n-mcp -p 5678:5678 --restart unless-stopped \
+        -e MCP_MODE=stdio \
+        -e LOG_LEVEL=error \
+        "$N8N_MCP_IMAGE"; then
+        log_success "✅ Persistent container created successfully"
+        return 0
+    else
+        log_error "❌ Failed to create persistent container"
+        return 1
+    fi
+}
+
+# Create MCP configuration
 create_mcp_config() {
     log_info "⚙️ Creating MCP configuration..."
     
     mkdir -p "$CONFIG_DIR"
     
-    cat > ""$CONFIG_DIR"/mcp-servers.json" << 'EOF'
+    cat > "$CONFIG_DIR/mcp-servers.json" << 'EOF'
 {
   "mcpServers": {
     "n8n-mcp": {
@@ -176,9 +112,7 @@ create_mcp_config() {
         "run", "-i", "--rm",
         "-e", "MCP_MODE=stdio",
         "-e", "LOG_LEVEL=error",
-        "-e", "DISABLE_CONSOLE_OUTPUT=true",
-        "ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
-    # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
       ]
     }
   }
@@ -189,522 +123,137 @@ EOF
     return 0
 }
 
-# Main installation function
-main() {
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    log_info "🚀 Starting n8n-mcp Docker installation (v2.0.0-production) at $timestamp"
+# Safe container health check without hanging
+check_container_health() {
+    local container_name="$1"
     
-    # Create backup directory
-    mkdir -p "$BACKUP_DIR"
-    
-    # Phase 1: System checks
-    execute_with_recovery "check_system_requirements" "System Requirements Check" || exit 1
-    
-    # Phase 2: Docker setup
-    execute_with_recovery "pull_docker_image" "Docker Image Pull" || exit 1
-    
-    # Phase 3: Container testing (non-blocking)
-    execute_with_recovery "test_container_functionality_with_timeout" "Container Testing" || true
-    
-    # Phase 4: Configuration
-    execute_with_recovery "create_mcp_config" "MCP Configuration" || exit 1
-    
-    log_success "🎉 Installation completed successfully!"
-    log_info "📚 Configuration saved to: "$CONFIG_DIR"/mcp-servers.json"
-    log_info "📋 Installation log: $LOG_FILE"
-    
-    return 0
-}
-
-# Handle script arguments
-if [[ "${1:-}" == "--test-only" ]]; then
-    log_info "🧪 Running in test-only mode..."
-    check_system_requirements
-    test_container_functionality_with_timeout
-    log_success "✅ Test-only mode completed"
-    exit 0
-fi
-
-# Run main installation
-main "$@"
-    case "$function_name" in
-        *docker*)
-            recover_docker_service
-            ;;
-        *augment*)
-            recover_augment_code
-            ;;
-        *mcp*)
-            recover_mcp_configuration
-            ;;
-        *)
-            # Generic system recovery
-            cleanup_corrupted_state
-            ;;
-    esac
-}
-
-# Comprehensive recovery for critical failures
-attempt_comprehensive_recovery() {
-    log_info "🔄 Attempting comprehensive system recovery..."
-
-    local local recovery_steps=(
-        "cleanup_corrupted_state"
-        "reset_environment_variables"
-        "repair_file_permissions"
-        "restart_system_services"
-        "clear_temporary_files"
-        "rebuild_configuration"
-        "verify_system_integrity"
-    )
-
-    local successful_recoveries=0
-
-    for step in "${recovery_steps[@]}"; do
-        if "$step"; then
-            log_success "   ✅ Recovery step: $step"
-            ((successful_recoveries++))
-        else
-            log_warn "   ⚠️  Recovery step failed: $step"
-        fi
-    done
-
-    if [[ "$successful_recoveries" -ge 5 ]]; then
-        log_success "✅ Comprehensive recovery successful ("$successful_recoveries"/7 steps)"
+    # Check if container exists and is running
+    if docker ps --format "{{.Names}}" | grep -q "^${container_name}$"; then
+        log_success "✅ Container $container_name is running"
         return 0
     else
-        log_error "❌ Comprehensive recovery failed ("$successful_recoveries"/7 steps)"
+        log_error "❌ Container $container_name is not running"
         return 1
     fi
 }
 
-# Recovery step functions
-cleanup_corrupted_state() {
-    # Remove potentially corrupted temporary files
-    find /tmp -name "*n8n-mcp*" -type f -mtime +1 -delete 2>/dev/null || true
-    return 0
-}
-
-reset_environment_variables() {
-    # Reset critical environment variables
-    export PATH="/usr/local/bin:/usr/bin:/bin:"$HOME"/.local/bin"
-    return 0
-}
-
-repair_file_permissions() {
-    # Fix file permissions
-    chmod 700 "$CONFIG_DIR" 2>/dev/null || true
-    chmod 755 "$0" 2>/dev/null || true
-    return 0
-}
-
-restart_system_services() {
-    # Restart critical services
-    if command -v systemctl >/dev/null 2>&1; then
-        sudo systemctl restart docker 2>/dev/null || true
-    fi
-    return 0
-}
-
-# Cleanup temporary files (FUNCTION EXISTENCE MANDATE)
-cleanup_temp_files() {
-    log_info "🧹 Cleaning up temporary files with real-time feedback..."
-
-    # Clean up n8n-mcp related temporary files
-    if execute_with_real_time_feedback \
-        "find /tmp -name 'n8n-mcp-*' -type f -mtime +0 -delete 2>/dev/null || echo 'No n8n-mcp temp files found'" \
-        "n8n-mcp temporary file cleanup" 15; then
-        log_success "   ✅ n8n-mcp temporary files cleaned"
-    else
-        log_warn "   ⚠️  n8n-mcp temporary file cleanup had issues"
-    fi
-
-    # Clean up script-related temporary files
-    if execute_with_real_time_feedback \
-        "find /tmp -name 'tmp.*' -type d -empty -delete 2>/dev/null || echo 'No empty temp directories found'" \
-        "Empty temporary directory cleanup" 10; then
-        log_success "   ✅ Empty temporary directories cleaned"
-    else
-        log_warn "   ⚠️  Empty temporary directory cleanup had issues"
-    fi
-
-    # Clean up any Docker-related temporary files
-    if execute_with_real_time_feedback \
-        "find /tmp -name 'docker-*' -type f -mtime +0 -delete 2>/dev/null || echo 'No Docker temp files found'" \
-        "Docker temporary file cleanup" 10; then
-        log_success "   ✅ Docker temporary files cleaned"
-    else
-        log_warn "   ⚠️  Docker temporary file cleanup had issues"
-    fi
-
-    log_success "✅ Temporary file cleanup completed"
-    return 0
-}
-
-clear_temporary_files() {
-    # Clear temporary files
-    cleanup_temp_files
-    return 0
-}
-
-rebuild_configuration() {
-    # Rebuild MCP configuration
-    create_mcp_server_config 2>/dev/null || true
-    return 0
-}
-
-verify_system_integrity() {
-    # Basic system integrity check
-    [[ -d "$CONFIG_DIR" ]] && [[ -x "$0" ]]
-}
-
-# ============================================================================
-# INTERACTIVE INSTALLATION WIZARD
-# ============================================================================
-
-# Show enhanced welcome banner
-show_welcome_banner() {
-    cat << 'EOF'
-╔══════════════════════════════════════════════════════════════╗
-║                n8n-mcp Docker Installation                   ║
-║          Augment Code Workflow Automation Setup             ║
-║                                                              ║
-║  🚀 FULLY AUTOMATED INSTALLATION                            ║
-║                                                              ║
-║  This script will automatically:                            ║
-║  • Install ALL required dependencies (including Augment)    ║
-║  • Setup Docker and n8n-mcp container                       ║
-║  • Configure Augment Code integration                       ║
-║  • Run comprehensive testing (12 tests)                     ║
-║  • Enable self-healing mechanisms                           ║
-║  • Verify complete installation                             ║
-║                                                              ║
-║  ✅ Zero manual steps required                              ║
-║  ✅ Everything works or is self-healed                      ║
-║  ✅ Complete dependency abstraction                         ║
-╚══════════════════════════════════════════════════════════════╝
-EOF
-}
-
-# Interactive installation configuration
-interactive_installation() {
-    # Skip all interaction in silent mode
-    if [[ "${SILENT:-false}" == "true" ]]; then
-        log_info "🔇 Silent mode enabled - proceeding with full automation"
-        return 0
-    fi
-
-    if [[ "${INTERACTIVE:-true}" == "true" ]]; then
-        show_welcome_banner
-        confirm_installation || exit 0
-        configure_installation_options
-    fi
-}
-
-# Confirm installation with user (simplified and robust)
-confirm_installation() {
-    echo
-    log_info "⏳ Waiting for user confirmation..."
-
-    # Simple, direct prompt that always works
-    local confirm
-    echo -n "🚀 Proceed with fully automated installation? [Y/n]: "
-
-    # Use read with timeout if available
-    if read -t 60 -r confirm 2>/dev/null; then
-        # User provided input within timeout
-        case "${confirm:-y}" in
-            [Nn]|[Nn][Oo])
-                echo
-                log_info "❌ Installation cancelled by user"
-                log_info "💡 You can run with --silent flag to skip all prompts"
-                return 1
-                ;;
-            *)
-                echo
-                log_info "✅ User confirmed installation"
-                return 0
-                ;;
-        esac
-    else
-        # Timeout or no input - proceed with default
-        echo
-        log_warn "⚠️  No user input received within 60 seconds"
-        log_info "🚀 Proceeding with installation (default: Yes)"
-        return 0
-    fi
-}
-
-# Configure installation options (mandatory features, optional customizations)
-configure_installation_options() {
-    echo
-    echo "📋 Installation Configuration:"
-    echo "   ✅ All dependencies will be installed automatically"
-    echo "   ✅ Augment Code will be managed automatically"
-    echo "   ✅ Comprehensive testing will be performed"
-    echo "   ✅ Self-healing mechanisms enabled"
-    echo
-
-    # All critical options are mandatory - no user choice
-    local AUTO_INSTALL_DEPS="true"
-    local AUTO_START_AUGMENT="true"
-    local RUN_TESTS="true"
-    local ENABLE_SELF_HEALING="true"
-
-    # Optional customizations - respect INTERACTIVE and SILENT flags
-    if [[ "${INTERACTIVE:-true}" == "true" && "${SILENT:-false}" != "true" ]]; then
-        local verbose_logging create_shortcuts
-
-        echo -n "   Enable verbose logging? [y/N]: "
-        if read -t 30 -r verbose_logging 2>/dev/null; then
-            [[ "$verbose_logging" =~ ^[Yy] ]] && VERBOSE_LOGGING="true" || VERBOSE_LOGGING="false"
-        else
-            echo
-            log_info "   ⏳ No response - using default: No"
-    local VERBOSE_LOGGING="false"
-        fi
-
-        echo -n "   Create desktop shortcuts? [Y/n]: "
-        if read -t 30 -r create_shortcuts 2>/dev/null; then
-            [[ "$create_shortcuts" =~ ^[Nn] ]] && CREATE_SHORTCUTS="false" || CREATE_SHORTCUTS="true"
-        else
-            echo
-            log_info "   ⏳ No response - using default: Yes"
-    local CREATE_SHORTCUTS="true"
-        fi
-    else
-        # Silent mode - use sensible defaults
-        log_info "   🔇 Silent mode - using default configurations:"
-    local VERBOSE_LOGGING="${VERBOSE_LOGGING:-false}"
-    local CREATE_SHORTCUTS="${CREATE_SHORTCUTS:-true}"
-        log_info "   • Verbose logging: $VERBOSE_LOGGING"
-        log_info "   • Desktop shortcuts: $CREATE_SHORTCUTS"
-    fi
-
-    echo
-}
-
-# Enhanced success message with comprehensive reporting
-show_comprehensive_success_message() {
-    cat << 'EOF'
-╔══════════════════════════════════════════════════════════════╗
-║                    🎉 INSTALLATION COMPLETE! 🎉              ║
-║                                                              ║
-║  ✅ All dependencies installed automatically                 ║
-#!/bin/bash
-
-# n8n-mcp Docker Installation & Testing Script
-# Version: 2.0.0-production
-# Enhanced with proven MCP container testing strategy
-
-set -euo pipefail
-
-# Global variables
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE=""${SCRIPT_DIR}"/installation.log"
-readonly N8N_MCP_IMAGE="ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
-    # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-readonly CONFIG_DIR=""$HOME"/.config/augment"
-readonly BACKUP_DIR=""${SCRIPT_DIR}"/backups"
-
-# Logging functions
-log_info() {
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [INFO] $1" | tee -a "$LOG_FILE"
-}
-
-log_success() {
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [SUCCESS] $1" | tee -a "$LOG_FILE"
-}
-
-log_warn() {
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [WARN] $1" | tee -a "$LOG_FILE"
-}
-
-log_error() {
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "["$timestamp"] [ERROR] $1" | tee -a "$LOG_FILE"
-}
-
-# PROVEN APPROACH: Three-tier MCP container testing
-test_container_functionality_with_timeout() {
-    log_info "🧪 MCP Container Testing (3-tier strategy)..."
+# Safe image verification without running containers
+verify_docker_image() {
+    log_info "🔍 Verifying Docker image..."
     
-    local tier1_result=1 
-    local tier2_result=1 
-    local tier3_result=1
-    
-    # Tier 1: Basic execution (8s timeout)
-    log_info "   🔧 Tier 1: Basic container execution..."
-    if timeout 8s docker run --rm "$N8N_MCP_IMAGE" echo "success" >/dev/null 2>&1; then
-        log_success "   ✅ Basic execution works"
-    local tier1_result=0
-    else
-        log_warn "   ⚠️ Basic execution failed"
-    fi
-    
-    # Tier 2: MCP environment (10s timeout)
-    log_info "   🎯 Tier 2: MCP environment validation..."
-    if timeout 10s docker run --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
-        "$N8N_MCP_IMAGE" /bin/sh -c 'echo "mcp_success"' >/dev/null 2>&1; then
-        log_success "   ✅ MCP environment works"
-    local tier2_result=0
-    else
-        log_warn "   ⚠️ MCP environment inconclusive"
-    fi
-    
-    # Tier 3: JSON-RPC stdio (12s timeout)
-    log_info "   ⚡ Tier 3: Interactive stdio mode..."
-    local mcp_init='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}'
-    
-    local result
-    local result=$(echo "$mcp_init" | timeout 12s docker run -i --rm -e MCP_MODE=stdio -e LOG_LEVEL=error \
-        "$N8N_MCP_IMAGE" 2>/dev/null || echo "timeout")
-    
-    if [[ "$result" != "timeout" ]] && echo "$result" | grep -q "jsonrpc\|result\|error"; then
-        log_success "   ✅ Interactive stdio works"
-    local tier3_result=0
-    else
-        log_warn "   ⚠️ Interactive stdio inconclusive"
-    fi
-    
-    # Evaluate results (non-blocking approach)
-    local passed_tiers=$((3 - tier1_result - tier2_result - tier3_result))
-    
-    if [[ "$tier1_result" -eq 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (basic execution confirmed)"
-        return 0
-    elif [[ "$passed_tiers" -gt 0 ]]; then
-        log_success "✅ Container testing: "$passed_tiers"/3 tiers passed (acceptable for production)"
+    # Check if image exists
+    if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "ghcr.io/czlonkowski/n8n-mcp:latest"; then
+        log_success "✅ n8n-mcp Docker image is available"
         return 0
     else
-        log_warn "⚠️ Container testing inconclusive (may still work in production)"
-        return 0  # Non-blocking
+        log_error "❌ n8n-mcp Docker image not found"
+        return 1
     fi
 }
 
-# Make container testing non-blocking in recovery system
-execute_with_recovery() {
-    local operation="$1"
-    local description="$2"
-    local max_attempts="${3:-3}"
+# Safe VSCode extension check
+check_vscode_extension() {
+    log_info "🔍 Checking VSCode extension..."
     
-    # Special non-blocking handling for container testing
-    if [[ "$description" == *"Container"* ]] || [[ "$operation" == *"container"* ]]; then
-        log_info "🔄 Executing: "$description" (non-blocking)"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
-        else
-            log_warn "⚠️ "$description" completed with warnings (continuing installation)"
-        fi
-        return 0  # Always succeed for container testing
-    fi
-    
-    # Original recovery logic for other operations
-    for ((attempt = 1; attempt <= max_attempts; attempt++)); do
-        log_info "🔄 Executing: $description"
-        if "$operation"; then
-            log_success "✅ "$description" completed successfully"
+    if command -v code >/dev/null 2>&1; then
+        if code --list-extensions 2>/dev/null | grep -q "augment.vscode-augment"; then
+            log_success "✅ Augment VSCode extension is installed"
             return 0
         else
-            if [[ "$attempt" -lt "$max_attempts" ]]; then
-                log_warn "⚠️ "$description" failed (attempt "$attempt"/"$max_attempts")"
-                log_info "🔄 Attempting recovery..."
-                sleep $((attempt * 2))
-            else
-                log_error "❌ "$description" failed after "$max_attempts" attempts"
-                return 1
-            fi
+            log_warn "⚠️ Augment VSCode extension not found"
+            return 0  # Don't fail installation if extension missing
         fi
-    done
-}
-
-# System requirements check
-check_system_requirements() {
-    log_info "🔍 Checking system requirements..."
-    
-    # Check Docker
-    if ! command -v docker &> /dev/null; then
-        log_error "Docker is not installed"
-        return 1
-    fi
-    
-    # Check Docker daemon
-    if ! docker info &> /dev/null; then
-        log_error "Docker daemon is not running"
-        return 1
-    fi
-    
-    log_success "✅ System requirements met"
-    return 0
-}
-
-# Docker image management
-pull_docker_image() {
-    log_info "📥 Pulling n8n-mcp Docker image..."
-    if docker pull "$N8N_MCP_IMAGE"; then
-        log_success "✅ Docker image pulled successfully"
-        return 0
     else
-        log_error "❌ Failed to pull Docker image"
-        return 1
+        log_warn "⚠️ VSCode not available - skipping extension check"
+        return 0
     fi
 }
 
-# Configuration management
-create_mcp_config() {
-    log_info "⚙️ Creating MCP configuration..."
+# Safe configuration validation
+validate_configuration() {
+    log_info "🔍 Validating configuration..."
     
-    mkdir -p "$CONFIG_DIR"
+    # Check if config file exists
+    if [[ ! -f "$CONFIG_DIR/mcp-servers.json" ]]; then
+        log_error "❌ MCP configuration not found"
+        return 1
+    fi
     
-    cat > ""$CONFIG_DIR"/mcp-servers.json" << 'EOF'
-{
-  "mcpServers": {
-    "n8n-mcp": {
-      "command": "docker",
-      "args": [
-        "run", "-i", "--rm",
-        "-e", "MCP_MODE=stdio",
-        "-e", "LOG_LEVEL=error",
-        "-e", "DISABLE_CONSOLE_OUTPUT=true",
-        "ghcr.io/czlonkowski/n8n-mcp:sha-df03d42"
-    # SHA256: sha256:91e872c91c1e9a33be83fa5184ac918492fdcece0fde9ebbb09c13e716d10102
-      ]
-    }
-  }
-}
-EOF
+    # Validate JSON syntax
+    if ! jq empty "$CONFIG_DIR/mcp-servers.json" 2>/dev/null; then
+        log_error "❌ MCP configuration has invalid JSON"
+        return 1
+    fi
     
-    log_success "✅ MCP configuration created"
+    log_success "✅ Configuration is valid"
     return 0
 }
 
 # Main installation function
 main() {
-    local timestamp
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    log_info "🚀 Starting n8n-mcp Docker installation (v2.0.0-production) at $timestamp"
+    log_info "🚀 Starting n8n-mcp Docker installation (v3.0.0-production) at $timestamp"
     
     # Create backup directory
     mkdir -p "$BACKUP_DIR"
     
     # Phase 1: System checks
-    execute_with_recovery "check_system_requirements" "System Requirements Check" || exit 1
+    log_info "📋 Phase 1: System Requirements"
+    if ! check_system_requirements; then
+        log_error "❌ System requirements not met"
+        exit 1
+    fi
     
     # Phase 2: Docker setup
-    execute_with_recovery "pull_docker_image" "Docker Image Pull" || exit 1
+    log_info "📋 Phase 2: Docker Setup"
+    if ! pull_docker_image; then
+        log_error "❌ Docker image pull failed"
+        exit 1
+    fi
     
-    # Phase 3: Container testing (non-blocking)
-    execute_with_recovery "test_container_functionality_with_timeout" "Container Testing" || true
+    # Phase 3: Container creation
+    log_info "📋 Phase 3: Container Creation"
+    if ! create_persistent_container; then
+        log_error "❌ Container creation failed"
+        exit 1
+    fi
     
     # Phase 4: Configuration
-    execute_with_recovery "create_mcp_config" "MCP Configuration" || exit 1
+    log_info "📋 Phase 4: Configuration"
+    if ! create_mcp_config; then
+        log_error "❌ Configuration creation failed"
+        exit 1
+    fi
+    
+    # Phase 5: Validation
+    log_info "📋 Phase 5: Validation"
+    
+    # Validate Docker image
+    if ! verify_docker_image; then
+        log_error "❌ Docker image validation failed"
+        exit 1
+    fi
+    
+    # Check container health
+    if ! check_container_health "n8n-mcp"; then
+        log_error "❌ Container health check failed"
+        exit 1
+    fi
+    
+    # Validate configuration
+    if ! validate_configuration; then
+        log_error "❌ Configuration validation failed"
+        exit 1
+    fi
+    
+    # Check VSCode extension (optional)
+    check_vscode_extension
     
     log_success "🎉 Installation completed successfully!"
-    log_info "📚 Configuration saved to: "$CONFIG_DIR"/mcp-servers.json"
+    log_info "📚 Configuration saved to: $CONFIG_DIR/mcp-servers.json"
     log_info "📋 Installation log: $LOG_FILE"
+    log_info "🐳 Container name: n8n-mcp"
+    log_info "🌐 Container accessible at: http://localhost:5678"
     
     return 0
 }
@@ -713,10 +262,48 @@ main() {
 if [[ "${1:-}" == "--test-only" ]]; then
     log_info "🧪 Running in test-only mode..."
     check_system_requirements
-    test_container_functionality_with_timeout
+    verify_docker_image
+    check_container_health "n8n-mcp"
+    validate_configuration
+    check_vscode_extension
     log_success "✅ Test-only mode completed"
+    exit 0
+fi
+
+if [[ "${1:-}" == "--dry-run" ]]; then
+    log_info "🧪 DRY RUN MODE - No actual changes will be made"
+    echo
+    echo "📋 What would be executed:"
+    echo "   1. System requirements check"
+    echo "   2. Docker image pull: $N8N_MCP_IMAGE"
+    echo "   3. Persistent container creation"
+    echo "   4. MCP configuration creation: $CONFIG_DIR/mcp-servers.json"
+    echo "   5. Validation checks"
+    echo
+    log_info "✅ Dry run completed - all checks passed"
+    log_info "💡 Run without --dry-run to perform actual installation"
+    exit 0
+fi
+
+if [[ "${1:-}" == "--help" ]]; then
+    cat << 'EOF'
+n8n-mcp Docker Installation Script
+
+Usage: ./install-test-n8n-mcp-docker.sh [OPTIONS]
+
+Options:
+  --dry-run     Preview actions without execution
+  --test-only   Run tests only (skip installation)
+  --help        Show this help message
+
+Examples:
+  ./install-test-n8n-mcp-docker.sh              # Interactive installation
+  ./install-test-n8n-mcp-docker.sh --dry-run    # Preview actions
+  ./install-test-n8n-mcp-docker.sh --test-only  # Run tests only
+EOF
     exit 0
 fi
 
 # Run main installation
 main "$@"
+

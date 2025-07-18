@@ -1,0 +1,43 @@
+cursor was crashing, cursor advised I run:
+
+~/.local/share/applications/cursor-performance.desktop
+
+that failed as did sudo:
+
+
+sudo ~/.local/share/applications/cursor-performance.desktop
+
+I listed it's contents and it was:
+
+owner@owner-macbookpro92:~/Documents/n8n-mcp-docker-deployment-cursor/n8n-mcp-docker-deployment$ cat ~/.local/share/applications/cursor-performance.desktop
+[Desktop Entry]
+Name=Cursor (Performance Optimized)
+Comment=Code editor with performance optimizations
+Exec=/tmp/.mount_Cursor*/usr/share/cursor/cursor --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --no-sandbox --disable-setuid-sandbox --disable-web-security --disable-features=VizDisplayCompositor --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-field-trial-config --disable-ipc-flooding-protection --force-gpu-mem-available-mb=512 --max_old_space_size=2048 %F
+Icon=cursor
+Type=Application
+Categories=Development;IDE;
+MimeType=text/plain;inode/directory;application/x-code-workspace;
+StartupNotify=false
+StartupWMClass=Cursor
+
+so I tried from the AppImage:
+
+owner@owner-macbookpro92:~/Documents/n8n-mcp-docker-deployment-cursor/n8n-mcp-docker-deployment$ ~/Downloads/Cursor-1.2.2-x86_64.AppImage.zs-old --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --no-sandbox --disable-setuid-sandbox --disable-web-security --disable-features=VizDisplayCompositor --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-field-trial-config --disable-ipc-flooding-protection --force-gpu-mem-available-mb=512 --max_old_space_size=2048 %F
+[10482:0718/141445.190156:ERROR:object_proxy.cc(576)] Failed to call method: org.freedesktop.DBus.StartServiceByName: object_path= /org/freedesktop/DBus: org.freedesktop.DBus.Error.ServiceUnknown: Could not activate remote peer 'org.freedesktop.portal.Desktop': activation request failed: unit is masked
+Warning: 'disable-software-rasterizer' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-setuid-sandbox' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-web-security' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-features' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-background-timer-throttling' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-backgrounding-occluded-windows' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-renderer-backgrounding' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-field-trial-config' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'disable-ipc-flooding-protection' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'force-gpu-mem-available-mb' is not in the list of known options, but still passed to Electron/Chromium.
+Warning: 'max_old_space_size' is not in the list of known options, but still passed to Electron/Chromium.
+[main 2025-07-18T18:14:46.090Z] update#setState disabled
+[main 2025-07-18T18:14:46.090Z] update#ctor - updates are disabled by user preference
+[main 2025-07-18T18:14:50.614Z] vscode-file: Refused to load resource /tmp/.mount_CursornQANsR/usr/share/cursor/resources/app/extensions/theme-seti/icons/seti.woff from vscode-file: protocol (original URL: vscode-file://vscode-app/tmp/.mount_CursornQANsR/usr/share/cursor/resources/app/extensions/theme-seti/icons/seti.woff)
+
+explain the errors and how to fix Ivy Bridge CPU issues

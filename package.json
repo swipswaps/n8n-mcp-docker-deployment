@@ -1,0 +1,25 @@
+{
+  "name": "n8n-mcp-docker-deployment",
+  "version": "1.0.0",
+  "description": "A fully automated Docker deployment solution for n8n-mcp with Augment Code integration.",
+  "main": "build_workflow_automation.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swipswaps/n8n-mcp-docker-deployment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/swipswaps/n8n-mcp-docker-deployment/issues"
+  },
+  "homepage": "https://github.com/swipswaps/n8n-mcp-docker-deployment#readme",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "playwright": "^1.54.1",
+    "puppeteer": "^24.14.0"
+  }
+}

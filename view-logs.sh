@@ -6,11 +6,11 @@
 set -euo pipefail
 
 # Colors for output
-    local RED='\033[0;31m'
-    local GREEN='\033[0;32m'
-    local YELLOW='\033[1;33m'
-    local BLUE='\033[0;34m'
-    local NC='\033[0m' # No Color
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[0;34m'
+    NC='\033[0m' # No Color
 
 # Find the most recent log directory
 find_log_dir() {

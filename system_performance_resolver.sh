@@ -168,11 +168,11 @@ fix_vscode_config() {
     log_action "🔧 Fixing VS Code configuration issues..."
     
     # Remove problematic VS Code cache
-    local local vscode_cache_dirs=(
-        ""$HOME"/.config/Code/CachedData"
-        ""$HOME"/.config/Code/logs"
-        ""$HOME"/.config/Code - Insiders"
-        ""$HOME"/.vscode/extensions/.obsolete"
+    local vscode_cache_dirs=(
+        "$HOME/.config/Code/CachedData"
+        "$HOME/.config/Code/logs"
+        "$HOME/.config/Code - Insiders"
+        "$HOME/.vscode/extensions/.obsolete"
     )
     
     for cache_dir in "${vscode_cache_dirs[@]}"; do
@@ -263,7 +263,7 @@ main() {
 
 # Check for required tools
 check_tools() {
-    local local missing_tools=()
+    local missing_tools=()
     
     for tool in xdotool bc; do
         if ! command -v "$tool" >/dev/null 2>&1; then
