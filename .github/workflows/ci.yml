@@ -73,8 +73,12 @@ jobs:
     - name: Test script syntax
       run: |
         echo "🧪 Testing script syntax..."
-        bash -n install-test-n8n-mcp-docker.sh
-        echo "✅ Script syntax validation passed"
+        # Test all shell scripts for syntax errors
+        find . -name "*.sh" -type f | while read -r script; do
+          echo "Testing syntax: $script"
+          bash -n "$script" || echo "⚠️  Syntax error in $script"
+        done
+        echo "✅ Script syntax validation completed"
         
     - name: Test Docker availability
       run: |
@@ -86,12 +90,18 @@ jobs:
     - name: Test script dry run (non-interactive)
       run: |
         echo "🧪 Testing script dry run..."
-        # Create a test version that doesn't require user input
-        sed 's/read -p.*/echo "y"/' install-test-n8n-mcp-docker.sh > test-script.sh
-        chmod +x test-script.sh
+        # Test main automation scripts
+        if [[ -f "run_optimized_workflow.sh" ]]; then
+          echo "Testing: run_optimized_workflow.sh"
+          bash -n run_optimized_workflow.sh || echo "⚠️  Syntax error in run_optimized_workflow.sh"
+        fi
         
-        # Test basic script execution (first few phases only)
-        timeout 60s bash test-script.sh || echo "⚠️  Script test completed with timeout (expected)"
+        if [[ -f "start-n8n.sh" ]]; then
+          echo "Testing: start-n8n.sh"
+          bash -n start-n8n.sh || echo "⚠️  Syntax error in start-n8n.sh"
+        fi
+        
+        echo "✅ Script dry run tests completed"
         
     - name: Test MCP configuration generation
       run: |

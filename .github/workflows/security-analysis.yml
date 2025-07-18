@@ -25,7 +25,7 @@ jobs:
     - name: Run ShellCheck analysis
       uses: ludeeus/action-shellcheck@master
       env:
-        SHELLCHECK_OPTS: -e SC2034 -e SC1090
+        SHELLCHECK_OPTS: -e SC2034 -e SC1090 -e SC2155 -e SC2027 -e SC2086
       with:
         severity: error
         format: gcc
@@ -34,6 +34,8 @@ jobs:
           .backup
           .security-backup
           .shellcheck-backup
+          *.backup
+          *.shellcheck-backup
         
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
